@@ -10,17 +10,16 @@ import 'dart:ffi' as ffi;
 class ObjectBoxC {
   /// Holds the symbol lookup function.
   final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
-      _lookup;
+  _lookup;
 
   /// The symbols are looked up in [dynamicLibrary].
   ObjectBoxC(ffi.DynamicLibrary dynamicLibrary)
-      : _lookup = dynamicLibrary.lookup;
+    : _lookup = dynamicLibrary.lookup;
 
   /// The symbols are looked up with [lookup].
   ObjectBoxC.fromLookup(
-      ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
-          lookup)
-      : _lookup = lookup;
+    ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName) lookup,
+  ) : _lookup = lookup;
 
   /// Return the (runtime) version of the library as ints. Pointers may be null
   void version(
@@ -28,39 +27,39 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Int> minor,
     ffi.Pointer<ffi.Int> patch,
   ) {
-    return _version(
-      major,
-      minor,
-      patch,
-    );
+    return _version(major, minor, patch);
   }
 
-  late final _versionPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Int>,
-              ffi.Pointer<ffi.Int>)>>('obx_version');
-  late final _version = _versionPtr.asFunction<
-      void Function(
-          ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Int>, ffi.Pointer<ffi.Int>)>();
+  late final _versionPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(
+            ffi.Pointer<ffi.Int>,
+            ffi.Pointer<ffi.Int>,
+            ffi.Pointer<ffi.Int>,
+          )
+        >
+      >('obx_version');
+  late final _version = _versionPtr
+      .asFunction<
+        void Function(
+          ffi.Pointer<ffi.Int>,
+          ffi.Pointer<ffi.Int>,
+          ffi.Pointer<ffi.Int>,
+        )
+      >();
 
   /// Check if the (runtime) version of the library is equal to or higher than the given version ints.
-  bool version_is_at_least(
-    int major,
-    int minor,
-    int patch,
-  ) {
-    return _version_is_at_least(
-      major,
-      minor,
-      patch,
-    );
+  bool version_is_at_least(int major, int minor, int patch) {
+    return _version_is_at_least(major, minor, patch);
   }
 
   late final _version_is_at_leastPtr =
       _lookup<ffi.NativeFunction<ffi.Bool Function(ffi.Int, ffi.Int, ffi.Int)>>(
-          'obx_version_is_at_least');
-  late final _version_is_at_least =
-      _version_is_at_leastPtr.asFunction<bool Function(int, int, int)>();
+        'obx_version_is_at_least',
+      );
+  late final _version_is_at_least = _version_is_at_leastPtr
+      .asFunction<bool Function(int, int, int)>();
 
   /// Return the (runtime) version of the library to be printed.
   /// The current format is "major.minor.patch" (e.g. "1.0.0") but may change in any future release.
@@ -72,9 +71,10 @@ class ObjectBoxC {
 
   late final _version_stringPtr =
       _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function()>>(
-          'obx_version_string');
-  late final _version_string =
-      _version_stringPtr.asFunction<ffi.Pointer<ffi.Char> Function()>();
+        'obx_version_string',
+      );
+  late final _version_string = _version_stringPtr
+      .asFunction<ffi.Pointer<ffi.Char> Function()>();
 
   /// Return the version of the ObjectBox core to be printed (currently also contains a version date and features).
   /// The format may change in any future release; only use for information purposes.
@@ -84,63 +84,51 @@ class ObjectBoxC {
 
   late final _version_core_stringPtr =
       _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function()>>(
-          'obx_version_core_string');
-  late final _version_core_string =
-      _version_core_stringPtr.asFunction<ffi.Pointer<ffi.Char> Function()>();
+        'obx_version_core_string',
+      );
+  late final _version_core_string = _version_core_stringPtr
+      .asFunction<ffi.Pointer<ffi.Char> Function()>();
 
   /// Checks whether the given feature is available in the currently loaded library.
-  bool has_feature(
-    int feature,
-  ) {
-    return _has_feature(
-      feature,
-    );
+  bool has_feature(int feature) {
+    return _has_feature(feature);
   }
 
   late final _has_featurePtr =
       _lookup<ffi.NativeFunction<ffi.Bool Function(ffi.Int32)>>(
-          'obx_has_feature');
+        'obx_has_feature',
+      );
   late final _has_feature = _has_featurePtr.asFunction<bool Function(int)>();
 
   /// Delete the store files from the given directory
-  int remove_db_files(
-    ffi.Pointer<ffi.Char> directory,
-  ) {
-    return _remove_db_files(
-      directory,
-    );
+  int remove_db_files(ffi.Pointer<ffi.Char> directory) {
+    return _remove_db_files(directory);
   }
 
   late final _remove_db_filesPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<ffi.Char>)>>(
-          'obx_remove_db_files');
-  late final _remove_db_files =
-      _remove_db_filesPtr.asFunction<int Function(ffi.Pointer<ffi.Char>)>();
+        'obx_remove_db_files',
+      );
+  late final _remove_db_files = _remove_db_filesPtr
+      .asFunction<int Function(ffi.Pointer<ffi.Char>)>();
 
   /// @returns the file size of the main database file, or 0 if the file does not exist or some error occurred.
-  int db_file_size(
-    ffi.Pointer<ffi.Char> directory,
-  ) {
-    return _db_file_size(
-      directory,
-    );
+  int db_file_size(ffi.Pointer<ffi.Char> directory) {
+    return _db_file_size(directory);
   }
 
   late final _db_file_sizePtr =
       _lookup<ffi.NativeFunction<ffi.Size Function(ffi.Pointer<ffi.Char>)>>(
-          'obx_db_file_size');
-  late final _db_file_size =
-      _db_file_sizePtr.asFunction<int Function(ffi.Pointer<ffi.Char>)>();
+        'obx_db_file_size',
+      );
+  late final _db_file_size = _db_file_sizePtr
+      .asFunction<int Function(ffi.Pointer<ffi.Char>)>();
 
   /// Enable (or disable) debug logging for ObjectBox internals.
   /// This requires a version of the library with the DebugLog feature.
   /// You can check if the feature is available with obx_has_feature(OBXFeature_DebugLog).
-  int debug_log(
-    bool enabled,
-  ) {
-    return _debug_log(
-      enabled,
-    );
+  int debug_log(bool enabled) {
+    return _debug_log(enabled);
   }
 
   late final _debug_logPtr =
@@ -156,8 +144,8 @@ class ObjectBoxC {
 
   late final _debug_log_enabledPtr =
       _lookup<ffi.NativeFunction<ffi.Bool Function()>>('obx_debug_log_enabled');
-  late final _debug_log_enabled =
-      _debug_log_enabledPtr.asFunction<bool Function()>();
+  late final _debug_log_enabled = _debug_log_enabledPtr
+      .asFunction<bool Function()>();
 
   /// Gets the number, as used by ObjectBox, of the current thread.
   /// This e.g. allows to "associate" the thread with ObjectBox logs (each log entry contains the thread number).
@@ -178,19 +166,22 @@ class ObjectBoxC {
     ffi.Pointer<obx_err> out_error,
     ffi.Pointer<ffi.Pointer<ffi.Char>> out_message,
   ) {
-    return _last_error_pop(
-      out_error,
-      out_message,
-    );
+    return _last_error_pop(out_error, out_message);
   }
 
-  late final _last_error_popPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Bool Function(ffi.Pointer<obx_err>,
-              ffi.Pointer<ffi.Pointer<ffi.Char>>)>>('obx_last_error_pop');
-  late final _last_error_pop = _last_error_popPtr.asFunction<
-      bool Function(
-          ffi.Pointer<obx_err>, ffi.Pointer<ffi.Pointer<ffi.Char>>)>();
+  late final _last_error_popPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Bool Function(
+            ffi.Pointer<obx_err>,
+            ffi.Pointer<ffi.Pointer<ffi.Char>>,
+          )
+        >
+      >('obx_last_error_pop');
+  late final _last_error_pop = _last_error_popPtr
+      .asFunction<
+        bool Function(ffi.Pointer<obx_err>, ffi.Pointer<ffi.Pointer<ffi.Char>>)
+      >();
 
   /// The last error raised by an ObjectBox API call on the current thread, or OBX_SUCCESS if no error occurred yet.
   /// Note that API calls do not clear this error code (also true for this method).
@@ -202,8 +193,8 @@ class ObjectBoxC {
 
   late final _last_error_codePtr =
       _lookup<ffi.NativeFunction<obx_err Function()>>('obx_last_error_code');
-  late final _last_error_code =
-      _last_error_codePtr.asFunction<int Function()>();
+  late final _last_error_code = _last_error_codePtr
+      .asFunction<int Function()>();
 
   /// The error message string attached to the error returned by obx_last_error_code().
   /// Like obx_last_error_code(), this is bound to the current thread, and this call does not clear the error state.
@@ -214,9 +205,10 @@ class ObjectBoxC {
 
   late final _last_error_messagePtr =
       _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function()>>(
-          'obx_last_error_message');
-  late final _last_error_message =
-      _last_error_messagePtr.asFunction<ffi.Pointer<ffi.Char> Function()>();
+        'obx_last_error_message',
+      );
+  late final _last_error_message = _last_error_messagePtr
+      .asFunction<ffi.Pointer<ffi.Char> Function()>();
 
   /// The underlying error for the error returned by obx_last_error_code(). Where obx_last_error_code() may be a generic
   /// error like OBX_ERROR_STORAGE_GENERAL, this will give a further underlying and possibly platform-specific error code.
@@ -226,9 +218,10 @@ class ObjectBoxC {
 
   late final _last_error_secondaryPtr =
       _lookup<ffi.NativeFunction<obx_err Function()>>(
-          'obx_last_error_secondary');
-  late final _last_error_secondary =
-      _last_error_secondaryPtr.asFunction<int Function()>();
+        'obx_last_error_secondary',
+      );
+  late final _last_error_secondary = _last_error_secondaryPtr
+      .asFunction<int Function()>();
 
   /// Clear the error state on the current thread; e.g. obx_last_error_code() will now return OBX_SUCCESS.
   /// Note that clearing the error state does not happen automatically;
@@ -240,26 +233,20 @@ class ObjectBoxC {
 
   late final _last_error_clearPtr =
       _lookup<ffi.NativeFunction<ffi.Void Function()>>('obx_last_error_clear');
-  late final _last_error_clear =
-      _last_error_clearPtr.asFunction<void Function()>();
+  late final _last_error_clear = _last_error_clearPtr
+      .asFunction<void Function()>();
 
   /// Set the last error code and test - reserved for internal use from generated code.
-  bool last_error_set(
-    int code,
-    int secondary,
-    ffi.Pointer<ffi.Char> message,
-  ) {
-    return _last_error_set(
-      code,
-      secondary,
-      message,
-    );
+  bool last_error_set(int code, int secondary, ffi.Pointer<ffi.Char> message) {
+    return _last_error_set(code, secondary, message);
   }
 
-  late final _last_error_setPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Bool Function(
-              obx_err, obx_err, ffi.Pointer<ffi.Char>)>>('obx_last_error_set');
+  late final _last_error_setPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Bool Function(obx_err, obx_err, ffi.Pointer<ffi.Char>)
+        >
+      >('obx_last_error_set');
   late final _last_error_set = _last_error_setPtr
       .asFunction<bool Function(int, int, ffi.Pointer<ffi.Char>)>();
 
@@ -275,24 +262,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Float> vector2,
     int dimension,
   ) {
-    return _vector_distance_float32(
-      type,
-      vector1,
-      vector2,
-      dimension,
-    );
+    return _vector_distance_float32(type, vector1, vector2, dimension);
   }
 
-  late final _vector_distance_float32Ptr = _lookup<
-      ffi.NativeFunction<
+  late final _vector_distance_float32Ptr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Float Function(
-              ffi.Int32,
-              ffi.Pointer<ffi.Float>,
-              ffi.Pointer<ffi.Float>,
-              ffi.Size)>>('obx_vector_distance_float32');
-  late final _vector_distance_float32 = _vector_distance_float32Ptr.asFunction<
-      double Function(
-          int, ffi.Pointer<ffi.Float>, ffi.Pointer<ffi.Float>, int)>();
+            ffi.Int32,
+            ffi.Pointer<ffi.Float>,
+            ffi.Pointer<ffi.Float>,
+            ffi.Size,
+          )
+        >
+      >('obx_vector_distance_float32');
+  late final _vector_distance_float32 = _vector_distance_float32Ptr
+      .asFunction<
+        double Function(
+          int,
+          ffi.Pointer<ffi.Float>,
+          ffi.Pointer<ffi.Float>,
+          int,
+        )
+      >();
 
   /// Utility function to convert a vector distance (e.g. scores from query results) to a relevance score.
   /// The relevance score is a value between 0.0 and 1.0, with 1.0 indicating the most relevant.
@@ -303,19 +295,14 @@ class ObjectBoxC {
   /// @param distance distance score to convert (0.0 is the nearest; upper bound depends on the distance type).
   /// @returns a relevance score between 0.0 and 1.0 (1.0 is the most relevant).
   /// @returns NaN on error; e.g. if the distance type is unknown, or the vector search feature is unavailable.
-  double vector_distance_to_relevance(
-    int type,
-    double distance,
-  ) {
-    return _vector_distance_to_relevance(
-      type,
-      distance,
-    );
+  double vector_distance_to_relevance(int type, double distance) {
+    return _vector_distance_to_relevance(type, distance);
   }
 
   late final _vector_distance_to_relevancePtr =
       _lookup<ffi.NativeFunction<ffi.Float Function(ffi.Int32, ffi.Float)>>(
-          'obx_vector_distance_to_relevance');
+        'obx_vector_distance_to_relevance',
+      );
   late final _vector_distance_to_relevance = _vector_distance_to_relevancePtr
       .asFunction<double Function(int, double)>();
 
@@ -328,57 +315,50 @@ class ObjectBoxC {
 
   late final _modelPtr =
       _lookup<ffi.NativeFunction<ffi.Pointer<OBX_model> Function()>>(
-          'obx_model');
+        'obx_model',
+      );
   late final _model = _modelPtr.asFunction<ffi.Pointer<OBX_model> Function()>();
 
   /// Only call when not calling obx_store_open() (which will free it internally)
   /// @param model NULL-able; returns OBX_SUCCESS if model is NULL
-  int model_free(
-    ffi.Pointer<OBX_model> model,
-  ) {
-    return _model_free(
-      model,
-    );
+  int model_free(ffi.Pointer<OBX_model> model) {
+    return _model_free(model);
   }
 
   late final _model_freePtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_model>)>>(
-          'obx_model_free');
-  late final _model_free =
-      _model_freePtr.asFunction<int Function(ffi.Pointer<OBX_model>)>();
+        'obx_model_free',
+      );
+  late final _model_free = _model_freePtr
+      .asFunction<int Function(ffi.Pointer<OBX_model>)>();
 
   /// To minimise the amount of error handling code required when building a model, the first error is stored and can be
   /// obtained here. All the obx_model_XXX functions are null operations after the first model error has occurred.
   /// @param model NULL-able; returns OBX_ERROR_ILLEGAL_ARGUMENT if model is NULL
-  int model_error_code(
-    ffi.Pointer<OBX_model> model,
-  ) {
-    return _model_error_code(
-      model,
-    );
+  int model_error_code(ffi.Pointer<OBX_model> model) {
+    return _model_error_code(model);
   }
 
   late final _model_error_codePtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_model>)>>(
-          'obx_model_error_code');
-  late final _model_error_code =
-      _model_error_codePtr.asFunction<int Function(ffi.Pointer<OBX_model>)>();
+        'obx_model_error_code',
+      );
+  late final _model_error_code = _model_error_codePtr
+      .asFunction<int Function(ffi.Pointer<OBX_model>)>();
 
   /// To minimise the amount of error handling code required when building a model, the first error is stored and can be
   /// obtained here. All the obx_model_XXX functions are null operations after the first model error has occurred.
   /// @param model NULL-able; returns NULL if model is NULL
-  ffi.Pointer<ffi.Char> model_error_message(
-    ffi.Pointer<OBX_model> model,
-  ) {
-    return _model_error_message(
-      model,
-    );
+  ffi.Pointer<ffi.Char> model_error_message(ffi.Pointer<OBX_model> model) {
+    return _model_error_message(model);
   }
 
-  late final _model_error_messagePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<ffi.Char> Function(
-              ffi.Pointer<OBX_model>)>>('obx_model_error_message');
+  late final _model_error_messagePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_model>)
+        >
+      >('obx_model_error_message');
   late final _model_error_message = _model_error_messagePtr
       .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_model>)>();
 
@@ -393,37 +373,35 @@ class ObjectBoxC {
     int entity_id,
     int entity_uid,
   ) {
-    return _model_entity(
-      model,
-      name,
-      entity_id,
-      entity_uid,
-    );
+    return _model_entity(model, name, entity_id, entity_uid);
   }
 
-  late final _model_entityPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>,
-              obx_schema_id, obx_uid)>>('obx_model_entity');
-  late final _model_entity = _model_entityPtr.asFunction<
-      int Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>, int, int)>();
+  late final _model_entityPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_model>,
+            ffi.Pointer<ffi.Char>,
+            obx_schema_id,
+            obx_uid,
+          )
+        >
+      >('obx_model_entity');
+  late final _model_entity = _model_entityPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>, int, int)
+      >();
 
   /// Refine the definition of the entity declared by the most recent obx_model_entity() call, specifying flags.
   /// @param flags See OBXEntityFlags for values (use bitwise OR to combine multiple flags)
-  int model_entity_flags(
-    ffi.Pointer<OBX_model> model,
-    int flags,
-  ) {
-    return _model_entity_flags(
-      model,
-      flags,
-    );
+  int model_entity_flags(ffi.Pointer<OBX_model> model, int flags) {
+    return _model_entity_flags(model, flags);
   }
 
-  late final _model_entity_flagsPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(
-              ffi.Pointer<OBX_model>, ffi.Uint32)>>('obx_model_entity_flags');
+  late final _model_entity_flagsPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Uint32)>
+      >('obx_model_entity_flags');
   late final _model_entity_flags = _model_entity_flagsPtr
       .asFunction<int Function(ffi.Pointer<OBX_model>, int)>();
 
@@ -434,17 +412,15 @@ class ObjectBoxC {
     int property_id,
     int property_uid,
   ) {
-    return _model_entity_last_property_id(
-      model,
-      property_id,
-      property_uid,
-    );
+    return _model_entity_last_property_id(model, property_id, property_uid);
   }
 
-  late final _model_entity_last_property_idPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_model>, obx_schema_id,
-              obx_uid)>>('obx_model_entity_last_property_id');
+  late final _model_entity_last_property_idPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_model>, obx_schema_id, obx_uid)
+        >
+      >('obx_model_entity_last_property_id');
   late final _model_entity_last_property_id = _model_entity_last_property_idPtr
       .asFunction<int Function(ffi.Pointer<OBX_model>, int, int)>();
 
@@ -454,19 +430,19 @@ class ObjectBoxC {
     ffi.Pointer<OBX_model> model,
     ffi.Pointer<ffi.Char> external_name,
   ) {
-    return _model_entity_external_name(
-      model,
-      external_name,
-    );
+    return _model_entity_external_name(model, external_name);
   }
 
-  late final _model_entity_external_namePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_model>,
-              ffi.Pointer<ffi.Char>)>>('obx_model_entity_external_name');
-  late final _model_entity_external_name =
-      _model_entity_external_namePtr.asFunction<
-          int Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>)>();
+  late final _model_entity_external_namePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>)
+        >
+      >('obx_model_entity_external_name');
+  late final _model_entity_external_name = _model_entity_external_namePtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>)
+      >();
 
   /// Starts the definition of a new property for the entity type of the last obx_model_entity() call.
   /// @param name A human readable name for the property. Must be unique within the entity
@@ -480,39 +456,42 @@ class ObjectBoxC {
     int property_id,
     int property_uid,
   ) {
-    return _model_property(
-      model,
-      name,
-      type,
-      property_id,
-      property_uid,
-    );
+    return _model_property(model, name, type, property_id, property_uid);
   }
 
-  late final _model_propertyPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>,
-              ffi.Int32, obx_schema_id, obx_uid)>>('obx_model_property');
-  late final _model_property = _model_propertyPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>, int, int, int)>();
+  late final _model_propertyPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_model>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Int32,
+            obx_schema_id,
+            obx_uid,
+          )
+        >
+      >('obx_model_property');
+  late final _model_property = _model_propertyPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_model>,
+          ffi.Pointer<ffi.Char>,
+          int,
+          int,
+          int,
+        )
+      >();
 
   /// Refine the definition of the property declared by the most recent obx_model_property() call, specifying flags.
   /// @param flags See OBXPropertyFlags for values (use bitwise OR to combine multiple flags)
-  int model_property_flags(
-    ffi.Pointer<OBX_model> model,
-    int flags,
-  ) {
-    return _model_property_flags(
-      model,
-      flags,
-    );
+  int model_property_flags(ffi.Pointer<OBX_model> model, int flags) {
+    return _model_property_flags(model, flags);
   }
 
-  late final _model_property_flagsPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(
-              ffi.Pointer<OBX_model>, ffi.Uint32)>>('obx_model_property_flags');
+  late final _model_property_flagsPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Uint32)>
+      >('obx_model_property_flags');
   late final _model_property_flags = _model_property_flagsPtr
       .asFunction<int Function(ffi.Pointer<OBX_model>, int)>();
 
@@ -527,20 +506,24 @@ class ObjectBoxC {
     int index_id,
     int index_uid,
   ) {
-    return _model_property_relation(
-      model,
-      target_entity,
-      index_id,
-      index_uid,
-    );
+    return _model_property_relation(model, target_entity, index_id, index_uid);
   }
 
-  late final _model_property_relationPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>,
-              obx_schema_id, obx_uid)>>('obx_model_property_relation');
-  late final _model_property_relation = _model_property_relationPtr.asFunction<
-      int Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>, int, int)>();
+  late final _model_property_relationPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_model>,
+            ffi.Pointer<ffi.Char>,
+            obx_schema_id,
+            obx_uid,
+          )
+        >
+      >('obx_model_property_relation');
+  late final _model_property_relation = _model_property_relationPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>, int, int)
+      >();
 
   /// Refine the definition of the property declared by the most recent obx_model_property() call, adding an index.
   /// @param index_id Must be unique within this version of the model
@@ -550,17 +533,15 @@ class ObjectBoxC {
     int index_id,
     int index_uid,
   ) {
-    return _model_property_index_id(
-      model,
-      index_id,
-      index_uid,
-    );
+    return _model_property_index_id(model, index_id, index_uid);
   }
 
-  late final _model_property_index_idPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_model>, obx_schema_id,
-              obx_uid)>>('obx_model_property_index_id');
+  late final _model_property_index_idPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_model>, obx_schema_id, obx_uid)
+        >
+      >('obx_model_property_index_id');
   late final _model_property_index_id = _model_property_index_idPtr
       .asFunction<int Function(ffi.Pointer<OBX_model>, int, int)>();
 
@@ -572,19 +553,19 @@ class ObjectBoxC {
     ffi.Pointer<OBX_model> model,
     ffi.Pointer<ffi.Char> external_name,
   ) {
-    return _model_property_external_name(
-      model,
-      external_name,
-    );
+    return _model_property_external_name(model, external_name);
   }
 
-  late final _model_property_external_namePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_model>,
-              ffi.Pointer<ffi.Char>)>>('obx_model_property_external_name');
-  late final _model_property_external_name =
-      _model_property_external_namePtr.asFunction<
-          int Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>)>();
+  late final _model_property_external_namePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>)
+        >
+      >('obx_model_property_external_name');
+  late final _model_property_external_name = _model_property_external_namePtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>)
+      >();
 
   /// Refine the definition of the property declared by the most recent obx_model_property() call: set the external type.
   /// This is an optional type used in an external system, e.g. another database that ObjectBox syncs with.
@@ -595,16 +576,13 @@ class ObjectBoxC {
     ffi.Pointer<OBX_model> model,
     int external_type,
   ) {
-    return _model_property_external_type(
-      model,
-      external_type,
-    );
+    return _model_property_external_type(model, external_type);
   }
 
-  late final _model_property_external_typePtr = _lookup<
-          ffi
-          .NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Int32)>>(
-      'obx_model_property_external_type');
+  late final _model_property_external_typePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Int32)>
+      >('obx_model_property_external_type');
   late final _model_property_external_type = _model_property_external_typePtr
       .asFunction<int Function(ffi.Pointer<OBX_model>, int)>();
 
@@ -616,16 +594,13 @@ class ObjectBoxC {
     ffi.Pointer<OBX_model> model,
     int value,
   ) {
-    return _model_property_index_hnsw_dimensions(
-      model,
-      value,
-    );
+    return _model_property_index_hnsw_dimensions(model, value);
   }
 
-  late final _model_property_index_hnsw_dimensionsPtr = _lookup<
-          ffi
-          .NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Size)>>(
-      'obx_model_property_index_hnsw_dimensions');
+  late final _model_property_index_hnsw_dimensionsPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Size)>
+      >('obx_model_property_index_hnsw_dimensions');
   late final _model_property_index_hnsw_dimensions =
       _model_property_index_hnsw_dimensionsPtr
           .asFunction<int Function(ffi.Pointer<OBX_model>, int)>();
@@ -638,16 +613,13 @@ class ObjectBoxC {
     ffi.Pointer<OBX_model> model,
     int value,
   ) {
-    return _model_property_index_hnsw_neighbors_per_node(
-      model,
-      value,
-    );
+    return _model_property_index_hnsw_neighbors_per_node(model, value);
   }
 
-  late final _model_property_index_hnsw_neighbors_per_nodePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_model>,
-              ffi.Uint32)>>('obx_model_property_index_hnsw_neighbors_per_node');
+  late final _model_property_index_hnsw_neighbors_per_nodePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Uint32)>
+      >('obx_model_property_index_hnsw_neighbors_per_node');
   late final _model_property_index_hnsw_neighbors_per_node =
       _model_property_index_hnsw_neighbors_per_nodePtr
           .asFunction<int Function(ffi.Pointer<OBX_model>, int)>();
@@ -662,16 +634,13 @@ class ObjectBoxC {
     ffi.Pointer<OBX_model> model,
     int value,
   ) {
-    return _model_property_index_hnsw_indexing_search_count(
-      model,
-      value,
-    );
+    return _model_property_index_hnsw_indexing_search_count(model, value);
   }
 
-  late final _model_property_index_hnsw_indexing_search_countPtr = _lookup<
-          ffi.NativeFunction<
-              obx_err Function(ffi.Pointer<OBX_model>, ffi.Uint32)>>(
-      'obx_model_property_index_hnsw_indexing_search_count');
+  late final _model_property_index_hnsw_indexing_search_countPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Uint32)>
+      >('obx_model_property_index_hnsw_indexing_search_count');
   late final _model_property_index_hnsw_indexing_search_count =
       _model_property_index_hnsw_indexing_search_countPtr
           .asFunction<int Function(ffi.Pointer<OBX_model>, int)>();
@@ -679,20 +648,14 @@ class ObjectBoxC {
   /// Sets flags for the HNSW index of the latest property.
   /// For details see OBXHnswFlags and its individual values.
   /// @param flags See OBXHnswFlags for values (use bitwise OR to combine multiple flags)
-  int model_property_index_hnsw_flags(
-    ffi.Pointer<OBX_model> model,
-    int flags,
-  ) {
-    return _model_property_index_hnsw_flags(
-      model,
-      flags,
-    );
+  int model_property_index_hnsw_flags(ffi.Pointer<OBX_model> model, int flags) {
+    return _model_property_index_hnsw_flags(model, flags);
   }
 
-  late final _model_property_index_hnsw_flagsPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_model>,
-              ffi.Uint32)>>('obx_model_property_index_hnsw_flags');
+  late final _model_property_index_hnsw_flagsPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Uint32)>
+      >('obx_model_property_index_hnsw_flags');
   late final _model_property_index_hnsw_flags =
       _model_property_index_hnsw_flagsPtr
           .asFunction<int Function(ffi.Pointer<OBX_model>, int)>();
@@ -702,16 +665,13 @@ class ObjectBoxC {
     ffi.Pointer<OBX_model> model,
     int value,
   ) {
-    return _model_property_index_hnsw_distance_type(
-      model,
-      value,
-    );
+    return _model_property_index_hnsw_distance_type(model, value);
   }
 
-  late final _model_property_index_hnsw_distance_typePtr = _lookup<
-          ffi
-          .NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Int32)>>(
-      'obx_model_property_index_hnsw_distance_type');
+  late final _model_property_index_hnsw_distance_typePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Int32)>
+      >('obx_model_property_index_hnsw_distance_type');
   late final _model_property_index_hnsw_distance_type =
       _model_property_index_hnsw_distance_typePtr
           .asFunction<int Function(ffi.Pointer<OBX_model>, int)>();
@@ -732,9 +692,8 @@ class ObjectBoxC {
 
   late final _model_property_index_hnsw_reparation_backlink_probabilityPtr =
       _lookup<
-              ffi.NativeFunction<
-                  obx_err Function(ffi.Pointer<OBX_model>, ffi.Float)>>(
-          'obx_model_property_index_hnsw_reparation_backlink_probability');
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Float)>
+      >('obx_model_property_index_hnsw_reparation_backlink_probability');
   late final _model_property_index_hnsw_reparation_backlink_probability =
       _model_property_index_hnsw_reparation_backlink_probabilityPtr
           .asFunction<int Function(ffi.Pointer<OBX_model>, double)>();
@@ -745,16 +704,13 @@ class ObjectBoxC {
     ffi.Pointer<OBX_model> model,
     int value,
   ) {
-    return _model_property_index_hnsw_vector_cache_hint_size_kb(
-      model,
-      value,
-    );
+    return _model_property_index_hnsw_vector_cache_hint_size_kb(model, value);
   }
 
-  late final _model_property_index_hnsw_vector_cache_hint_size_kbPtr = _lookup<
-          ffi
-          .NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Size)>>(
-      'obx_model_property_index_hnsw_vector_cache_hint_size_kb');
+  late final _model_property_index_hnsw_vector_cache_hint_size_kbPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Size)>
+      >('obx_model_property_index_hnsw_vector_cache_hint_size_kb');
   late final _model_property_index_hnsw_vector_cache_hint_size_kb =
       _model_property_index_hnsw_vector_cache_hint_size_kbPtr
           .asFunction<int Function(ffi.Pointer<OBX_model>, int)>();
@@ -780,10 +736,18 @@ class ObjectBoxC {
     );
   }
 
-  late final _model_relationPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_model>, obx_schema_id, obx_uid,
-              obx_schema_id, obx_uid)>>('obx_model_relation');
+  late final _model_relationPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_model>,
+            obx_schema_id,
+            obx_uid,
+            obx_schema_id,
+            obx_uid,
+          )
+        >
+      >('obx_model_relation');
   late final _model_relation = _model_relationPtr
       .asFunction<int Function(ffi.Pointer<OBX_model>, int, int, int, int)>();
 
@@ -792,53 +756,51 @@ class ObjectBoxC {
     ffi.Pointer<OBX_model> model,
     ffi.Pointer<ffi.Char> name,
   ) {
-    return _model_relation_name(
-      model,
-      name,
-    );
+    return _model_relation_name(model, name);
   }
 
-  late final _model_relation_namePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_model>,
-              ffi.Pointer<ffi.Char>)>>('obx_model_relation_name');
-  late final _model_relation_name = _model_relation_namePtr.asFunction<
-      int Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>)>();
+  late final _model_relation_namePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>)
+        >
+      >('obx_model_relation_name');
+  late final _model_relation_name = _model_relation_namePtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>)
+      >();
 
   /// Augments the previously defined relation with an external name (used outside of ObjectBox)
   int model_relation_external_name(
     ffi.Pointer<OBX_model> model,
     ffi.Pointer<ffi.Char> external_name,
   ) {
-    return _model_relation_external_name(
-      model,
-      external_name,
-    );
+    return _model_relation_external_name(model, external_name);
   }
 
-  late final _model_relation_external_namePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_model>,
-              ffi.Pointer<ffi.Char>)>>('obx_model_relation_external_name');
-  late final _model_relation_external_name =
-      _model_relation_external_namePtr.asFunction<
-          int Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>)>();
+  late final _model_relation_external_namePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>)
+        >
+      >('obx_model_relation_external_name');
+  late final _model_relation_external_name = _model_relation_external_namePtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_model>, ffi.Pointer<ffi.Char>)
+      >();
 
   /// Augments the previously defined relation with an external type (used outside of ObjectBox)
   int model_relation_external_type(
     ffi.Pointer<OBX_model> model,
     int external_type,
   ) {
-    return _model_relation_external_type(
-      model,
-      external_type,
-    );
+    return _model_relation_external_type(model, external_type);
   }
 
-  late final _model_relation_external_typePtr = _lookup<
-          ffi
-          .NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Int32)>>(
-      'obx_model_relation_external_type');
+  late final _model_relation_external_typePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_model>, ffi.Int32)>
+      >('obx_model_relation_external_type');
   late final _model_relation_external_type = _model_relation_external_typePtr
       .asFunction<int Function(ffi.Pointer<OBX_model>, int)>();
 
@@ -849,17 +811,15 @@ class ObjectBoxC {
     int entity_id,
     int entity_uid,
   ) {
-    return _model_last_entity_id(
-      arg0,
-      entity_id,
-      entity_uid,
-    );
+    return _model_last_entity_id(arg0, entity_id, entity_uid);
   }
 
-  late final _model_last_entity_idPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_model>, obx_schema_id,
-              obx_uid)>>('obx_model_last_entity_id');
+  late final _model_last_entity_idPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_model>, obx_schema_id, obx_uid)
+        >
+      >('obx_model_last_entity_id');
   late final _model_last_entity_id = _model_last_entity_idPtr
       .asFunction<void Function(ffi.Pointer<OBX_model>, int, int)>();
 
@@ -870,17 +830,15 @@ class ObjectBoxC {
     int index_id,
     int index_uid,
   ) {
-    return _model_last_index_id(
-      model,
-      index_id,
-      index_uid,
-    );
+    return _model_last_index_id(model, index_id, index_uid);
   }
 
-  late final _model_last_index_idPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_model>, obx_schema_id,
-              obx_uid)>>('obx_model_last_index_id');
+  late final _model_last_index_idPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_model>, obx_schema_id, obx_uid)
+        >
+      >('obx_model_last_index_id');
   late final _model_last_index_id = _model_last_index_idPtr
       .asFunction<void Function(ffi.Pointer<OBX_model>, int, int)>();
 
@@ -891,17 +849,15 @@ class ObjectBoxC {
     int relation_id,
     int relation_uid,
   ) {
-    return _model_last_relation_id(
-      model,
-      relation_id,
-      relation_uid,
-    );
+    return _model_last_relation_id(model, relation_id, relation_uid);
   }
 
-  late final _model_last_relation_idPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_model>, obx_schema_id,
-              obx_uid)>>('obx_model_last_relation_id');
+  late final _model_last_relation_idPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_model>, obx_schema_id, obx_uid)
+        >
+      >('obx_model_last_relation_id');
   late final _model_last_relation_id = _model_last_relation_idPtr
       .asFunction<void Function(ffi.Pointer<OBX_model>, int, int)>();
 
@@ -914,35 +870,37 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Pointer<ffi.Uint8>> out_bytes,
     ffi.Pointer<ffi.Size> out_size,
   ) {
-    return _bytes_lazy_get(
-      bytes,
-      out_bytes,
-      out_size,
-    );
+    return _bytes_lazy_get(bytes, out_bytes, out_size);
   }
 
-  late final _bytes_lazy_getPtr = _lookup<
-      ffi.NativeFunction<
+  late final _bytes_lazy_getPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_bytes_lazy>,
-              ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-              ffi.Pointer<ffi.Size>)>>('obx_bytes_lazy_get');
-  late final _bytes_lazy_get = _bytes_lazy_getPtr.asFunction<
-      int Function(ffi.Pointer<OBX_bytes_lazy>,
-          ffi.Pointer<ffi.Pointer<ffi.Uint8>>, ffi.Pointer<ffi.Size>)>();
+            ffi.Pointer<OBX_bytes_lazy>,
+            ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+            ffi.Pointer<ffi.Size>,
+          )
+        >
+      >('obx_bytes_lazy_get');
+  late final _bytes_lazy_get = _bytes_lazy_getPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_bytes_lazy>,
+          ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+          ffi.Pointer<ffi.Size>,
+        )
+      >();
 
   /// Releases any resources associated with the given OBX_bytes_lazy.
-  void bytes_lazy_free(
-    ffi.Pointer<OBX_bytes_lazy> bytes,
-  ) {
-    return _bytes_lazy_free(
-      bytes,
-    );
+  void bytes_lazy_free(ffi.Pointer<OBX_bytes_lazy> bytes) {
+    return _bytes_lazy_free(bytes);
   }
 
-  late final _bytes_lazy_freePtr = _lookup<
-          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_bytes_lazy>)>>(
-      'obx_bytes_lazy_free');
+  late final _bytes_lazy_freePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_bytes_lazy>)>
+      >('obx_bytes_lazy_free');
   late final _bytes_lazy_free = _bytes_lazy_freePtr
       .asFunction<void Function(ffi.Pointer<OBX_bytes_lazy>)>();
 
@@ -954,9 +912,10 @@ class ObjectBoxC {
 
   late final _optPtr =
       _lookup<ffi.NativeFunction<ffi.Pointer<OBX_store_options> Function()>>(
-          'obx_opt');
-  late final _opt =
-      _optPtr.asFunction<ffi.Pointer<OBX_store_options> Function()>();
+        'obx_opt',
+      );
+  late final _opt = _optPtr
+      .asFunction<ffi.Pointer<OBX_store_options> Function()>();
 
   /// Set the store directory on the options. The default is "objectbox".
   /// Use prefix "memory:" to open an in-memory database, e.g. "memory:myApp" (see docs for details).
@@ -964,34 +923,37 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     ffi.Pointer<ffi.Char> dir,
   ) {
-    return _opt_directory(
-      opt,
-      dir,
-    );
+    return _opt_directory(opt, dir);
   }
 
-  late final _opt_directoryPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_store_options>,
-              ffi.Pointer<ffi.Char>)>>('obx_opt_directory');
-  late final _opt_directory = _opt_directoryPtr.asFunction<
-      int Function(ffi.Pointer<OBX_store_options>, ffi.Pointer<ffi.Char>)>();
+  late final _opt_directoryPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_store_options>,
+            ffi.Pointer<ffi.Char>,
+          )
+        >
+      >('obx_opt_directory');
+  late final _opt_directory = _opt_directoryPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_store_options>, ffi.Pointer<ffi.Char>)
+      >();
 
   /// Set the maximum db size on the options. The default is 1Gb.
   void opt_max_db_size_in_kb(
     ffi.Pointer<OBX_store_options> opt,
     int size_in_kb,
   ) {
-    return _opt_max_db_size_in_kb(
-      opt,
-      size_in_kb,
-    );
+    return _opt_max_db_size_in_kb(opt, size_in_kb);
   }
 
-  late final _opt_max_db_size_in_kbPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint64)>>('obx_opt_max_db_size_in_kb');
+  late final _opt_max_db_size_in_kbPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint64)
+        >
+      >('obx_opt_max_db_size_in_kb');
   late final _opt_max_db_size_in_kb = _opt_max_db_size_in_kbPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
@@ -1004,34 +966,29 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     int size_in_kb,
   ) {
-    return _opt_max_data_size_in_kb(
-      opt,
-      size_in_kb,
-    );
+    return _opt_max_data_size_in_kb(opt, size_in_kb);
   }
 
-  late final _opt_max_data_size_in_kbPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint64)>>('obx_opt_max_data_size_in_kb');
+  late final _opt_max_data_size_in_kbPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint64)
+        >
+      >('obx_opt_max_data_size_in_kb');
   late final _opt_max_data_size_in_kb = _opt_max_data_size_in_kbPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
   /// Set the file mode on the options. The default is 0644 (unix-style).
-  void opt_file_mode(
-    ffi.Pointer<OBX_store_options> opt,
-    int file_mode,
-  ) {
-    return _opt_file_mode(
-      opt,
-      file_mode,
-    );
+  void opt_file_mode(ffi.Pointer<OBX_store_options> opt, int file_mode) {
+    return _opt_file_mode(opt, file_mode);
   }
 
-  late final _opt_file_modePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.UnsignedInt)>>('obx_opt_file_mode');
+  late final _opt_file_modePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.UnsignedInt)
+        >
+      >('obx_opt_file_mode');
   late final _opt_file_mode = _opt_file_modePtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
@@ -1049,20 +1006,16 @@ class ObjectBoxC {
   /// \attention Each thread that performed a read transaction and is still alive holds on to a reader slot.
   /// These slots only get vacated when the thread ends. Thus be mindful with the number of active threads.
   /// Alternatively, you can opt to try the experimental noReaderThreadLocals option flag.
-  void opt_max_readers(
-    ffi.Pointer<OBX_store_options> opt,
-    int max_readers,
-  ) {
-    return _opt_max_readers(
-      opt,
-      max_readers,
-    );
+  void opt_max_readers(ffi.Pointer<OBX_store_options> opt, int max_readers) {
+    return _opt_max_readers(opt, max_readers);
   }
 
-  late final _opt_max_readersPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.UnsignedInt)>>('obx_opt_max_readers');
+  late final _opt_max_readersPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.UnsignedInt)
+        >
+      >('obx_opt_max_readers');
   late final _opt_max_readers = _opt_max_readersPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
@@ -1074,16 +1027,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     bool flag,
   ) {
-    return _opt_no_reader_thread_locals(
-      opt,
-      flag,
-    );
+    return _opt_no_reader_thread_locals(opt, flag);
   }
 
-  late final _opt_no_reader_thread_localsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Bool)>>('obx_opt_no_reader_thread_locals');
+  late final _opt_no_reader_thread_localsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Bool)
+        >
+      >('obx_opt_no_reader_thread_locals');
   late final _opt_no_reader_thread_locals = _opt_no_reader_thread_localsPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, bool)>();
 
@@ -1093,18 +1045,22 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     ffi.Pointer<OBX_model> model,
   ) {
-    return _opt_model(
-      opt,
-      model,
-    );
+    return _opt_model(opt, model);
   }
 
-  late final _opt_modelPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_store_options>,
-              ffi.Pointer<OBX_model>)>>('obx_opt_model');
-  late final _opt_model = _opt_modelPtr.asFunction<
-      int Function(ffi.Pointer<OBX_store_options>, ffi.Pointer<OBX_model>)>();
+  late final _opt_modelPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_store_options>,
+            ffi.Pointer<OBX_model>,
+          )
+        >
+      >('obx_opt_model');
+  late final _opt_model = _opt_modelPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_store_options>, ffi.Pointer<OBX_model>)
+      >();
 
   /// Set the model on the options copying the given bytes. The default is no model.
   int opt_model_bytes(
@@ -1112,20 +1068,27 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> bytes,
     int size,
   ) {
-    return _opt_model_bytes(
-      opt,
-      bytes,
-      size,
-    );
+    return _opt_model_bytes(opt, bytes, size);
   }
 
-  late final _opt_model_bytesPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_store_options>,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_opt_model_bytes');
-  late final _opt_model_bytes = _opt_model_bytesPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_store_options>, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _opt_model_bytesPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_store_options>,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_opt_model_bytes');
+  late final _opt_model_bytes = _opt_model_bytesPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_store_options>,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+        )
+      >();
 
   /// Like obx_opt_model_bytes BUT WITHOUT copying the given bytes.
   /// Thus, you must keep the bytes available until after the store is created.
@@ -1134,20 +1097,27 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> bytes,
     int size,
   ) {
-    return _opt_model_bytes_direct(
-      opt,
-      bytes,
-      size,
-    );
+    return _opt_model_bytes_direct(opt, bytes, size);
   }
 
-  late final _opt_model_bytes_directPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_store_options>,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_opt_model_bytes_direct');
-  late final _opt_model_bytes_direct = _opt_model_bytes_directPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_store_options>, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _opt_model_bytes_directPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_store_options>,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_opt_model_bytes_direct');
+  late final _opt_model_bytes_direct = _opt_model_bytes_directPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_store_options>,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+        )
+      >();
 
   /// When the DB is opened initially, ObjectBox can do a consistency check on the given amount of pages.
   /// Reliable file systems already guarantee consistency, so this is primarily meant to deal with unreliable
@@ -1164,17 +1134,19 @@ class ObjectBoxC {
     int page_limit,
     int flags,
   ) {
-    return _opt_validate_on_open_pages(
-      opt,
-      page_limit,
-      flags,
-    );
+    return _opt_validate_on_open_pages(opt, page_limit, flags);
   }
 
-  late final _opt_validate_on_open_pagesPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Size,
-              ffi.Uint32)>>('obx_opt_validate_on_open_pages');
+  late final _opt_validate_on_open_pagesPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(
+            ffi.Pointer<OBX_store_options>,
+            ffi.Size,
+            ffi.Uint32,
+          )
+        >
+      >('obx_opt_validate_on_open_pages');
   late final _opt_validate_on_open_pages = _opt_validate_on_open_pagesPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int, int)>();
 
@@ -1182,58 +1154,46 @@ class ObjectBoxC {
   /// whether they're consistent towards our internal specification.
   /// @param flags flags used to influence how the validation checks are performed;
   /// see OBXValidateOnOpenKvFlags for values (use bitwise OR to combine multiple flags)
-  void opt_validate_on_open_kv(
-    ffi.Pointer<OBX_store_options> opt,
-    int flags,
-  ) {
-    return _opt_validate_on_open_kv(
-      opt,
-      flags,
-    );
+  void opt_validate_on_open_kv(ffi.Pointer<OBX_store_options> opt, int flags) {
+    return _opt_validate_on_open_kv(opt, flags);
   }
 
-  late final _opt_validate_on_open_kvPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint32)>>('obx_opt_validate_on_open_kv');
+  late final _opt_validate_on_open_kvPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint32)
+        >
+      >('obx_opt_validate_on_open_kv');
   late final _opt_validate_on_open_kv = _opt_validate_on_open_kvPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
   /// Don't touch unless you know exactly what you are doing:
   /// Advanced setting typically meant for language bindings (not end users). See OBXPutPaddingMode description.
-  void opt_put_padding_mode(
-    ffi.Pointer<OBX_store_options> opt,
-    int mode,
-  ) {
-    return _opt_put_padding_mode(
-      opt,
-      mode,
-    );
+  void opt_put_padding_mode(ffi.Pointer<OBX_store_options> opt, int mode) {
+    return _opt_put_padding_mode(opt, mode);
   }
 
-  late final _opt_put_padding_modePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Int32)>>('obx_opt_put_padding_mode');
+  late final _opt_put_padding_modePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Int32)
+        >
+      >('obx_opt_put_padding_mode');
   late final _opt_put_padding_mode = _opt_put_padding_modePtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
   /// Advanced setting meant only for special scenarios: setting to false causes opening the database in a limited,
   /// schema-less mode. If you don't know what this means exactly: ignore this flag. Defaults to true.
-  void opt_read_schema(
-    ffi.Pointer<OBX_store_options> opt,
-    bool value,
-  ) {
-    return _opt_read_schema(
-      opt,
-      value,
-    );
+  void opt_read_schema(ffi.Pointer<OBX_store_options> opt, bool value) {
+    return _opt_read_schema(opt, value);
   }
 
-  late final _opt_read_schemaPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Bool)>>('obx_opt_read_schema');
+  late final _opt_read_schemaPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Bool)
+        >
+      >('obx_opt_read_schema');
   late final _opt_read_schema = _opt_read_schemaPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, bool)>();
 
@@ -1241,76 +1201,60 @@ class ObjectBoxC {
   /// Ignores the latest data snapshot (committed transaction state) and uses the previous snapshot instead.
   /// When used with care (e.g. backup the DB files first), this option may also recover data removed by the latest
   /// transaction. Defaults to false.
-  void opt_use_previous_commit(
-    ffi.Pointer<OBX_store_options> opt,
-    bool value,
-  ) {
-    return _opt_use_previous_commit(
-      opt,
-      value,
-    );
+  void opt_use_previous_commit(ffi.Pointer<OBX_store_options> opt, bool value) {
+    return _opt_use_previous_commit(opt, value);
   }
 
-  late final _opt_use_previous_commitPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Bool)>>('obx_opt_use_previous_commit');
+  late final _opt_use_previous_commitPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Bool)
+        >
+      >('obx_opt_use_previous_commit');
   late final _opt_use_previous_commit = _opt_use_previous_commitPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, bool)>();
 
   /// Open store in read-only mode: no schema update, no write transactions. Defaults to false.
-  void opt_read_only(
-    ffi.Pointer<OBX_store_options> opt,
-    bool value,
-  ) {
-    return _opt_read_only(
-      opt,
-      value,
-    );
+  void opt_read_only(ffi.Pointer<OBX_store_options> opt, bool value) {
+    return _opt_read_only(opt, value);
   }
 
-  late final _opt_read_onlyPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(
-              ffi.Pointer<OBX_store_options>, ffi.Bool)>>('obx_opt_read_only');
+  late final _opt_read_onlyPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Bool)
+        >
+      >('obx_opt_read_only');
   late final _opt_read_only = _opt_read_onlyPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, bool)>();
 
   /// Configure debug flags (OBXDebugFlags); e.g. to influence logging. Defaults to NONE.
   /// Combine multiple flags using bitwise OR.
-  void opt_debug_flags(
-    ffi.Pointer<OBX_store_options> opt,
-    int flags,
-  ) {
-    return _opt_debug_flags(
-      opt,
-      flags,
-    );
+  void opt_debug_flags(ffi.Pointer<OBX_store_options> opt, int flags) {
+    return _opt_debug_flags(opt, flags);
   }
 
-  late final _opt_debug_flagsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint32)>>('obx_opt_debug_flags');
+  late final _opt_debug_flagsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint32)
+        >
+      >('obx_opt_debug_flags');
   late final _opt_debug_flags = _opt_debug_flagsPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
   /// Adds debug flags (OBXDebugFlags) to potentially existing ones.
   /// Combine multiple flags using bitwise OR.
-  void opt_add_debug_flags(
-    ffi.Pointer<OBX_store_options> opt,
-    int flags,
-  ) {
-    return _opt_add_debug_flags(
-      opt,
-      flags,
-    );
+  void opt_add_debug_flags(ffi.Pointer<OBX_store_options> opt, int flags) {
+    return _opt_add_debug_flags(opt, flags);
   }
 
-  late final _opt_add_debug_flagsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint32)>>('obx_opt_add_debug_flags');
+  late final _opt_add_debug_flagsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint32)
+        >
+      >('obx_opt_add_debug_flags');
   late final _opt_add_debug_flags = _opt_add_debug_flagsPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
@@ -1323,16 +1267,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     int value,
   ) {
-    return _opt_async_max_queue_length(
-      opt,
-      value,
-    );
+    return _opt_async_max_queue_length(opt, value);
   }
 
-  late final _opt_async_max_queue_lengthPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Size)>>('obx_opt_async_max_queue_length');
+  late final _opt_async_max_queue_lengthPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Size)
+        >
+      >('obx_opt_async_max_queue_length');
   late final _opt_async_max_queue_length = _opt_async_max_queue_lengthPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
@@ -1341,16 +1284,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     int value,
   ) {
-    return _opt_async_throttle_at_queue_length(
-      opt,
-      value,
-    );
+    return _opt_async_throttle_at_queue_length(opt, value);
   }
 
-  late final _opt_async_throttle_at_queue_lengthPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Size)>>('obx_opt_async_throttle_at_queue_length');
+  late final _opt_async_throttle_at_queue_lengthPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Size)
+        >
+      >('obx_opt_async_throttle_at_queue_length');
   late final _opt_async_throttle_at_queue_length =
       _opt_async_throttle_at_queue_lengthPtr
           .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
@@ -1360,16 +1302,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     int value,
   ) {
-    return _opt_async_throttle_micros(
-      opt,
-      value,
-    );
+    return _opt_async_throttle_micros(opt, value);
   }
 
-  late final _opt_async_throttle_microsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint32)>>('obx_opt_async_throttle_micros');
+  late final _opt_async_throttle_microsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint32)
+        >
+      >('obx_opt_async_throttle_micros');
   late final _opt_async_throttle_micros = _opt_async_throttle_microsPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
@@ -1379,16 +1320,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     int micros,
   ) {
-    return _opt_async_max_in_tx_duration(
-      opt,
-      micros,
-    );
+    return _opt_async_max_in_tx_duration(opt, micros);
   }
 
-  late final _opt_async_max_in_tx_durationPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint32)>>('obx_opt_async_max_in_tx_duration');
+  late final _opt_async_max_in_tx_durationPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint32)
+        >
+      >('obx_opt_async_max_in_tx_duration');
   late final _opt_async_max_in_tx_duration = _opt_async_max_in_tx_durationPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
@@ -1398,16 +1338,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     int value,
   ) {
-    return _opt_async_max_in_tx_operations(
-      opt,
-      value,
-    );
+    return _opt_async_max_in_tx_operations(opt, value);
   }
 
-  late final _opt_async_max_in_tx_operationsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint32)>>('obx_opt_async_max_in_tx_operations');
+  late final _opt_async_max_in_tx_operationsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint32)
+        >
+      >('obx_opt_async_max_in_tx_operations');
   late final _opt_async_max_in_tx_operations =
       _opt_async_max_in_tx_operationsPtr
           .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
@@ -1420,16 +1359,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     int delay_micros,
   ) {
-    return _opt_async_pre_txn_delay(
-      opt,
-      delay_micros,
-    );
+    return _opt_async_pre_txn_delay(opt, delay_micros);
   }
 
-  late final _opt_async_pre_txn_delayPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint32)>>('obx_opt_async_pre_txn_delay');
+  late final _opt_async_pre_txn_delayPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint32)
+        >
+      >('obx_opt_async_pre_txn_delay');
   late final _opt_async_pre_txn_delay = _opt_async_pre_txn_delayPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
@@ -1451,13 +1389,21 @@ class ObjectBoxC {
     );
   }
 
-  late final _opt_async_pre_txn_delay4Ptr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint32,
-              ffi.Uint32, ffi.Size)>>('obx_opt_async_pre_txn_delay4');
-  late final _opt_async_pre_txn_delay4 =
-      _opt_async_pre_txn_delay4Ptr.asFunction<
-          void Function(ffi.Pointer<OBX_store_options>, int, int, int)>();
+  late final _opt_async_pre_txn_delay4Ptr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(
+            ffi.Pointer<OBX_store_options>,
+            ffi.Uint32,
+            ffi.Uint32,
+            ffi.Size,
+          )
+        >
+      >('obx_opt_async_pre_txn_delay4');
+  late final _opt_async_pre_txn_delay4 = _opt_async_pre_txn_delay4Ptr
+      .asFunction<
+        void Function(ffi.Pointer<OBX_store_options>, int, int, int)
+      >();
 
   /// Similar to preTxDelay but after a transaction was committed.
   /// One of the purposes is to give other transactions some time to execute.
@@ -1466,16 +1412,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     int delay_micros,
   ) {
-    return _opt_async_post_txn_delay(
-      opt,
-      delay_micros,
-    );
+    return _opt_async_post_txn_delay(opt, delay_micros);
   }
 
-  late final _opt_async_post_txn_delayPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint32)>>('obx_opt_async_post_txn_delay');
+  late final _opt_async_post_txn_delayPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint32)
+        >
+      >('obx_opt_async_post_txn_delay');
   late final _opt_async_post_txn_delay = _opt_async_post_txn_delayPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
@@ -1501,33 +1446,37 @@ class ObjectBoxC {
     );
   }
 
-  late final _opt_async_post_txn_delay5Ptr = _lookup<
-      ffi.NativeFunction<
+  late final _opt_async_post_txn_delay5Ptr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Void Function(
-              ffi.Pointer<OBX_store_options>,
-              ffi.Uint32,
-              ffi.Uint32,
-              ffi.Size,
-              ffi.Bool)>>('obx_opt_async_post_txn_delay5');
-  late final _opt_async_post_txn_delay5 =
-      _opt_async_post_txn_delay5Ptr.asFunction<
-          void Function(ffi.Pointer<OBX_store_options>, int, int, int, bool)>();
+            ffi.Pointer<OBX_store_options>,
+            ffi.Uint32,
+            ffi.Uint32,
+            ffi.Size,
+            ffi.Bool,
+          )
+        >
+      >('obx_opt_async_post_txn_delay5');
+  late final _opt_async_post_txn_delay5 = _opt_async_post_txn_delay5Ptr
+      .asFunction<
+        void Function(ffi.Pointer<OBX_store_options>, int, int, int, bool)
+      >();
 
   /// Numbers of operations below this value are considered "minor refills"
   void opt_async_minor_refill_threshold(
     ffi.Pointer<OBX_store_options> opt,
     int queue_length,
   ) {
-    return _opt_async_minor_refill_threshold(
-      opt,
-      queue_length,
-    );
+    return _opt_async_minor_refill_threshold(opt, queue_length);
   }
 
-  late final _opt_async_minor_refill_thresholdPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Size)>>('obx_opt_async_minor_refill_threshold');
+  late final _opt_async_minor_refill_thresholdPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Size)
+        >
+      >('obx_opt_async_minor_refill_threshold');
   late final _opt_async_minor_refill_threshold =
       _opt_async_minor_refill_thresholdPtr
           .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
@@ -1537,16 +1486,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     int value,
   ) {
-    return _opt_async_minor_refill_max_count(
-      opt,
-      value,
-    );
+    return _opt_async_minor_refill_max_count(opt, value);
   }
 
-  late final _opt_async_minor_refill_max_countPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint32)>>('obx_opt_async_minor_refill_max_count');
+  late final _opt_async_minor_refill_max_countPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint32)
+        >
+      >('obx_opt_async_minor_refill_max_count');
   late final _opt_async_minor_refill_max_count =
       _opt_async_minor_refill_max_countPtr
           .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
@@ -1556,16 +1504,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     int value,
   ) {
-    return _opt_async_max_tx_pool_size(
-      opt,
-      value,
-    );
+    return _opt_async_max_tx_pool_size(opt, value);
   }
 
-  late final _opt_async_max_tx_pool_sizePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Size)>>('obx_opt_async_max_tx_pool_size');
+  late final _opt_async_max_tx_pool_sizePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Size)
+        >
+      >('obx_opt_async_max_tx_pool_size');
   late final _opt_async_max_tx_pool_size = _opt_async_max_tx_pool_sizePtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
@@ -1574,16 +1521,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     int value,
   ) {
-    return _opt_async_object_bytes_max_cache_size(
-      opt,
-      value,
-    );
+    return _opt_async_object_bytes_max_cache_size(opt, value);
   }
 
-  late final _opt_async_object_bytes_max_cache_sizePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint64)>>('obx_opt_async_object_bytes_max_cache_size');
+  late final _opt_async_object_bytes_max_cache_sizePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint64)
+        >
+      >('obx_opt_async_object_bytes_max_cache_size');
   late final _opt_async_object_bytes_max_cache_size =
       _opt_async_object_bytes_max_cache_sizePtr
           .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
@@ -1593,16 +1539,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     int value,
   ) {
-    return _opt_async_object_bytes_max_size_to_cache(
-      opt,
-      value,
-    );
+    return _opt_async_object_bytes_max_size_to_cache(opt, value);
   }
 
-  late final _opt_async_object_bytes_max_size_to_cachePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint64)>>('obx_opt_async_object_bytes_max_size_to_cache');
+  late final _opt_async_object_bytes_max_size_to_cachePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint64)
+        >
+      >('obx_opt_async_object_bytes_max_size_to_cache');
   late final _opt_async_object_bytes_max_size_to_cache =
       _opt_async_object_bytes_max_size_to_cachePtr
           .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
@@ -1614,22 +1559,27 @@ class ObjectBoxC {
     ffi.Pointer<obx_log_callback> callback,
     ffi.Pointer<ffi.Void> user_data,
   ) {
-    return _opt_log_callback(
-      opt,
-      callback,
-      user_data,
-    );
+    return _opt_log_callback(opt, callback, user_data);
   }
 
-  late final _opt_log_callbackPtr = _lookup<
-      ffi.NativeFunction<
+  late final _opt_log_callbackPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Void Function(
-              ffi.Pointer<OBX_store_options>,
-              ffi.Pointer<obx_log_callback>,
-              ffi.Pointer<ffi.Void>)>>('obx_opt_log_callback');
-  late final _opt_log_callback = _opt_log_callbackPtr.asFunction<
-      void Function(ffi.Pointer<OBX_store_options>,
-          ffi.Pointer<obx_log_callback>, ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_store_options>,
+            ffi.Pointer<obx_log_callback>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_opt_log_callback');
+  late final _opt_log_callback = _opt_log_callbackPtr
+      .asFunction<
+        void Function(
+          ffi.Pointer<OBX_store_options>,
+          ffi.Pointer<obx_log_callback>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Before opening the database, this options instructs to restore the database content from the given backup file.
   /// Note: backup is a server-only feature.
@@ -1642,38 +1592,41 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> backup_file,
     int flags,
   ) {
-    return _opt_backup_restore(
-      opt,
-      backup_file,
-      flags,
-    );
+    return _opt_backup_restore(opt, backup_file, flags);
   }
 
-  late final _opt_backup_restorePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Pointer<ffi.Char>, ffi.Uint32)>>('obx_opt_backup_restore');
-  late final _opt_backup_restore = _opt_backup_restorePtr.asFunction<
-      void Function(
-          ffi.Pointer<OBX_store_options>, ffi.Pointer<ffi.Char>, int)>();
+  late final _opt_backup_restorePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(
+            ffi.Pointer<OBX_store_options>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Uint32,
+          )
+        >
+      >('obx_opt_backup_restore');
+  late final _opt_backup_restore = _opt_backup_restorePtr
+      .asFunction<
+        void Function(
+          ffi.Pointer<OBX_store_options>,
+          ffi.Pointer<ffi.Char>,
+          int,
+        )
+      >();
 
   /// Enables Write-ahead logging (WAL) if OBXWalFlags_EnableWal is given.
   /// For now this is only supported for in-memory DBs.
   /// @param flags OBXWalFlags_EnableWal with optional other flags (bitwise OR).
-  void opt_wal(
-    ffi.Pointer<OBX_store_options> opt,
-    int flags,
-  ) {
-    return _opt_wal(
-      opt,
-      flags,
-    );
+  void opt_wal(ffi.Pointer<OBX_store_options> opt, int flags) {
+    return _opt_wal(opt, flags);
   }
 
-  late final _opt_walPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(
-              ffi.Pointer<OBX_store_options>, ffi.Uint32)>>('obx_opt_wal');
+  late final _opt_walPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint32)
+        >
+      >('obx_opt_wal');
   late final _opt_wal = _opt_walPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
@@ -1685,16 +1638,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     int size_in_kb,
   ) {
-    return _opt_wal_max_file_size_on_open_in_kb(
-      opt,
-      size_in_kb,
-    );
+    return _opt_wal_max_file_size_on_open_in_kb(opt, size_in_kb);
   }
 
-  late final _opt_wal_max_file_size_on_open_in_kbPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint64)>>('obx_opt_wal_max_file_size_on_open_in_kb');
+  late final _opt_wal_max_file_size_on_open_in_kbPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint64)
+        >
+      >('obx_opt_wal_max_file_size_on_open_in_kb');
   late final _opt_wal_max_file_size_on_open_in_kb =
       _opt_wal_max_file_size_on_open_in_kbPtr
           .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
@@ -1707,16 +1659,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> opt,
     int size_in_kb,
   ) {
-    return _opt_wal_max_file_size_in_kb(
-      opt,
-      size_in_kb,
-    );
+    return _opt_wal_max_file_size_in_kb(opt, size_in_kb);
   }
 
-  late final _opt_wal_max_file_size_in_kbPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>,
-              ffi.Uint64)>>('obx_opt_wal_max_file_size_in_kb');
+  late final _opt_wal_max_file_size_in_kbPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_store_options>, ffi.Uint64)
+        >
+      >('obx_opt_wal_max_file_size_in_kb');
   late final _opt_wal_max_file_size_in_kb = _opt_wal_max_file_size_in_kbPtr
       .asFunction<void Function(ffi.Pointer<OBX_store_options>, int)>();
 
@@ -1724,87 +1675,72 @@ class ObjectBoxC {
   /// The returned value must not be modified and is only valid for the lifetime of the options or until the value is
   /// changed.
   /// @returns null if an error occurred, e.g. the given options were null.
-  ffi.Pointer<ffi.Char> opt_get_directory(
-    ffi.Pointer<OBX_store_options> opt,
-  ) {
-    return _opt_get_directory(
-      opt,
-    );
+  ffi.Pointer<ffi.Char> opt_get_directory(ffi.Pointer<OBX_store_options> opt) {
+    return _opt_get_directory(opt);
   }
 
-  late final _opt_get_directoryPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<ffi.Char> Function(
-              ffi.Pointer<OBX_store_options>)>>('obx_opt_get_directory');
-  late final _opt_get_directory = _opt_get_directoryPtr.asFunction<
-      ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_store_options>)>();
+  late final _opt_get_directoryPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_store_options>)
+        >
+      >('obx_opt_get_directory');
+  late final _opt_get_directory = _opt_get_directoryPtr
+      .asFunction<
+        ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_store_options>)
+      >();
 
   /// Gets the option for "max DB size"; this is either the default, or, the value set by obx_opt_max_db_size_in_kb().
   /// @returns 0 if an error occurred, e.g. the given options were null.
-  int opt_get_max_db_size_in_kb(
-    ffi.Pointer<OBX_store_options> opt,
-  ) {
-    return _opt_get_max_db_size_in_kb(
-      opt,
-    );
+  int opt_get_max_db_size_in_kb(ffi.Pointer<OBX_store_options> opt) {
+    return _opt_get_max_db_size_in_kb(opt);
   }
 
-  late final _opt_get_max_db_size_in_kbPtr = _lookup<
-          ffi
-          .NativeFunction<ffi.Uint64 Function(ffi.Pointer<OBX_store_options>)>>(
-      'obx_opt_get_max_db_size_in_kb');
+  late final _opt_get_max_db_size_in_kbPtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Uint64 Function(ffi.Pointer<OBX_store_options>)>
+      >('obx_opt_get_max_db_size_in_kb');
   late final _opt_get_max_db_size_in_kb = _opt_get_max_db_size_in_kbPtr
       .asFunction<int Function(ffi.Pointer<OBX_store_options>)>();
 
   /// Gets the option for "max data size"; this is either the default, or, the value set by obx_opt_max_data_size_in_kb().
   /// @returns 0 if an error occurred, e.g. the given options were null.
-  int opt_get_max_data_size_in_kb(
-    ffi.Pointer<OBX_store_options> opt,
-  ) {
-    return _opt_get_max_data_size_in_kb(
-      opt,
-    );
+  int opt_get_max_data_size_in_kb(ffi.Pointer<OBX_store_options> opt) {
+    return _opt_get_max_data_size_in_kb(opt);
   }
 
-  late final _opt_get_max_data_size_in_kbPtr = _lookup<
-          ffi
-          .NativeFunction<ffi.Uint64 Function(ffi.Pointer<OBX_store_options>)>>(
-      'obx_opt_get_max_data_size_in_kb');
+  late final _opt_get_max_data_size_in_kbPtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Uint64 Function(ffi.Pointer<OBX_store_options>)>
+      >('obx_opt_get_max_data_size_in_kb');
   late final _opt_get_max_data_size_in_kb = _opt_get_max_data_size_in_kbPtr
       .asFunction<int Function(ffi.Pointer<OBX_store_options>)>();
 
   /// Gets the option for "debug flags"; this is either the default, or, the value set by obx_opt_debug_flags().
   /// @returns 0 if an error occurred, e.g. the given options were null.
-  int opt_get_debug_flags(
-    ffi.Pointer<OBX_store_options> opt,
-  ) {
-    return _opt_get_debug_flags(
-      opt,
-    );
+  int opt_get_debug_flags(ffi.Pointer<OBX_store_options> opt) {
+    return _opt_get_debug_flags(opt);
   }
 
-  late final _opt_get_debug_flagsPtr = _lookup<
-          ffi
-          .NativeFunction<ffi.Uint32 Function(ffi.Pointer<OBX_store_options>)>>(
-      'obx_opt_get_debug_flags');
+  late final _opt_get_debug_flagsPtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Uint32 Function(ffi.Pointer<OBX_store_options>)>
+      >('obx_opt_get_debug_flags');
   late final _opt_get_debug_flags = _opt_get_debug_flagsPtr
       .asFunction<int Function(ffi.Pointer<OBX_store_options>)>();
 
   /// Free the options.
   /// Note: Only free *unused* options, obx_store_open() frees the options internally
-  void opt_free(
-    ffi.Pointer<OBX_store_options> opt,
-  ) {
-    return _opt_free(
-      opt,
-    );
+  void opt_free(ffi.Pointer<OBX_store_options> opt) {
+    return _opt_free(opt);
   }
 
-  late final _opt_freePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(ffi.Pointer<OBX_store_options>)>>('obx_opt_free');
-  late final _opt_free =
-      _opt_freePtr.asFunction<void Function(ffi.Pointer<OBX_store_options>)>();
+  late final _opt_freePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_store_options>)>
+      >('obx_opt_free');
+  late final _opt_free = _opt_freePtr
+      .asFunction<void Function(ffi.Pointer<OBX_store_options>)>();
 
   /// Opens (creates) a "store", which represents an ObjectBox database instance in a given directory.
   /// The store is an entry point to data access APIs such as box (obx_box_*), query (obx_qb_* and obx_query_*),
@@ -1814,53 +1750,48 @@ class ObjectBoxC {
   /// Note: the given options are always freed by this function, including when an error occurs.
   /// @param opt required parameter holding the data model (obx_opt_model()) and optional options (see obx_opt_*())
   /// @returns NULL if the operation failed, see functions like obx_last_error_code() to get error details
-  ffi.Pointer<OBX_store> store_open(
-    ffi.Pointer<OBX_store_options> opt,
-  ) {
-    return _store_open(
-      opt,
-    );
+  ffi.Pointer<OBX_store> store_open(ffi.Pointer<OBX_store_options> opt) {
+    return _store_open(opt);
   }
 
-  late final _store_openPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_store> Function(
-              ffi.Pointer<OBX_store_options>)>>('obx_store_open');
-  late final _store_open = _store_openPtr.asFunction<
-      ffi.Pointer<OBX_store> Function(ffi.Pointer<OBX_store_options>)>();
+  late final _store_openPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_store> Function(ffi.Pointer<OBX_store_options>)
+        >
+      >('obx_store_open');
+  late final _store_open = _store_openPtr
+      .asFunction<
+        ffi.Pointer<OBX_store> Function(ffi.Pointer<OBX_store_options>)
+      >();
 
   /// Check if an open store was found for the given path (i.e. opened before and not yet closed).
-  bool store_is_open(
-    ffi.Pointer<ffi.Char> path,
-  ) {
-    return _store_is_open(
-      path,
-    );
+  bool store_is_open(ffi.Pointer<ffi.Char> path) {
+    return _store_is_open(path);
   }
 
   late final _store_is_openPtr =
       _lookup<ffi.NativeFunction<ffi.Bool Function(ffi.Pointer<ffi.Char>)>>(
-          'obx_store_is_open');
-  late final _store_is_open =
-      _store_is_openPtr.asFunction<bool Function(ffi.Pointer<ffi.Char>)>();
+        'obx_store_is_open',
+      );
+  late final _store_is_open = _store_is_openPtr
+      .asFunction<bool Function(ffi.Pointer<ffi.Char>)>();
 
   /// Attach to a previously opened store matching the path of the DB directory, which was used for opening the store.
   /// The returned store is a new instance (e.g. different pointer value) and must also be closed via obx_store_close().
   /// The actual underlying store is only closed when the last store OBX_store instance is closed.
   /// @returns nullptr if no open store was found (i.e. not opened before or already closed)
   /// @see obx_store_clone() for "attaching" to a available store instance.
-  ffi.Pointer<OBX_store> store_attach(
-    ffi.Pointer<ffi.Char> path,
-  ) {
-    return _store_attach(
-      path,
-    );
+  ffi.Pointer<OBX_store> store_attach(ffi.Pointer<ffi.Char> path) {
+    return _store_attach(path);
   }
 
-  late final _store_attachPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_store> Function(
-              ffi.Pointer<ffi.Char>)>>('obx_store_attach');
+  late final _store_attachPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_store> Function(ffi.Pointer<ffi.Char>)
+        >
+      >('obx_store_attach');
   late final _store_attach = _store_attachPtr
       .asFunction<ffi.Pointer<OBX_store> Function(ffi.Pointer<ffi.Char>)>();
 
@@ -1870,19 +1801,16 @@ class ObjectBoxC {
   /// @param store_id
   /// @returns nullptr if no open store was found (i.e. not opened before or already closed)
   /// @see obx_store_clone() for "attaching" to a available store instance.
-  ffi.Pointer<OBX_store> store_attach_id(
-    int store_id,
-  ) {
-    return _store_attach_id(
-      store_id,
-    );
+  ffi.Pointer<OBX_store> store_attach_id(int store_id) {
+    return _store_attach_id(store_id);
   }
 
   late final _store_attach_idPtr =
       _lookup<ffi.NativeFunction<ffi.Pointer<OBX_store> Function(ffi.Uint64)>>(
-          'obx_store_attach_id');
-  late final _store_attach_id =
-      _store_attach_idPtr.asFunction<ffi.Pointer<OBX_store> Function(int)>();
+        'obx_store_attach_id',
+      );
+  late final _store_attach_id = _store_attach_idPtr
+      .asFunction<ffi.Pointer<OBX_store> Function(int)>();
 
   /// Combines the functionality of obx_store_attach() and obx_store_open() in a thread-safe way.
   /// @param check_matching_options if true, some effort will be taken to check if the given options match an existing
@@ -1895,86 +1823,81 @@ class ObjectBoxC {
     bool check_matching_options,
     ffi.Pointer<ffi.Bool> out_attached,
   ) {
-    return _store_attach_or_open(
-      opt,
-      check_matching_options,
-      out_attached,
-    );
+    return _store_attach_or_open(opt, check_matching_options, out_attached);
   }
 
-  late final _store_attach_or_openPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_store> Function(ffi.Pointer<OBX_store_options>,
-              ffi.Bool, ffi.Pointer<ffi.Bool>)>>('obx_store_attach_or_open');
-  late final _store_attach_or_open = _store_attach_or_openPtr.asFunction<
-      ffi.Pointer<OBX_store> Function(
-          ffi.Pointer<OBX_store_options>, bool, ffi.Pointer<ffi.Bool>)>();
+  late final _store_attach_or_openPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_store> Function(
+            ffi.Pointer<OBX_store_options>,
+            ffi.Bool,
+            ffi.Pointer<ffi.Bool>,
+          )
+        >
+      >('obx_store_attach_or_open');
+  late final _store_attach_or_open = _store_attach_or_openPtr
+      .asFunction<
+        ffi.Pointer<OBX_store> Function(
+          ffi.Pointer<OBX_store_options>,
+          bool,
+          ffi.Pointer<ffi.Bool>,
+        )
+      >();
 
   /// Store IDs can be used to attach to a store later.
   /// The IDs are stable and unique during the lifetime of the process.
   /// E.g. these IDs can be shared across threads efficiently and can serve a similar purpose as weak pointers do.
-  int store_id(
-    ffi.Pointer<OBX_store> store,
-  ) {
-    return _store_id(
-      store,
-    );
+  int store_id(ffi.Pointer<OBX_store> store) {
+    return _store_id(store);
   }
 
   late final _store_idPtr =
       _lookup<ffi.NativeFunction<ffi.Uint64 Function(ffi.Pointer<OBX_store>)>>(
-          'obx_store_id');
-  late final _store_id =
-      _store_idPtr.asFunction<int Function(ffi.Pointer<OBX_store>)>();
+        'obx_store_id',
+      );
+  late final _store_id = _store_idPtr
+      .asFunction<int Function(ffi.Pointer<OBX_store>)>();
 
   /// Get the size of the store. For a disk-based store type, this corresponds to the size on disk, and for the
   /// in-memory store type, this is roughly the used memory bytes occupied by the data.
   /// @returns the size in bytes of the database, or 0 if the file does not exist or some error occurred.
-  int store_size(
-    ffi.Pointer<OBX_store> store,
-  ) {
-    return _store_size(
-      store,
-    );
+  int store_size(ffi.Pointer<OBX_store> store) {
+    return _store_size(store);
   }
 
   late final _store_sizePtr =
       _lookup<ffi.NativeFunction<ffi.Uint64 Function(ffi.Pointer<OBX_store>)>>(
-          'obx_store_size');
-  late final _store_size =
-      _store_sizePtr.asFunction<int Function(ffi.Pointer<OBX_store>)>();
+        'obx_store_size',
+      );
+  late final _store_size = _store_sizePtr
+      .asFunction<int Function(ffi.Pointer<OBX_store>)>();
 
   /// The size in bytes occupied by the database on disk (if any).
   /// @returns 0 if the underlying database is in-memory only, or the size could not be determined.
-  int store_size_on_disk(
-    ffi.Pointer<OBX_store> store,
-  ) {
-    return _store_size_on_disk(
-      store,
-    );
+  int store_size_on_disk(ffi.Pointer<OBX_store> store) {
+    return _store_size_on_disk(store);
   }
 
   late final _store_size_on_diskPtr =
       _lookup<ffi.NativeFunction<ffi.Uint64 Function(ffi.Pointer<OBX_store>)>>(
-          'obx_store_size_on_disk');
-  late final _store_size_on_disk =
-      _store_size_on_diskPtr.asFunction<int Function(ffi.Pointer<OBX_store>)>();
+        'obx_store_size_on_disk',
+      );
+  late final _store_size_on_disk = _store_size_on_diskPtr
+      .asFunction<int Function(ffi.Pointer<OBX_store>)>();
 
   /// Gives the store type ID for the given store
   /// @returns One of ::OBXStoreTypeId
-  int store_type_id(
-    ffi.Pointer<OBX_store> store,
-  ) {
-    return _store_type_id(
-      store,
-    );
+  int store_type_id(ffi.Pointer<OBX_store> store) {
+    return _store_type_id(store);
   }
 
   late final _store_type_idPtr =
       _lookup<ffi.NativeFunction<ffi.Uint32 Function(ffi.Pointer<OBX_store>)>>(
-          'obx_store_type_id');
-  late final _store_type_id =
-      _store_type_idPtr.asFunction<int Function(ffi.Pointer<OBX_store>)>();
+        'obx_store_type_id',
+      );
+  late final _store_type_id = _store_type_idPtr
+      .asFunction<int Function(ffi.Pointer<OBX_store>)>();
 
   /// Clone a previously opened store; while a store instance is usable from multiple threads, situations may exist
   /// in which cloning a store simplifies the overall lifecycle.
@@ -1983,18 +1906,16 @@ class ObjectBoxC {
   /// The actual underlying store is only closed when the last store OBX_store instance is closed.
   /// @returns nullptr if the store could not be cloned
   /// @see obx_store_attach() for "cloning" using the store's path.
-  ffi.Pointer<OBX_store> store_clone(
-    ffi.Pointer<OBX_store> store,
-  ) {
-    return _store_clone(
-      store,
-    );
+  ffi.Pointer<OBX_store> store_clone(ffi.Pointer<OBX_store> store) {
+    return _store_clone(store);
   }
 
-  late final _store_clonePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_store> Function(
-              ffi.Pointer<OBX_store>)>>('obx_store_clone');
+  late final _store_clonePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_store> Function(ffi.Pointer<OBX_store>)
+        >
+      >('obx_store_clone');
   late final _store_clone = _store_clonePtr
       .asFunction<ffi.Pointer<OBX_store> Function(ffi.Pointer<OBX_store>)>();
 
@@ -2005,18 +1926,16 @@ class ObjectBoxC {
   /// Once you are done with the C specific OBX_store, call obx_store_close() to free any C related resources.
   /// This, however, will not close the "core store".
   /// @param core_store A pointer to the core C++ ObjectStore, or the native JNI handle for a BoxStore.
-  ffi.Pointer<OBX_store> store_wrap(
-    ffi.Pointer<ffi.Void> core_store,
-  ) {
-    return _store_wrap(
-      core_store,
-    );
+  ffi.Pointer<OBX_store> store_wrap(ffi.Pointer<ffi.Void> core_store) {
+    return _store_wrap(core_store);
   }
 
-  late final _store_wrapPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_store> Function(
-              ffi.Pointer<ffi.Void>)>>('obx_store_wrap');
+  late final _store_wrapPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_store> Function(ffi.Pointer<ffi.Void>)
+        >
+      >('obx_store_wrap');
   late final _store_wrap = _store_wrapPtr
       .asFunction<ffi.Pointer<OBX_store> Function(ffi.Pointer<ffi.Void>)>();
 
@@ -2025,18 +1944,19 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store> store,
     ffi.Pointer<ffi.Char> entity_name,
   ) {
-    return _store_entity_id(
-      store,
-      entity_name,
-    );
+    return _store_entity_id(store, entity_name);
   }
 
-  late final _store_entity_idPtr = _lookup<
-      ffi.NativeFunction<
-          obx_schema_id Function(ffi.Pointer<OBX_store>,
-              ffi.Pointer<ffi.Char>)>>('obx_store_entity_id');
-  late final _store_entity_id = _store_entity_idPtr.asFunction<
-      int Function(ffi.Pointer<OBX_store>, ffi.Pointer<ffi.Char>)>();
+  late final _store_entity_idPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_schema_id Function(ffi.Pointer<OBX_store>, ffi.Pointer<ffi.Char>)
+        >
+      >('obx_store_entity_id');
+  late final _store_entity_id = _store_entity_idPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_store>, ffi.Pointer<ffi.Char>)
+      >();
 
   /// Return the property id from the property name or 0 if the name is not found
   int store_entity_property_id(
@@ -2044,35 +1964,35 @@ class ObjectBoxC {
     int entity_id,
     ffi.Pointer<ffi.Char> property_name,
   ) {
-    return _store_entity_property_id(
-      store,
-      entity_id,
-      property_name,
-    );
+    return _store_entity_property_id(store, entity_id, property_name);
   }
 
-  late final _store_entity_property_idPtr = _lookup<
-      ffi.NativeFunction<
-          obx_schema_id Function(ffi.Pointer<OBX_store>, obx_schema_id,
-              ffi.Pointer<ffi.Char>)>>('obx_store_entity_property_id');
-  late final _store_entity_property_id =
-      _store_entity_property_idPtr.asFunction<
-          int Function(ffi.Pointer<OBX_store>, int, ffi.Pointer<ffi.Char>)>();
+  late final _store_entity_property_idPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_schema_id Function(
+            ffi.Pointer<OBX_store>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+          )
+        >
+      >('obx_store_entity_property_id');
+  late final _store_entity_property_id = _store_entity_property_idPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_store>, int, ffi.Pointer<ffi.Char>)
+      >();
 
   /// Await for all (including future) async submissions to be completed (the async queue becomes empty).
   /// @returns true if all submissions were completed or async processing was not started
   /// @returns false if shutting down or an error occurred
-  bool store_await_async_completion(
-    ffi.Pointer<OBX_store> store,
-  ) {
-    return _store_await_async_completion(
-      store,
-    );
+  bool store_await_async_completion(ffi.Pointer<OBX_store> store) {
+    return _store_await_async_completion(store);
   }
 
   late final _store_await_async_completionPtr =
       _lookup<ffi.NativeFunction<ffi.Bool Function(ffi.Pointer<OBX_store>)>>(
-          'obx_store_await_async_completion');
+        'obx_store_await_async_completion',
+      );
   late final _store_await_async_completion = _store_await_async_completionPtr
       .asFunction<bool Function(ffi.Pointer<OBX_store>)>();
 
@@ -2080,17 +2000,14 @@ class ObjectBoxC {
   /// (the async queue may still contain elements).
   /// @returns true if all submissions were completed (or async processing was not started)
   /// @returns false if shutting down or an error occurred
-  bool store_await_async_submitted(
-    ffi.Pointer<OBX_store> store,
-  ) {
-    return _store_await_async_submitted(
-      store,
-    );
+  bool store_await_async_submitted(ffi.Pointer<OBX_store> store) {
+    return _store_await_async_submitted(store);
   }
 
   late final _store_await_async_submittedPtr =
       _lookup<ffi.NativeFunction<ffi.Bool Function(ffi.Pointer<OBX_store>)>>(
-          'obx_store_await_async_submitted');
+        'obx_store_await_async_submitted',
+      );
   late final _store_await_async_submitted = _store_await_async_submittedPtr
       .asFunction<bool Function(ffi.Pointer<OBX_store>)>();
 
@@ -2102,52 +2019,47 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> backup_file,
     int backup_flags,
   ) {
-    return _store_back_up_to_file(
-      store,
-      backup_file,
-      backup_flags,
-    );
+    return _store_back_up_to_file(store, backup_file, backup_flags);
   }
 
-  late final _store_back_up_to_filePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_store>, ffi.Pointer<ffi.Char>,
-              ffi.Uint32)>>('obx_store_back_up_to_file');
-  late final _store_back_up_to_file = _store_back_up_to_filePtr.asFunction<
-      int Function(ffi.Pointer<OBX_store>, ffi.Pointer<ffi.Char>, int)>();
+  late final _store_back_up_to_filePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_store>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Uint32,
+          )
+        >
+      >('obx_store_back_up_to_file');
+  late final _store_back_up_to_file = _store_back_up_to_filePtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_store>, ffi.Pointer<ffi.Char>, int)
+      >();
 
   /// Configure debug logging
   /// @param flags See OBXDebugFlags for values (use bitwise OR to combine multiple flags)
-  int store_debug_flags(
-    ffi.Pointer<OBX_store> store,
-    int flags,
-  ) {
-    return _store_debug_flags(
-      store,
-      flags,
-    );
+  int store_debug_flags(ffi.Pointer<OBX_store> store, int flags) {
+    return _store_debug_flags(store, flags);
   }
 
-  late final _store_debug_flagsPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(
-              ffi.Pointer<OBX_store>, ffi.Uint32)>>('obx_store_debug_flags');
+  late final _store_debug_flagsPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_store>, ffi.Uint32)>
+      >('obx_store_debug_flags');
   late final _store_debug_flags = _store_debug_flagsPtr
       .asFunction<int Function(ffi.Pointer<OBX_store>, int)>();
 
   /// @returns true if the store was opened with a previous commit
   /// @see obx_opt_use_previous_commit()
-  bool store_opened_with_previous_commit(
-    ffi.Pointer<OBX_store> store,
-  ) {
-    return _store_opened_with_previous_commit(
-      store,
-    );
+  bool store_opened_with_previous_commit(ffi.Pointer<OBX_store> store) {
+    return _store_opened_with_previous_commit(store);
   }
 
   late final _store_opened_with_previous_commitPtr =
       _lookup<ffi.NativeFunction<ffi.Bool Function(ffi.Pointer<OBX_store>)>>(
-          'obx_store_opened_with_previous_commit');
+        'obx_store_opened_with_previous_commit',
+      );
   late final _store_opened_with_previous_commit =
       _store_opened_with_previous_commitPtr
           .asFunction<bool Function(ffi.Pointer<OBX_store>)>();
@@ -2157,50 +2069,41 @@ class ObjectBoxC {
   /// Unlike obx_store_close(), this method will return immediately and does not free resources just yet.
   /// This is typically used in a multi-threaded context to allow an orderly shutdown in stages which go through a
   /// "not accepting new requests" state.
-  int store_prepare_to_close(
-    ffi.Pointer<OBX_store> store,
-  ) {
-    return _store_prepare_to_close(
-      store,
-    );
+  int store_prepare_to_close(ffi.Pointer<OBX_store> store) {
+    return _store_prepare_to_close(store);
   }
 
   late final _store_prepare_to_closePtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_store>)>>(
-          'obx_store_prepare_to_close');
+        'obx_store_prepare_to_close',
+      );
   late final _store_prepare_to_close = _store_prepare_to_closePtr
       .asFunction<int Function(ffi.Pointer<OBX_store>)>();
 
   /// Closes a previously opened store and thus freeing all resources associated with the store.
   /// \note This waits for write transactions to finish before returning from this call.
   /// @param store may be NULL
-  int store_close(
-    ffi.Pointer<OBX_store> store,
-  ) {
-    return _store_close(
-      store,
-    );
+  int store_close(ffi.Pointer<OBX_store> store) {
+    return _store_close(store);
   }
 
   late final _store_closePtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_store>)>>(
-          'obx_store_close');
-  late final _store_close =
-      _store_closePtr.asFunction<int Function(ffi.Pointer<OBX_store>)>();
+        'obx_store_close',
+      );
+  late final _store_close = _store_closePtr
+      .asFunction<int Function(ffi.Pointer<OBX_store>)>();
 
   /// Registers the default DB type, which is used if no other types matched a path prefix.
   /// @param storeTypeId Must be one of OBXStoreTypeId (for now).
-  int store_type_id_register_default(
-    int storeTypeId,
-  ) {
-    return _store_type_id_register_default(
-      storeTypeId,
-    );
+  int store_type_id_register_default(int storeTypeId) {
+    return _store_type_id_register_default(storeTypeId);
   }
 
   late final _store_type_id_register_defaultPtr =
       _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Uint32)>>(
-          'obx_store_type_id_register_default');
+        'obx_store_type_id_register_default',
+      );
   late final _store_type_id_register_default =
       _store_type_id_register_defaultPtr.asFunction<int Function(int)>();
 
@@ -2209,18 +2112,16 @@ class ObjectBoxC {
   /// Once you are done tithe the transaction, you must call obx_txn_success() or obx_txn_close().
   /// @returns NULL if the operation failed, see functions like obx_last_error_code() to get error details; e.g. code
   /// OBX_ERROR_ILLEGAL_STATE will be set if called when inside a read transaction.
-  ffi.Pointer<OBX_txn> txn_write(
-    ffi.Pointer<OBX_store> store,
-  ) {
-    return _txn_write(
-      store,
-    );
+  ffi.Pointer<OBX_txn> txn_write(ffi.Pointer<OBX_store> store) {
+    return _txn_write(store);
   }
 
-  late final _txn_writePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_txn> Function(
-              ffi.Pointer<OBX_store>)>>('obx_txn_write');
+  late final _txn_writePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_txn> Function(ffi.Pointer<OBX_store>)
+        >
+      >('obx_txn_write');
   late final _txn_write = _txn_writePtr
       .asFunction<ffi.Pointer<OBX_txn> Function(ffi.Pointer<OBX_store>)>();
 
@@ -2228,18 +2129,16 @@ class ObjectBoxC {
   /// Transaction creation can be nested (recursive), however only the outermost transaction is relevant on the DB level.
   /// Once you are done tithe the transaction, you must call obx_txn_close().
   /// @returns NULL if the operation failed, see functions like obx_last_error_code() to get error details
-  ffi.Pointer<OBX_txn> txn_read(
-    ffi.Pointer<OBX_store> store,
-  ) {
-    return _txn_read(
-      store,
-    );
+  ffi.Pointer<OBX_txn> txn_read(ffi.Pointer<OBX_store> store) {
+    return _txn_read(store);
   }
 
-  late final _txn_readPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_txn> Function(
-              ffi.Pointer<OBX_store>)>>('obx_txn_read');
+  late final _txn_readPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_txn> Function(ffi.Pointer<OBX_store>)
+        >
+      >('obx_txn_read');
   late final _txn_read = _txn_readPtr
       .asFunction<ffi.Pointer<OBX_txn> Function(ffi.Pointer<OBX_store>)>();
 
@@ -2248,125 +2147,113 @@ class ObjectBoxC {
   /// Because this also closes the given transaction along with all resources, the given OBX_txn pointer becomes invalid.
   /// Thus, the OBX_txn pointer must not be used afterwards; do not even call obx_txn_close().
   /// @return OBX_ERROR_ILLEGAL_STATE if the given transaction is not a write transaction.
-  int txn_success(
-    ffi.Pointer<OBX_txn> txn,
-  ) {
-    return _txn_success(
-      txn,
-    );
+  int txn_success(ffi.Pointer<OBX_txn> txn) {
+    return _txn_success(txn);
   }
 
   late final _txn_successPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_txn>)>>(
-          'obx_txn_success');
-  late final _txn_success =
-      _txn_successPtr.asFunction<int Function(ffi.Pointer<OBX_txn>)>();
+        'obx_txn_success',
+      );
+  late final _txn_success = _txn_successPtr
+      .asFunction<int Function(ffi.Pointer<OBX_txn>)>();
 
   /// Close the transaction (read or write) and free all of its resources; the given OBX_txn pointer must not be used
   /// afterwards. If the given transaction is a write transaction, it is aborted (not committed) right away (without
   /// waiting for the top level transaction).
   /// If an error is returned (e.g., a commit failed because DB is full), you can assume that the transaction was closed.
   /// @param txn may be NULL
-  int txn_close(
-    ffi.Pointer<OBX_txn> txn,
-  ) {
-    return _txn_close(
-      txn,
-    );
+  int txn_close(ffi.Pointer<OBX_txn> txn) {
+    return _txn_close(txn);
   }
 
   late final _txn_closePtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_txn>)>>(
-          'obx_txn_close');
-  late final _txn_close =
-      _txn_closePtr.asFunction<int Function(ffi.Pointer<OBX_txn>)>();
+        'obx_txn_close',
+      );
+  late final _txn_close = _txn_closePtr
+      .asFunction<int Function(ffi.Pointer<OBX_txn>)>();
 
   /// Note: At the moment, you typically want to use only obx_txn_close() instead.
   /// Abort the underlying transaction immediately and thus frees DB resources.
   /// Only obx_txn_close() is allowed to be called on the transaction after calling this.
-  int txn_abort(
-    ffi.Pointer<OBX_txn> txn,
-  ) {
-    return _txn_abort(
-      txn,
-    );
+  int txn_abort(ffi.Pointer<OBX_txn> txn) {
+    return _txn_abort(txn);
   }
 
   late final _txn_abortPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_txn>)>>(
-          'obx_txn_abort');
-  late final _txn_abort =
-      _txn_abortPtr.asFunction<int Function(ffi.Pointer<OBX_txn>)>();
+        'obx_txn_abort',
+      );
+  late final _txn_abort = _txn_abortPtr
+      .asFunction<int Function(ffi.Pointer<OBX_txn>)>();
 
   int txn_data_size(
     ffi.Pointer<OBX_txn> txn,
     ffi.Pointer<ffi.Uint64> out_committed_size,
     ffi.Pointer<ffi.Int64> out_size_change,
   ) {
-    return _txn_data_size(
-      txn,
-      out_committed_size,
-      out_size_change,
-    );
+    return _txn_data_size(txn, out_committed_size, out_size_change);
   }
 
-  late final _txn_data_sizePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_txn>, ffi.Pointer<ffi.Uint64>,
-              ffi.Pointer<ffi.Int64>)>>('obx_txn_data_size');
-  late final _txn_data_size = _txn_data_sizePtr.asFunction<
-      int Function(ffi.Pointer<OBX_txn>, ffi.Pointer<ffi.Uint64>,
-          ffi.Pointer<ffi.Int64>)>();
+  late final _txn_data_sizePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_txn>,
+            ffi.Pointer<ffi.Uint64>,
+            ffi.Pointer<ffi.Int64>,
+          )
+        >
+      >('obx_txn_data_size');
+  late final _txn_data_size = _txn_data_sizePtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_txn>,
+          ffi.Pointer<ffi.Uint64>,
+          ffi.Pointer<ffi.Int64>,
+        )
+      >();
 
   /// @returns NULL if the operation failed, see functions like obx_last_error_code() to get error details
-  ffi.Pointer<OBX_cursor> cursor(
-    ffi.Pointer<OBX_txn> txn,
-    int entity_id,
-  ) {
-    return _cursor(
-      txn,
-      entity_id,
-    );
+  ffi.Pointer<OBX_cursor> cursor(ffi.Pointer<OBX_txn> txn, int entity_id) {
+    return _cursor(txn, entity_id);
   }
 
-  late final _cursorPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_cursor> Function(
-              ffi.Pointer<OBX_txn>, obx_schema_id)>>('obx_cursor');
-  late final _cursor = _cursorPtr.asFunction<
-      ffi.Pointer<OBX_cursor> Function(ffi.Pointer<OBX_txn>, int)>();
+  late final _cursorPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_cursor> Function(ffi.Pointer<OBX_txn>, obx_schema_id)
+        >
+      >('obx_cursor');
+  late final _cursor = _cursorPtr
+      .asFunction<
+        ffi.Pointer<OBX_cursor> Function(ffi.Pointer<OBX_txn>, int)
+      >();
 
   /// @param cursor may be NULL
-  int cursor_close(
-    ffi.Pointer<OBX_cursor> cursor,
-  ) {
-    return _cursor_close(
-      cursor,
-    );
+  int cursor_close(ffi.Pointer<OBX_cursor> cursor) {
+    return _cursor_close(cursor);
   }
 
   late final _cursor_closePtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_cursor>)>>(
-          'obx_cursor_close');
-  late final _cursor_close =
-      _cursor_closePtr.asFunction<int Function(ffi.Pointer<OBX_cursor>)>();
+        'obx_cursor_close',
+      );
+  late final _cursor_close = _cursor_closePtr
+      .asFunction<int Function(ffi.Pointer<OBX_cursor>)>();
 
   /// Call this when putting an object to generate/prepare an ID for it.
   /// @param id_or_zero The ID of the entity. If you pass 0, this will generate a new one.
   /// @seealso obx_box_id_for_put()
-  int cursor_id_for_put(
-    ffi.Pointer<OBX_cursor> cursor,
-    int id_or_zero,
-  ) {
-    return _cursor_id_for_put(
-      cursor,
-      id_or_zero,
-    );
+  int cursor_id_for_put(ffi.Pointer<OBX_cursor> cursor, int id_or_zero) {
+    return _cursor_id_for_put(cursor, id_or_zero);
   }
 
-  late final _cursor_id_for_putPtr = _lookup<
-          ffi.NativeFunction<obx_id Function(ffi.Pointer<OBX_cursor>, obx_id)>>(
-      'obx_cursor_id_for_put');
+  late final _cursor_id_for_putPtr =
+      _lookup<
+        ffi.NativeFunction<obx_id Function(ffi.Pointer<OBX_cursor>, obx_id)>
+      >('obx_cursor_id_for_put');
   late final _cursor_id_for_put = _cursor_id_for_putPtr
       .asFunction<int Function(ffi.Pointer<OBX_cursor>, int)>();
 
@@ -2380,21 +2267,24 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> data,
     int size,
   ) {
-    return _cursor_put(
-      cursor,
-      id,
-      data,
-      size,
-    );
+    return _cursor_put(cursor, id, data, size);
   }
 
-  late final _cursor_putPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_cursor>, obx_id,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_cursor_put');
-  late final _cursor_put = _cursor_putPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_cursor>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _cursor_putPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_cursor>,
+            obx_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_cursor_put');
+  late final _cursor_put = _cursor_putPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_cursor>, int, ffi.Pointer<ffi.Uint8>, int)
+      >();
 
   /// Like put obx_cursor_put(), but takes an additional parameter (4th parameter) for choosing a put mode.
   /// @param id non-zero
@@ -2409,22 +2299,31 @@ class ObjectBoxC {
     int size,
     int mode,
   ) {
-    return _cursor_put4(
-      cursor,
-      id,
-      data,
-      size,
-      mode,
-    );
+    return _cursor_put4(cursor, id, data, size, mode);
   }
 
-  late final _cursor_put4Ptr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_cursor>, obx_id,
-              ffi.Pointer<ffi.Uint8>, ffi.Size, ffi.Int32)>>('obx_cursor_put4');
-  late final _cursor_put4 = _cursor_put4Ptr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_cursor>, int, ffi.Pointer<ffi.Uint8>, int, int)>();
+  late final _cursor_put4Ptr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_cursor>,
+            obx_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+            ffi.Int32,
+          )
+        >
+      >('obx_cursor_put4');
+  late final _cursor_put4 = _cursor_put4Ptr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_cursor>,
+          int,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+          int,
+        )
+      >();
 
   /// An optimized version of obx_cursor_put() if you can ensure that the given ID is not used yet.
   /// Typically used right after getting a new ID via obx_cursor_id_for_put().
@@ -2437,21 +2336,24 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> data,
     int size,
   ) {
-    return _cursor_put_new(
-      cursor,
-      id,
-      data,
-      size,
-    );
+    return _cursor_put_new(cursor, id, data, size);
   }
 
-  late final _cursor_put_newPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_cursor>, obx_id,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_cursor_put_new');
-  late final _cursor_put_new = _cursor_put_newPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_cursor>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _cursor_put_newPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_cursor>,
+            obx_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_cursor_put_new');
+  late final _cursor_put_new = _cursor_put_newPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_cursor>, int, ffi.Pointer<ffi.Uint8>, int)
+      >();
 
   /// Convenience for obx_cursor_put4() with OBXPutMode_INSERT.
   /// @param id non-zero
@@ -2462,21 +2364,24 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> data,
     int size,
   ) {
-    return _cursor_insert(
-      cursor,
-      id,
-      data,
-      size,
-    );
+    return _cursor_insert(cursor, id, data, size);
   }
 
-  late final _cursor_insertPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_cursor>, obx_id,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_cursor_insert');
-  late final _cursor_insert = _cursor_insertPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_cursor>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _cursor_insertPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_cursor>,
+            obx_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_cursor_insert');
+  late final _cursor_insert = _cursor_insertPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_cursor>, int, ffi.Pointer<ffi.Uint8>, int)
+      >();
 
   /// Convenience for obx_cursor_put4() with OBXPutMode_UPDATE.
   /// @param id non-zero
@@ -2487,21 +2392,24 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> data,
     int size,
   ) {
-    return _cursor_update(
-      cursor,
-      id,
-      data,
-      size,
-    );
+    return _cursor_update(cursor, id, data, size);
   }
 
-  late final _cursor_updatePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_cursor>, obx_id,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_cursor_update');
-  late final _cursor_update = _cursor_updatePtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_cursor>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _cursor_updatePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_cursor>,
+            obx_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_cursor_update');
+  late final _cursor_update = _cursor_updatePtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_cursor>, int, ffi.Pointer<ffi.Uint8>, int)
+      >();
 
   /// FB ID slot must be present; new entities must prepare the slot using the special value OBX_ID_NEW.
   /// Alternatively, you may also pass 0 to indicate a new entity if you are aware that FlatBuffers builders typically
@@ -2513,19 +2421,23 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Void> data,
     int size,
   ) {
-    return _cursor_put_object(
-      cursor,
-      data,
-      size,
-    );
+    return _cursor_put_object(cursor, data, size);
   }
 
-  late final _cursor_put_objectPtr = _lookup<
-      ffi.NativeFunction<
-          obx_id Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Void>,
-              ffi.Size)>>('obx_cursor_put_object');
-  late final _cursor_put_object = _cursor_put_objectPtr.asFunction<
-      int Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Void>, int)>();
+  late final _cursor_put_objectPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_id Function(
+            ffi.Pointer<OBX_cursor>,
+            ffi.Pointer<ffi.Void>,
+            ffi.Size,
+          )
+        >
+      >('obx_cursor_put_object');
+  late final _cursor_put_object = _cursor_put_objectPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Void>, int)
+      >();
 
   /// @overload obx_id obx_cursor_put_object(OBX_cursor* cursor, void* data, size_t size)
   int cursor_put_object4(
@@ -2534,20 +2446,24 @@ class ObjectBoxC {
     int size,
     int mode,
   ) {
-    return _cursor_put_object4(
-      cursor,
-      data,
-      size,
-      mode,
-    );
+    return _cursor_put_object4(cursor, data, size, mode);
   }
 
-  late final _cursor_put_object4Ptr = _lookup<
-      ffi.NativeFunction<
-          obx_id Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Void>,
-              ffi.Size, ffi.Int32)>>('obx_cursor_put_object4');
-  late final _cursor_put_object4 = _cursor_put_object4Ptr.asFunction<
-      int Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Void>, int, int)>();
+  late final _cursor_put_object4Ptr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_id Function(
+            ffi.Pointer<OBX_cursor>,
+            ffi.Pointer<ffi.Void>,
+            ffi.Size,
+            ffi.Int32,
+          )
+        >
+      >('obx_cursor_put_object4');
+  late final _cursor_put_object4 = _cursor_put_object4Ptr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Void>, int, int)
+      >();
 
   int cursor_get(
     ffi.Pointer<OBX_cursor> cursor,
@@ -2555,175 +2471,181 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Pointer<ffi.Uint8>> data,
     ffi.Pointer<ffi.Size> size,
   ) {
-    return _cursor_get(
-      cursor,
-      id,
-      data,
-      size,
-    );
+    return _cursor_get(cursor, id, data, size);
   }
 
-  late final _cursor_getPtr = _lookup<
-      ffi.NativeFunction<
+  late final _cursor_getPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_cursor>,
-              obx_id,
-              ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-              ffi.Pointer<ffi.Size>)>>('obx_cursor_get');
-  late final _cursor_get = _cursor_getPtr.asFunction<
-      int Function(ffi.Pointer<OBX_cursor>, int,
-          ffi.Pointer<ffi.Pointer<ffi.Uint8>>, ffi.Pointer<ffi.Size>)>();
+            ffi.Pointer<OBX_cursor>,
+            obx_id,
+            ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+            ffi.Pointer<ffi.Size>,
+          )
+        >
+      >('obx_cursor_get');
+  late final _cursor_get = _cursor_getPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_cursor>,
+          int,
+          ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+          ffi.Pointer<ffi.Size>,
+        )
+      >();
 
   /// Get all objects as bytes.
   /// For larger quantities, it's recommended to iterate using obx_cursor_first and obx_cursor_next.
   /// However, if the calling overhead is high (e.g., for language bindings), this method helps.
   /// @returns NULL if the operation failed, see functions like obx_last_error_code() to get error details
-  ffi.Pointer<OBX_bytes_array> cursor_get_all(
-    ffi.Pointer<OBX_cursor> cursor,
-  ) {
-    return _cursor_get_all(
-      cursor,
-    );
+  ffi.Pointer<OBX_bytes_array> cursor_get_all(ffi.Pointer<OBX_cursor> cursor) {
+    return _cursor_get_all(cursor);
   }
 
-  late final _cursor_get_allPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_bytes_array> Function(
-              ffi.Pointer<OBX_cursor>)>>('obx_cursor_get_all');
-  late final _cursor_get_all = _cursor_get_allPtr.asFunction<
-      ffi.Pointer<OBX_bytes_array> Function(ffi.Pointer<OBX_cursor>)>();
+  late final _cursor_get_allPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_bytes_array> Function(ffi.Pointer<OBX_cursor>)
+        >
+      >('obx_cursor_get_all');
+  late final _cursor_get_all = _cursor_get_allPtr
+      .asFunction<
+        ffi.Pointer<OBX_bytes_array> Function(ffi.Pointer<OBX_cursor>)
+      >();
 
   int cursor_first(
     ffi.Pointer<OBX_cursor> cursor,
     ffi.Pointer<ffi.Pointer<ffi.Uint8>> data,
     ffi.Pointer<ffi.Size> size,
   ) {
-    return _cursor_first(
-      cursor,
-      data,
-      size,
-    );
+    return _cursor_first(cursor, data, size);
   }
 
-  late final _cursor_firstPtr = _lookup<
-      ffi.NativeFunction<
+  late final _cursor_firstPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_cursor>,
-              ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-              ffi.Pointer<ffi.Size>)>>('obx_cursor_first');
-  late final _cursor_first = _cursor_firstPtr.asFunction<
-      int Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-          ffi.Pointer<ffi.Size>)>();
+            ffi.Pointer<OBX_cursor>,
+            ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+            ffi.Pointer<ffi.Size>,
+          )
+        >
+      >('obx_cursor_first');
+  late final _cursor_first = _cursor_firstPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_cursor>,
+          ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+          ffi.Pointer<ffi.Size>,
+        )
+      >();
 
   int cursor_next(
     ffi.Pointer<OBX_cursor> cursor,
     ffi.Pointer<ffi.Pointer<ffi.Uint8>> data,
     ffi.Pointer<ffi.Size> size,
   ) {
-    return _cursor_next(
-      cursor,
-      data,
-      size,
-    );
+    return _cursor_next(cursor, data, size);
   }
 
-  late final _cursor_nextPtr = _lookup<
-      ffi.NativeFunction<
+  late final _cursor_nextPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_cursor>,
-              ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-              ffi.Pointer<ffi.Size>)>>('obx_cursor_next');
-  late final _cursor_next = _cursor_nextPtr.asFunction<
-      int Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-          ffi.Pointer<ffi.Size>)>();
+            ffi.Pointer<OBX_cursor>,
+            ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+            ffi.Pointer<ffi.Size>,
+          )
+        >
+      >('obx_cursor_next');
+  late final _cursor_next = _cursor_nextPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_cursor>,
+          ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+          ffi.Pointer<ffi.Size>,
+        )
+      >();
 
-  int cursor_seek(
-    ffi.Pointer<OBX_cursor> cursor,
-    int id,
-  ) {
-    return _cursor_seek(
-      cursor,
-      id,
-    );
+  int cursor_seek(ffi.Pointer<OBX_cursor> cursor, int id) {
+    return _cursor_seek(cursor, id);
   }
 
-  late final _cursor_seekPtr = _lookup<
-          ffi
-          .NativeFunction<obx_err Function(ffi.Pointer<OBX_cursor>, obx_id)>>(
-      'obx_cursor_seek');
-  late final _cursor_seek =
-      _cursor_seekPtr.asFunction<int Function(ffi.Pointer<OBX_cursor>, int)>();
+  late final _cursor_seekPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_cursor>, obx_id)>
+      >('obx_cursor_seek');
+  late final _cursor_seek = _cursor_seekPtr
+      .asFunction<int Function(ffi.Pointer<OBX_cursor>, int)>();
 
   int cursor_current(
     ffi.Pointer<OBX_cursor> cursor,
     ffi.Pointer<ffi.Pointer<ffi.Uint8>> data,
     ffi.Pointer<ffi.Size> size,
   ) {
-    return _cursor_current(
-      cursor,
-      data,
-      size,
-    );
+    return _cursor_current(cursor, data, size);
   }
 
-  late final _cursor_currentPtr = _lookup<
-      ffi.NativeFunction<
+  late final _cursor_currentPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_cursor>,
-              ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-              ffi.Pointer<ffi.Size>)>>('obx_cursor_current');
-  late final _cursor_current = _cursor_currentPtr.asFunction<
-      int Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-          ffi.Pointer<ffi.Size>)>();
+            ffi.Pointer<OBX_cursor>,
+            ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+            ffi.Pointer<ffi.Size>,
+          )
+        >
+      >('obx_cursor_current');
+  late final _cursor_current = _cursor_currentPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_cursor>,
+          ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+          ffi.Pointer<ffi.Size>,
+        )
+      >();
 
-  int cursor_remove(
-    ffi.Pointer<OBX_cursor> cursor,
-    int id,
-  ) {
-    return _cursor_remove(
-      cursor,
-      id,
-    );
+  int cursor_remove(ffi.Pointer<OBX_cursor> cursor, int id) {
+    return _cursor_remove(cursor, id);
   }
 
-  late final _cursor_removePtr = _lookup<
-          ffi
-          .NativeFunction<obx_err Function(ffi.Pointer<OBX_cursor>, obx_id)>>(
-      'obx_cursor_remove');
+  late final _cursor_removePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_cursor>, obx_id)>
+      >('obx_cursor_remove');
   late final _cursor_remove = _cursor_removePtr
       .asFunction<int Function(ffi.Pointer<OBX_cursor>, int)>();
 
-  int cursor_remove_all(
-    ffi.Pointer<OBX_cursor> cursor,
-  ) {
-    return _cursor_remove_all(
-      cursor,
-    );
+  int cursor_remove_all(ffi.Pointer<OBX_cursor> cursor) {
+    return _cursor_remove_all(cursor);
   }
 
   late final _cursor_remove_allPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_cursor>)>>(
-          'obx_cursor_remove_all');
-  late final _cursor_remove_all =
-      _cursor_remove_allPtr.asFunction<int Function(ffi.Pointer<OBX_cursor>)>();
+        'obx_cursor_remove_all',
+      );
+  late final _cursor_remove_all = _cursor_remove_allPtr
+      .asFunction<int Function(ffi.Pointer<OBX_cursor>)>();
 
   /// Count the number of available objects
   int cursor_count(
     ffi.Pointer<OBX_cursor> cursor,
     ffi.Pointer<ffi.Uint64> count,
   ) {
-    return _cursor_count(
-      cursor,
-      count,
-    );
+    return _cursor_count(cursor, count);
   }
 
-  late final _cursor_countPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_cursor>,
-              ffi.Pointer<ffi.Uint64>)>>('obx_cursor_count');
-  late final _cursor_count = _cursor_countPtr.asFunction<
-      int Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Uint64>)>();
+  late final _cursor_countPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Uint64>)
+        >
+      >('obx_cursor_count');
+  late final _cursor_count = _cursor_countPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Uint64>)
+      >();
 
   /// Count the number of available objects up to the specified maximum
   int cursor_count_max(
@@ -2731,37 +2653,42 @@ class ObjectBoxC {
     int max_count,
     ffi.Pointer<ffi.Uint64> out_count,
   ) {
-    return _cursor_count_max(
-      cursor,
-      max_count,
-      out_count,
-    );
+    return _cursor_count_max(cursor, max_count, out_count);
   }
 
-  late final _cursor_count_maxPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_cursor>, ffi.Uint64,
-              ffi.Pointer<ffi.Uint64>)>>('obx_cursor_count_max');
-  late final _cursor_count_max = _cursor_count_maxPtr.asFunction<
-      int Function(ffi.Pointer<OBX_cursor>, int, ffi.Pointer<ffi.Uint64>)>();
+  late final _cursor_count_maxPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_cursor>,
+            ffi.Uint64,
+            ffi.Pointer<ffi.Uint64>,
+          )
+        >
+      >('obx_cursor_count_max');
+  late final _cursor_count_max = _cursor_count_maxPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_cursor>, int, ffi.Pointer<ffi.Uint64>)
+      >();
 
   /// Return true if there is no object available (false if at least one object is available)
   int cursor_is_empty(
     ffi.Pointer<OBX_cursor> cursor,
     ffi.Pointer<ffi.Bool> out_is_empty,
   ) {
-    return _cursor_is_empty(
-      cursor,
-      out_is_empty,
-    );
+    return _cursor_is_empty(cursor, out_is_empty);
   }
 
-  late final _cursor_is_emptyPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_cursor>,
-              ffi.Pointer<ffi.Bool>)>>('obx_cursor_is_empty');
-  late final _cursor_is_empty = _cursor_is_emptyPtr.asFunction<
-      int Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Bool>)>();
+  late final _cursor_is_emptyPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Bool>)
+        >
+      >('obx_cursor_is_empty');
+  late final _cursor_is_empty = _cursor_is_emptyPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<ffi.Bool>)
+      >();
 
   /// @returns NULL if the operation failed, see functions like obx_last_error_code() to get error details
   ffi.Pointer<OBX_bytes_array> cursor_backlinks(
@@ -2770,21 +2697,29 @@ class ObjectBoxC {
     int property_id,
     int id,
   ) {
-    return _cursor_backlinks(
-      cursor,
-      entity_id,
-      property_id,
-      id,
-    );
+    return _cursor_backlinks(cursor, entity_id, property_id, id);
   }
 
-  late final _cursor_backlinksPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_bytes_array> Function(ffi.Pointer<OBX_cursor>,
-              obx_schema_id, obx_schema_id, obx_id)>>('obx_cursor_backlinks');
-  late final _cursor_backlinks = _cursor_backlinksPtr.asFunction<
-      ffi.Pointer<OBX_bytes_array> Function(
-          ffi.Pointer<OBX_cursor>, int, int, int)>();
+  late final _cursor_backlinksPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_bytes_array> Function(
+            ffi.Pointer<OBX_cursor>,
+            obx_schema_id,
+            obx_schema_id,
+            obx_id,
+          )
+        >
+      >('obx_cursor_backlinks');
+  late final _cursor_backlinks = _cursor_backlinksPtr
+      .asFunction<
+        ffi.Pointer<OBX_bytes_array> Function(
+          ffi.Pointer<OBX_cursor>,
+          int,
+          int,
+          int,
+        )
+      >();
 
   /// @returns NULL if the operation failed, see functions like obx_last_error_code() to get error details
   ffi.Pointer<OBX_id_array> cursor_backlink_ids(
@@ -2793,24 +2728,29 @@ class ObjectBoxC {
     int property_id,
     int id,
   ) {
-    return _cursor_backlink_ids(
-      cursor,
-      entity_id,
-      property_id,
-      id,
-    );
+    return _cursor_backlink_ids(cursor, entity_id, property_id, id);
   }
 
-  late final _cursor_backlink_idsPtr = _lookup<
-      ffi.NativeFunction<
+  late final _cursor_backlink_idsPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_id_array> Function(
-              ffi.Pointer<OBX_cursor>,
-              obx_schema_id,
-              obx_schema_id,
-              obx_id)>>('obx_cursor_backlink_ids');
-  late final _cursor_backlink_ids = _cursor_backlink_idsPtr.asFunction<
-      ffi.Pointer<OBX_id_array> Function(
-          ffi.Pointer<OBX_cursor>, int, int, int)>();
+            ffi.Pointer<OBX_cursor>,
+            obx_schema_id,
+            obx_schema_id,
+            obx_id,
+          )
+        >
+      >('obx_cursor_backlink_ids');
+  late final _cursor_backlink_ids = _cursor_backlink_idsPtr
+      .asFunction<
+        ffi.Pointer<OBX_id_array> Function(
+          ffi.Pointer<OBX_cursor>,
+          int,
+          int,
+          int,
+        )
+      >();
 
   int cursor_rel_put(
     ffi.Pointer<OBX_cursor> cursor,
@@ -2818,18 +2758,20 @@ class ObjectBoxC {
     int source_id,
     int target_id,
   ) {
-    return _cursor_rel_put(
-      cursor,
-      relation_id,
-      source_id,
-      target_id,
-    );
+    return _cursor_rel_put(cursor, relation_id, source_id, target_id);
   }
 
-  late final _cursor_rel_putPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_cursor>, obx_schema_id, obx_id,
-              obx_id)>>('obx_cursor_rel_put');
+  late final _cursor_rel_putPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_cursor>,
+            obx_schema_id,
+            obx_id,
+            obx_id,
+          )
+        >
+      >('obx_cursor_rel_put');
   late final _cursor_rel_put = _cursor_rel_putPtr
       .asFunction<int Function(ffi.Pointer<OBX_cursor>, int, int, int)>();
 
@@ -2839,18 +2781,20 @@ class ObjectBoxC {
     int source_id,
     int target_id,
   ) {
-    return _cursor_rel_remove(
-      cursor,
-      relation_id,
-      source_id,
-      target_id,
-    );
+    return _cursor_rel_remove(cursor, relation_id, source_id, target_id);
   }
 
-  late final _cursor_rel_removePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_cursor>, obx_schema_id, obx_id,
-              obx_id)>>('obx_cursor_rel_remove');
+  late final _cursor_rel_removePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_cursor>,
+            obx_schema_id,
+            obx_id,
+            obx_id,
+          )
+        >
+      >('obx_cursor_rel_remove');
   late final _cursor_rel_remove = _cursor_rel_removePtr
       .asFunction<int Function(ffi.Pointer<OBX_cursor>, int, int, int)>();
 
@@ -2860,35 +2804,38 @@ class ObjectBoxC {
     int relation_id,
     int source_id,
   ) {
-    return _cursor_rel_ids(
-      cursor,
-      relation_id,
-      source_id,
-    );
+    return _cursor_rel_ids(cursor, relation_id, source_id);
   }
 
-  late final _cursor_rel_idsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_cursor>,
-              obx_schema_id, obx_id)>>('obx_cursor_rel_ids');
-  late final _cursor_rel_ids = _cursor_rel_idsPtr.asFunction<
-      ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_cursor>, int, int)>();
+  late final _cursor_rel_idsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_id_array> Function(
+            ffi.Pointer<OBX_cursor>,
+            obx_schema_id,
+            obx_id,
+          )
+        >
+      >('obx_cursor_rel_ids');
+  late final _cursor_rel_ids = _cursor_rel_idsPtr
+      .asFunction<
+        ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_cursor>, int, int)
+      >();
 
   /// Gets the first object ID or zero if there was no object
   int cursor_seek_first_id(
     ffi.Pointer<OBX_cursor> cursor,
     ffi.Pointer<obx_id> out_id,
   ) {
-    return _cursor_seek_first_id(
-      cursor,
-      out_id,
-    );
+    return _cursor_seek_first_id(cursor, out_id);
   }
 
-  late final _cursor_seek_first_idPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_cursor>,
-              ffi.Pointer<obx_id>)>>('obx_cursor_seek_first_id');
+  late final _cursor_seek_first_idPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<obx_id>)
+        >
+      >('obx_cursor_seek_first_id');
   late final _cursor_seek_first_id = _cursor_seek_first_idPtr
       .asFunction<int Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<obx_id>)>();
 
@@ -2897,16 +2844,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_cursor> cursor,
     ffi.Pointer<obx_id> out_id,
   ) {
-    return _cursor_seek_next_id(
-      cursor,
-      out_id,
-    );
+    return _cursor_seek_next_id(cursor, out_id);
   }
 
-  late final _cursor_seek_next_idPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_cursor>,
-              ffi.Pointer<obx_id>)>>('obx_cursor_seek_next_id');
+  late final _cursor_seek_next_idPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<obx_id>)
+        >
+      >('obx_cursor_seek_next_id');
   late final _cursor_seek_next_id = _cursor_seek_next_idPtr
       .asFunction<int Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<obx_id>)>();
 
@@ -2919,16 +2865,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_cursor> cursor,
     ffi.Pointer<obx_id> out_id,
   ) {
-    return _cursor_current_id(
-      cursor,
-      out_id,
-    );
+    return _cursor_current_id(cursor, out_id);
   }
 
-  late final _cursor_current_idPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_cursor>,
-              ffi.Pointer<obx_id>)>>('obx_cursor_current_id');
+  late final _cursor_current_idPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<obx_id>)
+        >
+      >('obx_cursor_current_id');
   late final _cursor_current_id = _cursor_current_idPtr
       .asFunction<int Function(ffi.Pointer<OBX_cursor>, ffi.Pointer<obx_id>)>();
 
@@ -2954,21 +2899,28 @@ class ObjectBoxC {
     );
   }
 
-  late final _cursor_ts_min_maxPtr = _lookup<
-      ffi.NativeFunction<
+  late final _cursor_ts_min_maxPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_cursor>,
-              ffi.Pointer<obx_id>,
-              ffi.Pointer<ffi.Int64>,
-              ffi.Pointer<obx_id>,
-              ffi.Pointer<ffi.Int64>)>>('obx_cursor_ts_min_max');
-  late final _cursor_ts_min_max = _cursor_ts_min_maxPtr.asFunction<
-      int Function(
+            ffi.Pointer<OBX_cursor>,
+            ffi.Pointer<obx_id>,
+            ffi.Pointer<ffi.Int64>,
+            ffi.Pointer<obx_id>,
+            ffi.Pointer<ffi.Int64>,
+          )
+        >
+      >('obx_cursor_ts_min_max');
+  late final _cursor_ts_min_max = _cursor_ts_min_maxPtr
+      .asFunction<
+        int Function(
           ffi.Pointer<OBX_cursor>,
           ffi.Pointer<obx_id>,
           ffi.Pointer<ffi.Int64>,
           ffi.Pointer<obx_id>,
-          ffi.Pointer<ffi.Int64>)>();
+          ffi.Pointer<ffi.Int64>,
+        )
+      >();
 
   /// Time series: get the limits (min/max time values) over objects within the given time range
   /// @param out_min_id pointer to receive an output (may be NULL)
@@ -2996,42 +2948,45 @@ class ObjectBoxC {
     );
   }
 
-  late final _cursor_ts_min_max_rangePtr = _lookup<
-      ffi.NativeFunction<
+  late final _cursor_ts_min_max_rangePtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_cursor>,
-              ffi.Int64,
-              ffi.Int64,
-              ffi.Pointer<obx_id>,
-              ffi.Pointer<ffi.Int64>,
-              ffi.Pointer<obx_id>,
-              ffi.Pointer<ffi.Int64>)>>('obx_cursor_ts_min_max_range');
-  late final _cursor_ts_min_max_range = _cursor_ts_min_max_rangePtr.asFunction<
-      int Function(
+            ffi.Pointer<OBX_cursor>,
+            ffi.Int64,
+            ffi.Int64,
+            ffi.Pointer<obx_id>,
+            ffi.Pointer<ffi.Int64>,
+            ffi.Pointer<obx_id>,
+            ffi.Pointer<ffi.Int64>,
+          )
+        >
+      >('obx_cursor_ts_min_max_range');
+  late final _cursor_ts_min_max_range = _cursor_ts_min_max_rangePtr
+      .asFunction<
+        int Function(
           ffi.Pointer<OBX_cursor>,
           int,
           int,
           ffi.Pointer<obx_id>,
           ffi.Pointer<ffi.Int64>,
           ffi.Pointer<obx_id>,
-          ffi.Pointer<ffi.Int64>)>();
+          ffi.Pointer<ffi.Int64>,
+        )
+      >();
 
   /// Get access to the box for the given entity. A box may be used across threads.
   /// Boxes are shared instances and managed by the store so there's no need to close/free them manually.
-  ffi.Pointer<OBX_box> box(
-    ffi.Pointer<OBX_store> store,
-    int entity_id,
-  ) {
-    return _box(
-      store,
-      entity_id,
-    );
+  ffi.Pointer<OBX_box> box(ffi.Pointer<OBX_store> store, int entity_id) {
+    return _box(store, entity_id);
   }
 
-  late final _boxPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_box> Function(
-              ffi.Pointer<OBX_store>, obx_schema_id)>>('obx_box');
+  late final _boxPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_box> Function(ffi.Pointer<OBX_store>, obx_schema_id)
+        >
+      >('obx_box');
   late final _box = _boxPtr
       .asFunction<ffi.Pointer<OBX_box> Function(ffi.Pointer<OBX_store>, int)>();
 
@@ -3039,18 +2994,16 @@ class ObjectBoxC {
   /// some store method, such as starting a transaction.
   /// This doesn't produce a new instance of OBX_store, just gives you back the same pointer you've created this box with.
   /// In other words, don't close the returned store separately.
-  ffi.Pointer<OBX_store> box_store(
-    ffi.Pointer<OBX_box> box,
-  ) {
-    return _box_store(
-      box,
-    );
+  ffi.Pointer<OBX_store> box_store(ffi.Pointer<OBX_box> box) {
+    return _box_store(box);
   }
 
-  late final _box_storePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_store> Function(
-              ffi.Pointer<OBX_box>)>>('obx_box_store');
+  late final _box_storePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_store> Function(ffi.Pointer<OBX_box>)
+        >
+      >('obx_box_store');
   late final _box_store = _box_storePtr
       .asFunction<ffi.Pointer<OBX_store> Function(ffi.Pointer<OBX_box>)>();
 
@@ -3060,19 +3013,19 @@ class ObjectBoxC {
     int id,
     ffi.Pointer<ffi.Bool> out_contains,
   ) {
-    return _box_contains(
-      box,
-      id,
-      out_contains,
-    );
+    return _box_contains(box, id, out_contains);
   }
 
-  late final _box_containsPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>, obx_id,
-              ffi.Pointer<ffi.Bool>)>>('obx_box_contains');
-  late final _box_contains = _box_containsPtr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, int, ffi.Pointer<ffi.Bool>)>();
+  late final _box_containsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_box>, obx_id, ffi.Pointer<ffi.Bool>)
+        >
+      >('obx_box_contains');
+  late final _box_contains = _box_containsPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_box>, int, ffi.Pointer<ffi.Bool>)
+      >();
 
   /// Check whether this box contains objects with all of the IDs given.
   /// @param out_contains is set to true if all of the IDs are present, otherwise false
@@ -3081,20 +3034,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_id_array> ids,
     ffi.Pointer<ffi.Bool> out_contains,
   ) {
-    return _box_contains_many(
-      box,
-      ids,
-      out_contains,
-    );
+    return _box_contains_many(box, ids, out_contains);
   }
 
-  late final _box_contains_manyPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>, ffi.Pointer<OBX_id_array>,
-              ffi.Pointer<ffi.Bool>)>>('obx_box_contains_many');
-  late final _box_contains_many = _box_contains_manyPtr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, ffi.Pointer<OBX_id_array>,
-          ffi.Pointer<ffi.Bool>)>();
+  late final _box_contains_manyPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_box>,
+            ffi.Pointer<OBX_id_array>,
+            ffi.Pointer<ffi.Bool>,
+          )
+        >
+      >('obx_box_contains_many');
+  late final _box_contains_many = _box_contains_manyPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_box>,
+          ffi.Pointer<OBX_id_array>,
+          ffi.Pointer<ffi.Bool>,
+        )
+      >();
 
   /// Fetch a single object from the box; must be called inside a (reentrant) transaction.
   /// The exposed data comes directly from the OS to allow zero-copy access, which limits the data lifetime:
@@ -3107,24 +3067,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Pointer<ffi.Uint8>> data,
     ffi.Pointer<ffi.Size> size,
   ) {
-    return _box_get(
-      box,
-      id,
-      data,
-      size,
-    );
+    return _box_get(box, id, data, size);
   }
 
-  late final _box_getPtr = _lookup<
-      ffi.NativeFunction<
+  late final _box_getPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_box>,
-              obx_id,
-              ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-              ffi.Pointer<ffi.Size>)>>('obx_box_get');
-  late final _box_get = _box_getPtr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, int,
-          ffi.Pointer<ffi.Pointer<ffi.Uint8>>, ffi.Pointer<ffi.Size>)>();
+            ffi.Pointer<OBX_box>,
+            obx_id,
+            ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+            ffi.Pointer<ffi.Size>,
+          )
+        >
+      >('obx_box_get');
+  late final _box_get = _box_getPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_box>,
+          int,
+          ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+          ffi.Pointer<ffi.Size>,
+        )
+      >();
 
   /// Fetch multiple objects for the given IDs from the box; must be called inside a (reentrant) transaction.
   /// \attention See obx_box_get() for important notes on the limited lifetime of the exposed data.
@@ -3135,19 +3100,25 @@ class ObjectBoxC {
     ffi.Pointer<OBX_box> box,
     ffi.Pointer<OBX_id_array> ids,
   ) {
-    return _box_get_many(
-      box,
-      ids,
-    );
+    return _box_get_many(box, ids);
   }
 
-  late final _box_get_manyPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_bytes_array> Function(ffi.Pointer<OBX_box>,
-              ffi.Pointer<OBX_id_array>)>>('obx_box_get_many');
-  late final _box_get_many = _box_get_manyPtr.asFunction<
-      ffi.Pointer<OBX_bytes_array> Function(
-          ffi.Pointer<OBX_box>, ffi.Pointer<OBX_id_array>)>();
+  late final _box_get_manyPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_bytes_array> Function(
+            ffi.Pointer<OBX_box>,
+            ffi.Pointer<OBX_id_array>,
+          )
+        >
+      >('obx_box_get_many');
+  late final _box_get_many = _box_get_manyPtr
+      .asFunction<
+        ffi.Pointer<OBX_bytes_array> Function(
+          ffi.Pointer<OBX_box>,
+          ffi.Pointer<OBX_id_array>,
+        )
+      >();
 
   /// Fetch all objects from the box; must be called inside a (reentrant) transaction.
   /// NOTE: don't call this in 32 bit mode! Use obx_box_visit_all() instead.
@@ -3155,20 +3126,20 @@ class ObjectBoxC {
   /// @returns NULL if the operation failed, see functions like obx_last_error_code() to get error details; e.g. code
   /// OBX_ERROR_ILLEGAL_STATE will be set if not inside of an active transaction
   /// (see obx_txn_read() and obx_txn_write())
-  ffi.Pointer<OBX_bytes_array> box_get_all(
-    ffi.Pointer<OBX_box> box,
-  ) {
-    return _box_get_all(
-      box,
-    );
+  ffi.Pointer<OBX_bytes_array> box_get_all(ffi.Pointer<OBX_box> box) {
+    return _box_get_all(box);
   }
 
-  late final _box_get_allPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_bytes_array> Function(
-              ffi.Pointer<OBX_box>)>>('obx_box_get_all');
-  late final _box_get_all = _box_get_allPtr.asFunction<
-      ffi.Pointer<OBX_bytes_array> Function(ffi.Pointer<OBX_box>)>();
+  late final _box_get_allPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_bytes_array> Function(ffi.Pointer<OBX_box>)
+        >
+      >('obx_box_get_all');
+  late final _box_get_all = _box_get_allPtr
+      .asFunction<
+        ffi.Pointer<OBX_bytes_array> Function(ffi.Pointer<OBX_box>)
+      >();
 
   /// Read given objects from the database in a single transaction.
   /// Call the visitor() on each object, passing user_data, object data & size as arguments.
@@ -3180,24 +3151,29 @@ class ObjectBoxC {
     ffi.Pointer<obx_data_visitor> visitor,
     ffi.Pointer<ffi.Void> user_data,
   ) {
-    return _box_visit_many(
-      box,
-      ids,
-      visitor,
-      user_data,
-    );
+    return _box_visit_many(box, ids, visitor, user_data);
   }
 
-  late final _box_visit_manyPtr = _lookup<
-      ffi.NativeFunction<
+  late final _box_visit_manyPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_box>,
-              ffi.Pointer<OBX_id_array>,
-              ffi.Pointer<obx_data_visitor>,
-              ffi.Pointer<ffi.Void>)>>('obx_box_visit_many');
-  late final _box_visit_many = _box_visit_manyPtr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, ffi.Pointer<OBX_id_array>,
-          ffi.Pointer<obx_data_visitor>, ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_box>,
+            ffi.Pointer<OBX_id_array>,
+            ffi.Pointer<obx_data_visitor>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_box_visit_many');
+  late final _box_visit_many = _box_visit_manyPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_box>,
+          ffi.Pointer<OBX_id_array>,
+          ffi.Pointer<obx_data_visitor>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Read all objects in a single transaction.
   /// Calls the visitor() on each object, passing visitor_arg, object data & size as arguments.
@@ -3207,39 +3183,41 @@ class ObjectBoxC {
     ffi.Pointer<obx_data_visitor> visitor,
     ffi.Pointer<ffi.Void> user_data,
   ) {
-    return _box_visit_all(
-      box,
-      visitor,
-      user_data,
-    );
+    return _box_visit_all(box, visitor, user_data);
   }
 
-  late final _box_visit_allPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>, ffi.Pointer<obx_data_visitor>,
-              ffi.Pointer<ffi.Void>)>>('obx_box_visit_all');
-  late final _box_visit_all = _box_visit_allPtr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, ffi.Pointer<obx_data_visitor>,
-          ffi.Pointer<ffi.Void>)>();
+  late final _box_visit_allPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_box>,
+            ffi.Pointer<obx_data_visitor>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_box_visit_all');
+  late final _box_visit_all = _box_visit_allPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_box>,
+          ffi.Pointer<obx_data_visitor>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Prepares an ID for insertion: pass in 0 (zero) to reserve a new ID or an existing ID to check/prepare it.
   /// @param id_or_zero The ID of the entity. If you pass 0, this will generate a new one.
   /// @seealso obx_cursor_id_for_put()
-  int box_id_for_put(
-    ffi.Pointer<OBX_box> box,
-    int id_or_zero,
-  ) {
-    return _box_id_for_put(
-      box,
-      id_or_zero,
-    );
+  int box_id_for_put(ffi.Pointer<OBX_box> box, int id_or_zero) {
+    return _box_id_for_put(box, id_or_zero);
   }
 
-  late final _box_id_for_putPtr = _lookup<
-          ffi.NativeFunction<obx_id Function(ffi.Pointer<OBX_box>, obx_id)>>(
-      'obx_box_id_for_put');
-  late final _box_id_for_put =
-      _box_id_for_putPtr.asFunction<int Function(ffi.Pointer<OBX_box>, int)>();
+  late final _box_id_for_putPtr =
+      _lookup<
+        ffi.NativeFunction<obx_id Function(ffi.Pointer<OBX_box>, obx_id)>
+      >('obx_box_id_for_put');
+  late final _box_id_for_put = _box_id_for_putPtr
+      .asFunction<int Function(ffi.Pointer<OBX_box>, int)>();
 
   /// Reserve the given number of (new) IDs for insertion; a bulk version of obx_box_id_for_put().
   /// @param count number of IDs to reserve, max 10000
@@ -3250,19 +3228,23 @@ class ObjectBoxC {
     int count,
     ffi.Pointer<obx_id> out_first_id,
   ) {
-    return _box_ids_for_put(
-      box,
-      count,
-      out_first_id,
-    );
+    return _box_ids_for_put(box, count, out_first_id);
   }
 
-  late final _box_ids_for_putPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>, ffi.Uint64,
-              ffi.Pointer<obx_id>)>>('obx_box_ids_for_put');
-  late final _box_ids_for_put = _box_ids_for_putPtr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, int, ffi.Pointer<obx_id>)>();
+  late final _box_ids_for_putPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_box>,
+            ffi.Uint64,
+            ffi.Pointer<obx_id>,
+          )
+        >
+      >('obx_box_ids_for_put');
+  late final _box_ids_for_put = _box_ids_for_putPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_box>, int, ffi.Pointer<obx_id>)
+      >();
 
   /// Put the given object using the given ID synchronously; note that the ID also must match the one present in data.
   /// @param id An ID usually reserved via obx_box_id_for_put().
@@ -3274,20 +3256,24 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> data,
     int size,
   ) {
-    return _box_put(
-      box,
-      id,
-      data,
-      size,
-    );
+    return _box_put(box, id, data, size);
   }
 
-  late final _box_putPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>, obx_id, ffi.Pointer<ffi.Uint8>,
-              ffi.Size)>>('obx_box_put');
-  late final _box_put = _box_putPtr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _box_putPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_box>,
+            obx_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_box_put');
+  late final _box_put = _box_putPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_box>, int, ffi.Pointer<ffi.Uint8>, int)
+      >();
 
   /// Convenience for obx_box_put5() with OBXPutMode_INSERT.
   /// @param id non-zero
@@ -3298,20 +3284,24 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> data,
     int size,
   ) {
-    return _box_insert(
-      box,
-      id,
-      data,
-      size,
-    );
+    return _box_insert(box, id, data, size);
   }
 
-  late final _box_insertPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>, obx_id, ffi.Pointer<ffi.Uint8>,
-              ffi.Size)>>('obx_box_insert');
-  late final _box_insert = _box_insertPtr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _box_insertPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_box>,
+            obx_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_box_insert');
+  late final _box_insert = _box_insertPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_box>, int, ffi.Pointer<ffi.Uint8>, int)
+      >();
 
   /// Convenience for obx_cursor_put4() with OBXPutMode_UPDATE.
   /// @param id non-zero
@@ -3322,20 +3312,24 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> data,
     int size,
   ) {
-    return _box_update(
-      box,
-      id,
-      data,
-      size,
-    );
+    return _box_update(box, id, data, size);
   }
 
-  late final _box_updatePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>, obx_id, ffi.Pointer<ffi.Uint8>,
-              ffi.Size)>>('obx_box_update');
-  late final _box_update = _box_updatePtr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _box_updatePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_box>,
+            obx_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_box_update');
+  late final _box_update = _box_updatePtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_box>, int, ffi.Pointer<ffi.Uint8>, int)
+      >();
 
   /// Put the given object using the given ID synchronously; note that the ID also must match the one present in data.
   /// @param id An ID usually reserved via obx_box_id_for_put().
@@ -3348,22 +3342,31 @@ class ObjectBoxC {
     int size,
     int mode,
   ) {
-    return _box_put5(
-      box,
-      id,
-      data,
-      size,
-      mode,
-    );
+    return _box_put5(box, id, data, size, mode);
   }
 
-  late final _box_put5Ptr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>, obx_id, ffi.Pointer<ffi.Uint8>,
-              ffi.Size, ffi.Int32)>>('obx_box_put5');
-  late final _box_put5 = _box_put5Ptr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_box>, int, ffi.Pointer<ffi.Uint8>, int, int)>();
+  late final _box_put5Ptr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_box>,
+            obx_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+            ffi.Int32,
+          )
+        >
+      >('obx_box_put5');
+  late final _box_put5 = _box_put5Ptr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_box>,
+          int,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+          int,
+        )
+      >();
 
   /// FB ID slot must be present in the given data; new entities must have an ID value of zero or OBX_ID_NEW.
   /// @param data writable data buffer, which may be updated for the ID
@@ -3373,19 +3376,19 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Void> data,
     int size,
   ) {
-    return _box_put_object(
-      box,
-      data,
-      size,
-    );
+    return _box_put_object(box, data, size);
   }
 
-  late final _box_put_objectPtr = _lookup<
-      ffi.NativeFunction<
-          obx_id Function(ffi.Pointer<OBX_box>, ffi.Pointer<ffi.Void>,
-              ffi.Size)>>('obx_box_put_object');
-  late final _box_put_object = _box_put_objectPtr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, ffi.Pointer<ffi.Void>, int)>();
+  late final _box_put_objectPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_id Function(ffi.Pointer<OBX_box>, ffi.Pointer<ffi.Void>, ffi.Size)
+        >
+      >('obx_box_put_object');
+  late final _box_put_object = _box_put_objectPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_box>, ffi.Pointer<ffi.Void>, int)
+      >();
 
   /// FB ID slot must be present in the given data; new entities must have an ID value of zero or OBX_ID_NEW
   /// @param data writable data buffer, which may be updated for the ID
@@ -3396,20 +3399,24 @@ class ObjectBoxC {
     int size,
     int mode,
   ) {
-    return _box_put_object4(
-      box,
-      data,
-      size,
-      mode,
-    );
+    return _box_put_object4(box, data, size, mode);
   }
 
-  late final _box_put_object4Ptr = _lookup<
-      ffi.NativeFunction<
-          obx_id Function(ffi.Pointer<OBX_box>, ffi.Pointer<ffi.Void>, ffi.Size,
-              ffi.Int32)>>('obx_box_put_object4');
-  late final _box_put_object4 = _box_put_object4Ptr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, ffi.Pointer<ffi.Void>, int, int)>();
+  late final _box_put_object4Ptr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_id Function(
+            ffi.Pointer<OBX_box>,
+            ffi.Pointer<ffi.Void>,
+            ffi.Size,
+            ffi.Int32,
+          )
+        >
+      >('obx_box_put_object4');
+  late final _box_put_object4 = _box_put_object4Ptr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_box>, ffi.Pointer<ffi.Void>, int, int)
+      >();
 
   /// Put all given objects in the database in a single transaction. If any of the individual objects failed to put,
   /// none are put and an error is returned, equivalent to calling obx_box_put_many5() with fail_on_id_failure=true.
@@ -3420,21 +3427,29 @@ class ObjectBoxC {
     ffi.Pointer<obx_id> ids,
     int mode,
   ) {
-    return _box_put_many(
-      box,
-      objects,
-      ids,
-      mode,
-    );
+    return _box_put_many(box, objects, ids, mode);
   }
 
-  late final _box_put_manyPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>, ffi.Pointer<OBX_bytes_array>,
-              ffi.Pointer<obx_id>, ffi.Int32)>>('obx_box_put_many');
-  late final _box_put_many = _box_put_manyPtr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, ffi.Pointer<OBX_bytes_array>,
-          ffi.Pointer<obx_id>, int)>();
+  late final _box_put_manyPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_box>,
+            ffi.Pointer<OBX_bytes_array>,
+            ffi.Pointer<obx_id>,
+            ffi.Int32,
+          )
+        >
+      >('obx_box_put_many');
+  late final _box_put_many = _box_put_manyPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_box>,
+          ffi.Pointer<OBX_bytes_array>,
+          ffi.Pointer<obx_id>,
+          int,
+        )
+      >();
 
   /// Like obx_box_put_many(), but with an additional flag indicating how to treat ID failures with OBXPutMode_INSERT and
   /// OBXPutMode_UPDATE.
@@ -3450,40 +3465,44 @@ class ObjectBoxC {
     int mode,
     bool fail_on_id_failure,
   ) {
-    return _box_put_many5(
-      box,
-      objects,
-      ids,
-      mode,
-      fail_on_id_failure,
-    );
+    return _box_put_many5(box, objects, ids, mode, fail_on_id_failure);
   }
 
-  late final _box_put_many5Ptr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>, ffi.Pointer<OBX_bytes_array>,
-              ffi.Pointer<obx_id>, ffi.Int32, ffi.Bool)>>('obx_box_put_many5');
-  late final _box_put_many5 = _box_put_many5Ptr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, ffi.Pointer<OBX_bytes_array>,
-          ffi.Pointer<obx_id>, int, bool)>();
+  late final _box_put_many5Ptr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_box>,
+            ffi.Pointer<OBX_bytes_array>,
+            ffi.Pointer<obx_id>,
+            ffi.Int32,
+            ffi.Bool,
+          )
+        >
+      >('obx_box_put_many5');
+  late final _box_put_many5 = _box_put_many5Ptr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_box>,
+          ffi.Pointer<OBX_bytes_array>,
+          ffi.Pointer<obx_id>,
+          int,
+          bool,
+        )
+      >();
 
   /// Remove a single object
   /// will return OBX_NOT_FOUND if an object with the given ID doesn't exist
-  int box_remove(
-    ffi.Pointer<OBX_box> box,
-    int id,
-  ) {
-    return _box_remove(
-      box,
-      id,
-    );
+  int box_remove(ffi.Pointer<OBX_box> box, int id) {
+    return _box_remove(box, id);
   }
 
-  late final _box_removePtr = _lookup<
-          ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_box>, obx_id)>>(
-      'obx_box_remove');
-  late final _box_remove =
-      _box_removePtr.asFunction<int Function(ffi.Pointer<OBX_box>, int)>();
+  late final _box_removePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_box>, obx_id)>
+      >('obx_box_remove');
+  late final _box_remove = _box_removePtr
+      .asFunction<int Function(ffi.Pointer<OBX_box>, int)>();
 
   /// Remove all given objects from the database in a single transaction.
   /// Note that this method will not fail if the object is not found (e.g. already removed).
@@ -3495,20 +3514,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_id_array> ids,
     ffi.Pointer<ffi.Uint64> out_count,
   ) {
-    return _box_remove_many(
-      box,
-      ids,
-      out_count,
-    );
+    return _box_remove_many(box, ids, out_count);
   }
 
-  late final _box_remove_manyPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>, ffi.Pointer<OBX_id_array>,
-              ffi.Pointer<ffi.Uint64>)>>('obx_box_remove_many');
-  late final _box_remove_many = _box_remove_manyPtr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, ffi.Pointer<OBX_id_array>,
-          ffi.Pointer<ffi.Uint64>)>();
+  late final _box_remove_manyPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_box>,
+            ffi.Pointer<OBX_id_array>,
+            ffi.Pointer<ffi.Uint64>,
+          )
+        >
+      >('obx_box_remove_many');
+  late final _box_remove_many = _box_remove_manyPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_box>,
+          ffi.Pointer<OBX_id_array>,
+          ffi.Pointer<ffi.Uint64>,
+        )
+      >();
 
   /// Remove all objects and set the out_count the the number of removed objects.
   /// @param out_count Pointer to retrieve the number of removed objects; optional: may be NULL.
@@ -3516,34 +3542,34 @@ class ObjectBoxC {
     ffi.Pointer<OBX_box> box,
     ffi.Pointer<ffi.Uint64> out_count,
   ) {
-    return _box_remove_all(
-      box,
-      out_count,
-    );
+    return _box_remove_all(box, out_count);
   }
 
-  late final _box_remove_allPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>,
-              ffi.Pointer<ffi.Uint64>)>>('obx_box_remove_all');
-  late final _box_remove_all = _box_remove_allPtr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, ffi.Pointer<ffi.Uint64>)>();
+  late final _box_remove_allPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_box>, ffi.Pointer<ffi.Uint64>)
+        >
+      >('obx_box_remove_all');
+  late final _box_remove_all = _box_remove_allPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_box>, ffi.Pointer<ffi.Uint64>)
+      >();
 
   /// Check whether there are any objects for this entity and updates the out_is_empty accordingly
   int box_is_empty(
     ffi.Pointer<OBX_box> box,
     ffi.Pointer<ffi.Bool> out_is_empty,
   ) {
-    return _box_is_empty(
-      box,
-      out_is_empty,
-    );
+    return _box_is_empty(box, out_is_empty);
   }
 
-  late final _box_is_emptyPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>,
-              ffi.Pointer<ffi.Bool>)>>('obx_box_is_empty');
+  late final _box_is_emptyPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_box>, ffi.Pointer<ffi.Bool>)
+        >
+      >('obx_box_is_empty');
   late final _box_is_empty = _box_is_emptyPtr
       .asFunction<int Function(ffi.Pointer<OBX_box>, ffi.Pointer<ffi.Bool>)>();
 
@@ -3554,19 +3580,23 @@ class ObjectBoxC {
     int limit,
     ffi.Pointer<ffi.Uint64> out_count,
   ) {
-    return _box_count(
-      box,
-      limit,
-      out_count,
-    );
+    return _box_count(box, limit, out_count);
   }
 
-  late final _box_countPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>, ffi.Uint64,
-              ffi.Pointer<ffi.Uint64>)>>('obx_box_count');
-  late final _box_count = _box_countPtr.asFunction<
-      int Function(ffi.Pointer<OBX_box>, int, ffi.Pointer<ffi.Uint64>)>();
+  late final _box_countPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_box>,
+            ffi.Uint64,
+            ffi.Pointer<ffi.Uint64>,
+          )
+        >
+      >('obx_box_count');
+  late final _box_count = _box_countPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_box>, int, ffi.Pointer<ffi.Uint64>)
+      >();
 
   /// Fetch IDs of all objects that link back to the given object (ID) using the given relation property (ID).
   /// Note: This method refers to "property based relations" unlike the "stand-alone relations" (see obx_box_rel_*).
@@ -3578,19 +3608,23 @@ class ObjectBoxC {
     int property_id,
     int id,
   ) {
-    return _box_get_backlink_ids(
-      box,
-      property_id,
-      id,
-    );
+    return _box_get_backlink_ids(box, property_id, id);
   }
 
-  late final _box_get_backlink_idsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_box>,
-              obx_schema_id, obx_id)>>('obx_box_get_backlink_ids');
-  late final _box_get_backlink_ids = _box_get_backlink_idsPtr.asFunction<
-      ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_box>, int, int)>();
+  late final _box_get_backlink_idsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_id_array> Function(
+            ffi.Pointer<OBX_box>,
+            obx_schema_id,
+            obx_id,
+          )
+        >
+      >('obx_box_get_backlink_ids');
+  late final _box_get_backlink_ids = _box_get_backlink_idsPtr
+      .asFunction<
+        ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_box>, int, int)
+      >();
 
   /// Insert a standalone relation entry between two objects.
   /// @param relation_id must be a standalone relation ID with source entity belonging to this box
@@ -3602,18 +3636,15 @@ class ObjectBoxC {
     int source_id,
     int target_id,
   ) {
-    return _box_rel_put(
-      box,
-      relation_id,
-      source_id,
-      target_id,
-    );
+    return _box_rel_put(box, relation_id, source_id, target_id);
   }
 
-  late final _box_rel_putPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>, obx_schema_id, obx_id,
-              obx_id)>>('obx_box_rel_put');
+  late final _box_rel_putPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_box>, obx_schema_id, obx_id, obx_id)
+        >
+      >('obx_box_rel_put');
   late final _box_rel_put = _box_rel_putPtr
       .asFunction<int Function(ffi.Pointer<OBX_box>, int, int, int)>();
 
@@ -3625,18 +3656,15 @@ class ObjectBoxC {
     int source_id,
     int target_id,
   ) {
-    return _box_rel_remove(
-      box,
-      relation_id,
-      source_id,
-      target_id,
-    );
+    return _box_rel_remove(box, relation_id, source_id, target_id);
   }
 
-  late final _box_rel_removePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_box>, obx_schema_id, obx_id,
-              obx_id)>>('obx_box_rel_remove');
+  late final _box_rel_removePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_box>, obx_schema_id, obx_id, obx_id)
+        >
+      >('obx_box_rel_remove');
   late final _box_rel_remove = _box_rel_removePtr
       .asFunction<int Function(ffi.Pointer<OBX_box>, int, int, int)>();
 
@@ -3650,19 +3678,23 @@ class ObjectBoxC {
     int relation_id,
     int id,
   ) {
-    return _box_rel_get_ids(
-      box,
-      relation_id,
-      id,
-    );
+    return _box_rel_get_ids(box, relation_id, id);
   }
 
-  late final _box_rel_get_idsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_box>,
-              obx_schema_id, obx_id)>>('obx_box_rel_get_ids');
-  late final _box_rel_get_ids = _box_rel_get_idsPtr.asFunction<
-      ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_box>, int, int)>();
+  late final _box_rel_get_idsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_id_array> Function(
+            ffi.Pointer<OBX_box>,
+            obx_schema_id,
+            obx_id,
+          )
+        >
+      >('obx_box_rel_get_ids');
+  late final _box_rel_get_ids = _box_rel_get_idsPtr
+      .asFunction<
+        ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_box>, int, int)
+      >();
 
   /// Fetch IDs of all objects in this Box related to the given object (typically from another Box).
   /// Used for a stand-alone relation and its "backlink" direction; this Box represents the source of the relation.
@@ -3674,20 +3706,23 @@ class ObjectBoxC {
     int relation_id,
     int id,
   ) {
-    return _box_rel_get_backlink_ids(
-      box,
-      relation_id,
-      id,
-    );
+    return _box_rel_get_backlink_ids(box, relation_id, id);
   }
 
-  late final _box_rel_get_backlink_idsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_box>,
-              obx_schema_id, obx_id)>>('obx_box_rel_get_backlink_ids');
-  late final _box_rel_get_backlink_ids =
-      _box_rel_get_backlink_idsPtr.asFunction<
-          ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_box>, int, int)>();
+  late final _box_rel_get_backlink_idsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_id_array> Function(
+            ffi.Pointer<OBX_box>,
+            obx_schema_id,
+            obx_id,
+          )
+        >
+      >('obx_box_rel_get_backlink_ids');
+  late final _box_rel_get_backlink_ids = _box_rel_get_backlink_idsPtr
+      .asFunction<
+        ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_box>, int, int)
+      >();
 
   /// Removes expired objects of one or all entity types.
   /// @param entity_id Type of the objects to be remove; if zero, all types are included.
@@ -3699,19 +3734,23 @@ class ObjectBoxC {
     int entity_id,
     ffi.Pointer<ffi.Size> out_removed_count,
   ) {
-    return _expired_objects_remove(
-      txn,
-      entity_id,
-      out_removed_count,
-    );
+    return _expired_objects_remove(txn, entity_id, out_removed_count);
   }
 
-  late final _expired_objects_removePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_txn>, obx_schema_id,
-              ffi.Pointer<ffi.Size>)>>('obx_expired_objects_remove');
-  late final _expired_objects_remove = _expired_objects_removePtr.asFunction<
-      int Function(ffi.Pointer<OBX_txn>, int, ffi.Pointer<ffi.Size>)>();
+  late final _expired_objects_removePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_txn>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Size>,
+          )
+        >
+      >('obx_expired_objects_remove');
+  late final _expired_objects_remove = _expired_objects_removePtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_txn>, int, ffi.Pointer<ffi.Size>)
+      >();
 
   /// Asynchronously removes expired objects of one or all entity types.
   /// @param entity_id Type of the objects to be remove; if zero, all types are included.
@@ -3723,25 +3762,29 @@ class ObjectBoxC {
     ffi.Pointer<obx_status_callback> callback,
     ffi.Pointer<ffi.Void> user_data,
   ) {
-    return _expired_objects_remove_async(
-      store,
-      entity_id,
-      callback,
-      user_data,
-    );
+    return _expired_objects_remove_async(store, entity_id, callback, user_data);
   }
 
-  late final _expired_objects_remove_asyncPtr = _lookup<
-      ffi.NativeFunction<
+  late final _expired_objects_remove_asyncPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_store>,
-              obx_schema_id,
-              ffi.Pointer<obx_status_callback>,
-              ffi.Pointer<ffi.Void>)>>('obx_expired_objects_remove_async');
-  late final _expired_objects_remove_async =
-      _expired_objects_remove_asyncPtr.asFunction<
-          int Function(ffi.Pointer<OBX_store>, int,
-              ffi.Pointer<obx_status_callback>, ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_store>,
+            obx_schema_id,
+            ffi.Pointer<obx_status_callback>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_expired_objects_remove_async');
+  late final _expired_objects_remove_async = _expired_objects_remove_asyncPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_store>,
+          int,
+          ffi.Pointer<obx_status_callback>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Time series: get the limits (min/max time values) over all objects
   /// @param out_min_id pointer to receive an output (may be NULL)
@@ -3765,21 +3808,28 @@ class ObjectBoxC {
     );
   }
 
-  late final _box_ts_min_maxPtr = _lookup<
-      ffi.NativeFunction<
+  late final _box_ts_min_maxPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_box>,
-              ffi.Pointer<obx_id>,
-              ffi.Pointer<ffi.Int64>,
-              ffi.Pointer<obx_id>,
-              ffi.Pointer<ffi.Int64>)>>('obx_box_ts_min_max');
-  late final _box_ts_min_max = _box_ts_min_maxPtr.asFunction<
-      int Function(
+            ffi.Pointer<OBX_box>,
+            ffi.Pointer<obx_id>,
+            ffi.Pointer<ffi.Int64>,
+            ffi.Pointer<obx_id>,
+            ffi.Pointer<ffi.Int64>,
+          )
+        >
+      >('obx_box_ts_min_max');
+  late final _box_ts_min_max = _box_ts_min_maxPtr
+      .asFunction<
+        int Function(
           ffi.Pointer<OBX_box>,
           ffi.Pointer<obx_id>,
           ffi.Pointer<ffi.Int64>,
           ffi.Pointer<obx_id>,
-          ffi.Pointer<ffi.Int64>)>();
+          ffi.Pointer<ffi.Int64>,
+        )
+      >();
 
   /// Time series: get the limits (min/max time values) over objects within the given time range
   /// @param out_min_id pointer to receive an output (may be NULL)
@@ -3807,38 +3857,44 @@ class ObjectBoxC {
     );
   }
 
-  late final _box_ts_min_max_rangePtr = _lookup<
-      ffi.NativeFunction<
+  late final _box_ts_min_max_rangePtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_box>,
-              ffi.Int64,
-              ffi.Int64,
-              ffi.Pointer<obx_id>,
-              ffi.Pointer<ffi.Int64>,
-              ffi.Pointer<obx_id>,
-              ffi.Pointer<ffi.Int64>)>>('obx_box_ts_min_max_range');
-  late final _box_ts_min_max_range = _box_ts_min_max_rangePtr.asFunction<
-      int Function(
+            ffi.Pointer<OBX_box>,
+            ffi.Int64,
+            ffi.Int64,
+            ffi.Pointer<obx_id>,
+            ffi.Pointer<ffi.Int64>,
+            ffi.Pointer<obx_id>,
+            ffi.Pointer<ffi.Int64>,
+          )
+        >
+      >('obx_box_ts_min_max_range');
+  late final _box_ts_min_max_range = _box_ts_min_max_rangePtr
+      .asFunction<
+        int Function(
           ffi.Pointer<OBX_box>,
           int,
           int,
           ffi.Pointer<obx_id>,
           ffi.Pointer<ffi.Int64>,
           ffi.Pointer<obx_id>,
-          ffi.Pointer<ffi.Int64>)>();
+          ffi.Pointer<ffi.Int64>,
+        )
+      >();
 
   /// Note: DO NOT close this OBX_async; its lifetime is tied to the OBX_box instance.
-  ffi.Pointer<OBX_async> async1(
-    ffi.Pointer<OBX_box> box,
-  ) {
-    return _async1(
-      box,
-    );
+  ffi.Pointer<OBX_async> async1(ffi.Pointer<OBX_box> box) {
+    return _async1(box);
   }
 
-  late final _async1Ptr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_async> Function(ffi.Pointer<OBX_box>)>>('obx_async');
+  late final _async1Ptr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_async> Function(ffi.Pointer<OBX_box>)
+        >
+      >('obx_async');
   late final _async1 = _async1Ptr
       .asFunction<ffi.Pointer<OBX_async> Function(ffi.Pointer<OBX_box>)>();
 
@@ -3849,20 +3905,24 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> data,
     int size,
   ) {
-    return _async_put(
-      async1,
-      id,
-      data,
-      size,
-    );
+    return _async_put(async1, id, data, size);
   }
 
-  late final _async_putPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_async>, obx_id,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_async_put');
-  late final _async_put = _async_putPtr.asFunction<
-      int Function(ffi.Pointer<OBX_async>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _async_putPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_async>,
+            obx_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_async_put');
+  late final _async_put = _async_putPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_async>, int, ffi.Pointer<ffi.Uint8>, int)
+      >();
 
   /// Put asynchronously using the given mode.
   int async_put5(
@@ -3872,22 +3932,31 @@ class ObjectBoxC {
     int size,
     int mode,
   ) {
-    return _async_put5(
-      async1,
-      id,
-      data,
-      size,
-      mode,
-    );
+    return _async_put5(async1, id, data, size, mode);
   }
 
-  late final _async_put5Ptr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_async>, obx_id,
-              ffi.Pointer<ffi.Uint8>, ffi.Size, ffi.Int32)>>('obx_async_put5');
-  late final _async_put5 = _async_put5Ptr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_async>, int, ffi.Pointer<ffi.Uint8>, int, int)>();
+  late final _async_put5Ptr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_async>,
+            obx_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+            ffi.Int32,
+          )
+        >
+      >('obx_async_put5');
+  late final _async_put5 = _async_put5Ptr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_async>,
+          int,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+          int,
+        )
+      >();
 
   /// Put asynchronously with inserts semantics (won't put if object already exists).
   int async_insert(
@@ -3896,20 +3965,24 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> data,
     int size,
   ) {
-    return _async_insert(
-      async1,
-      id,
-      data,
-      size,
-    );
+    return _async_insert(async1, id, data, size);
   }
 
-  late final _async_insertPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_async>, obx_id,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_async_insert');
-  late final _async_insert = _async_insertPtr.asFunction<
-      int Function(ffi.Pointer<OBX_async>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _async_insertPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_async>,
+            obx_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_async_insert');
+  late final _async_insert = _async_insertPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_async>, int, ffi.Pointer<ffi.Uint8>, int)
+      >();
 
   /// Put asynchronously with update semantics (won't put if object is not yet present).
   int async_update(
@@ -3918,20 +3991,24 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> data,
     int size,
   ) {
-    return _async_update(
-      async1,
-      id,
-      data,
-      size,
-    );
+    return _async_update(async1, id, data, size);
   }
 
-  late final _async_updatePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_async>, obx_id,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_async_update');
-  late final _async_update = _async_updatePtr.asFunction<
-      int Function(ffi.Pointer<OBX_async>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _async_updatePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_async>,
+            obx_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_async_update');
+  late final _async_update = _async_updatePtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_async>, int, ffi.Pointer<ffi.Uint8>, int)
+      >();
 
   /// Reserve an ID, which is returned immediately for future reference, and put asynchronously.
   /// Note: of course, it can NOT be guaranteed that the entity will actually be put successfully in the DB.
@@ -3942,19 +4019,23 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Void> data,
     int size,
   ) {
-    return _async_put_object(
-      async1,
-      data,
-      size,
-    );
+    return _async_put_object(async1, data, size);
   }
 
-  late final _async_put_objectPtr = _lookup<
-      ffi.NativeFunction<
-          obx_id Function(ffi.Pointer<OBX_async>, ffi.Pointer<ffi.Void>,
-              ffi.Size)>>('obx_async_put_object');
-  late final _async_put_object = _async_put_objectPtr.asFunction<
-      int Function(ffi.Pointer<OBX_async>, ffi.Pointer<ffi.Void>, int)>();
+  late final _async_put_objectPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_id Function(
+            ffi.Pointer<OBX_async>,
+            ffi.Pointer<ffi.Void>,
+            ffi.Size,
+          )
+        >
+      >('obx_async_put_object');
+  late final _async_put_object = _async_put_objectPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_async>, ffi.Pointer<ffi.Void>, int)
+      >();
 
   /// FB ID slot must be present in the given data; new entities must have an ID value of zero or OBX_ID_NEW
   /// @param data writable data buffer, which may be updated for the ID
@@ -3965,20 +4046,24 @@ class ObjectBoxC {
     int size,
     int mode,
   ) {
-    return _async_put_object4(
-      async1,
-      data,
-      size,
-      mode,
-    );
+    return _async_put_object4(async1, data, size, mode);
   }
 
-  late final _async_put_object4Ptr = _lookup<
-      ffi.NativeFunction<
-          obx_id Function(ffi.Pointer<OBX_async>, ffi.Pointer<ffi.Void>,
-              ffi.Size, ffi.Int32)>>('obx_async_put_object4');
-  late final _async_put_object4 = _async_put_object4Ptr.asFunction<
-      int Function(ffi.Pointer<OBX_async>, ffi.Pointer<ffi.Void>, int, int)>();
+  late final _async_put_object4Ptr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_id Function(
+            ffi.Pointer<OBX_async>,
+            ffi.Pointer<ffi.Void>,
+            ffi.Size,
+            ffi.Int32,
+          )
+        >
+      >('obx_async_put_object4');
+  late final _async_put_object4 = _async_put_object4Ptr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_async>, ffi.Pointer<ffi.Void>, int, int)
+      >();
 
   /// Reserve an ID, which is returned immediately for future reference, and insert asynchronously.
   /// Note: of course, it can NOT be guaranteed that the entity will actually be inserted successfully in the DB.
@@ -3989,36 +4074,35 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Void> data,
     int size,
   ) {
-    return _async_insert_object(
-      async1,
-      data,
-      size,
-    );
+    return _async_insert_object(async1, data, size);
   }
 
-  late final _async_insert_objectPtr = _lookup<
-      ffi.NativeFunction<
-          obx_id Function(ffi.Pointer<OBX_async>, ffi.Pointer<ffi.Void>,
-              ffi.Size)>>('obx_async_insert_object');
-  late final _async_insert_object = _async_insert_objectPtr.asFunction<
-      int Function(ffi.Pointer<OBX_async>, ffi.Pointer<ffi.Void>, int)>();
+  late final _async_insert_objectPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_id Function(
+            ffi.Pointer<OBX_async>,
+            ffi.Pointer<ffi.Void>,
+            ffi.Size,
+          )
+        >
+      >('obx_async_insert_object');
+  late final _async_insert_object = _async_insert_objectPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_async>, ffi.Pointer<ffi.Void>, int)
+      >();
 
   /// Remove asynchronously.
-  int async_remove(
-    ffi.Pointer<OBX_async> async1,
-    int id,
-  ) {
-    return _async_remove(
-      async1,
-      id,
-    );
+  int async_remove(ffi.Pointer<OBX_async> async1, int id) {
+    return _async_remove(async1, id);
   }
 
-  late final _async_removePtr = _lookup<
-          ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_async>, obx_id)>>(
-      'obx_async_remove');
-  late final _async_remove =
-      _async_removePtr.asFunction<int Function(ffi.Pointer<OBX_async>, int)>();
+  late final _async_removePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_async>, obx_id)>
+      >('obx_async_remove');
+  late final _async_remove = _async_removePtr
+      .asFunction<int Function(ffi.Pointer<OBX_async>, int)>();
 
   /// Create a custom OBX_async instance that has to be closed using obx_async_close().
   /// Note: for standard tasks, prefer obx_box_async() giving you a shared instance that does not have to be closed.
@@ -4026,34 +4110,30 @@ class ObjectBoxC {
     ffi.Pointer<OBX_box> box,
     int enqueue_timeout_millis,
   ) {
-    return _async_create(
-      box,
-      enqueue_timeout_millis,
-    );
+    return _async_create(box, enqueue_timeout_millis);
   }
 
-  late final _async_createPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_async> Function(
-              ffi.Pointer<OBX_box>, ffi.Uint64)>>('obx_async_create');
+  late final _async_createPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_async> Function(ffi.Pointer<OBX_box>, ffi.Uint64)
+        >
+      >('obx_async_create');
   late final _async_create = _async_createPtr
       .asFunction<ffi.Pointer<OBX_async> Function(ffi.Pointer<OBX_box>, int)>();
 
   /// Close a custom OBX_async instance created with obx_async_create().
   /// @return OBX_ERROR_ILLEGAL_ARGUMENT if you pass the shared instance from obx_box_async()
-  int async_close(
-    ffi.Pointer<OBX_async> async1,
-  ) {
-    return _async_close(
-      async1,
-    );
+  int async_close(ffi.Pointer<OBX_async> async1) {
+    return _async_close(async1);
   }
 
   late final _async_closePtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_async>)>>(
-          'obx_async_close');
-  late final _async_close =
-      _async_closePtr.asFunction<int Function(ffi.Pointer<OBX_async>)>();
+        'obx_async_close',
+      );
+  late final _async_close = _async_closePtr
+      .asFunction<int Function(ffi.Pointer<OBX_async>)>();
 
   /// Create a query builder which is used to collect conditions using the obx_qb_* functions.
   /// Once all conditions are applied, use obx_query() to build a OBX_query that is used to actually retrieve data.
@@ -4063,64 +4143,60 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store> store,
     int entity_id,
   ) {
-    return _query_builder(
-      store,
-      entity_id,
-    );
+    return _query_builder(store, entity_id);
   }
 
-  late final _query_builderPtr = _lookup<
-      ffi.NativeFunction<
+  late final _query_builderPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_query_builder> Function(
-              ffi.Pointer<OBX_store>, obx_schema_id)>>('obx_query_builder');
-  late final _query_builder = _query_builderPtr.asFunction<
-      ffi.Pointer<OBX_query_builder> Function(ffi.Pointer<OBX_store>, int)>();
+            ffi.Pointer<OBX_store>,
+            obx_schema_id,
+          )
+        >
+      >('obx_query_builder');
+  late final _query_builder = _query_builderPtr
+      .asFunction<
+        ffi.Pointer<OBX_query_builder> Function(ffi.Pointer<OBX_store>, int)
+      >();
 
   /// Close the query builder; note that OBX_query objects outlive their builder and thus are not affected by this call.
   /// @param builder may be NULL
-  int qb_close(
-    ffi.Pointer<OBX_query_builder> builder,
-  ) {
-    return _qb_close(
-      builder,
-    );
+  int qb_close(ffi.Pointer<OBX_query_builder> builder) {
+    return _qb_close(builder);
   }
 
-  late final _qb_closePtr = _lookup<
-          ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_query_builder>)>>(
-      'obx_qb_close');
-  late final _qb_close =
-      _qb_closePtr.asFunction<int Function(ffi.Pointer<OBX_query_builder>)>();
+  late final _qb_closePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_query_builder>)>
+      >('obx_qb_close');
+  late final _qb_close = _qb_closePtr
+      .asFunction<int Function(ffi.Pointer<OBX_query_builder>)>();
 
   /// @returns the entity type ID that was used to construct the query builder.
-  int qb_type_id(
-    ffi.Pointer<OBX_query_builder> builder,
-  ) {
-    return _qb_type_id(
-      builder,
-    );
+  int qb_type_id(ffi.Pointer<OBX_query_builder> builder) {
+    return _qb_type_id(builder);
   }
 
-  late final _qb_type_idPtr = _lookup<
-      ffi.NativeFunction<
-          obx_schema_id Function(
-              ffi.Pointer<OBX_query_builder>)>>('obx_qb_type_id');
-  late final _qb_type_id =
-      _qb_type_idPtr.asFunction<int Function(ffi.Pointer<OBX_query_builder>)>();
+  late final _qb_type_idPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_schema_id Function(ffi.Pointer<OBX_query_builder>)
+        >
+      >('obx_qb_type_id');
+  late final _qb_type_id = _qb_type_idPtr
+      .asFunction<int Function(ffi.Pointer<OBX_query_builder>)>();
 
   /// To minimise the amount of error handling code required when building a query, the first error is stored in the query
   /// and can be obtained here. All the obx_qb_XXX functions are null operations after the first query error has occurred.
-  int qb_error_code(
-    ffi.Pointer<OBX_query_builder> builder,
-  ) {
-    return _qb_error_code(
-      builder,
-    );
+  int qb_error_code(ffi.Pointer<OBX_query_builder> builder) {
+    return _qb_error_code(builder);
   }
 
-  late final _qb_error_codePtr = _lookup<
-          ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_query_builder>)>>(
-      'obx_qb_error_code');
+  late final _qb_error_codePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_query_builder>)>
+      >('obx_qb_error_code');
   late final _qb_error_code = _qb_error_codePtr
       .asFunction<int Function(ffi.Pointer<OBX_query_builder>)>();
 
@@ -4129,51 +4205,45 @@ class ObjectBoxC {
   ffi.Pointer<ffi.Char> qb_error_message(
     ffi.Pointer<OBX_query_builder> builder,
   ) {
-    return _qb_error_message(
-      builder,
-    );
+    return _qb_error_message(builder);
   }
 
-  late final _qb_error_messagePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<ffi.Char> Function(
-              ffi.Pointer<OBX_query_builder>)>>('obx_qb_error_message');
-  late final _qb_error_message = _qb_error_messagePtr.asFunction<
-      ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_query_builder>)>();
+  late final _qb_error_messagePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_query_builder>)
+        >
+      >('obx_qb_error_message');
+  late final _qb_error_message = _qb_error_messagePtr
+      .asFunction<
+        ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_query_builder>)
+      >();
 
   /// Add null check to the query
-  int qb_null(
-    ffi.Pointer<OBX_query_builder> builder,
-    int property_id,
-  ) {
-    return _qb_null(
-      builder,
-      property_id,
-    );
+  int qb_null(ffi.Pointer<OBX_query_builder> builder, int property_id) {
+    return _qb_null(builder, property_id);
   }
 
-  late final _qb_nullPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>, obx_schema_id)>>('obx_qb_null');
+  late final _qb_nullPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id)
+        >
+      >('obx_qb_null');
   late final _qb_null = _qb_nullPtr
       .asFunction<int Function(ffi.Pointer<OBX_query_builder>, int)>();
 
   /// Add not-null check to the query
-  int qb_not_null(
-    ffi.Pointer<OBX_query_builder> builder,
-    int property_id,
-  ) {
-    return _qb_not_null(
-      builder,
-      property_id,
-    );
+  int qb_not_null(ffi.Pointer<OBX_query_builder> builder, int property_id) {
+    return _qb_not_null(builder, property_id);
   }
 
-  late final _qb_not_nullPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>,
-              obx_schema_id)>>('obx_qb_not_null');
+  late final _qb_not_nullPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id)
+        >
+      >('obx_qb_not_null');
   late final _qb_not_null = _qb_not_nullPtr
       .asFunction<int Function(ffi.Pointer<OBX_query_builder>, int)>();
 
@@ -4184,21 +4254,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> value,
     bool case_sensitive,
   ) {
-    return _qb_equals_string(
-      builder,
-      property_id,
-      value,
-      case_sensitive,
-    );
+    return _qb_equals_string(builder, property_id, value, case_sensitive);
   }
 
-  late final _qb_equals_stringPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Char>, ffi.Bool)>>('obx_qb_equals_string');
-  late final _qb_equals_string = _qb_equals_stringPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Char>, bool)>();
+  late final _qb_equals_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_equals_string');
+  late final _qb_equals_string = _qb_equals_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   int qb_not_equals_string(
     ffi.Pointer<OBX_query_builder> builder,
@@ -4206,21 +4284,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> value,
     bool case_sensitive,
   ) {
-    return _qb_not_equals_string(
-      builder,
-      property_id,
-      value,
-      case_sensitive,
-    );
+    return _qb_not_equals_string(builder, property_id, value, case_sensitive);
   }
 
-  late final _qb_not_equals_stringPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Char>, ffi.Bool)>>('obx_qb_not_equals_string');
-  late final _qb_not_equals_string = _qb_not_equals_stringPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Char>, bool)>();
+  late final _qb_not_equals_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_not_equals_string');
+  late final _qb_not_equals_string = _qb_not_equals_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   int qb_contains_string(
     ffi.Pointer<OBX_query_builder> builder,
@@ -4228,21 +4314,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> value,
     bool case_sensitive,
   ) {
-    return _qb_contains_string(
-      builder,
-      property_id,
-      value,
-      case_sensitive,
-    );
+    return _qb_contains_string(builder, property_id, value, case_sensitive);
   }
 
-  late final _qb_contains_stringPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Char>, ffi.Bool)>>('obx_qb_contains_string');
-  late final _qb_contains_string = _qb_contains_stringPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Char>, bool)>();
+  late final _qb_contains_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_contains_string');
+  late final _qb_contains_string = _qb_contains_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   /// For container types (e.g. string vector or flex), this looks for a element that equals the given string.
   int qb_contains_element_string(
@@ -4259,17 +4353,26 @@ class ObjectBoxC {
     );
   }
 
-  late final _qb_contains_element_stringPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_contains_element_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Bool)>>('obx_qb_contains_element_string');
-  late final _qb_contains_element_string =
-      _qb_contains_element_stringPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, bool)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_contains_element_string');
+  late final _qb_contains_element_string = _qb_contains_element_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   /// @Deprecated use obx_qb_equals_key_value_string instead
   int qb_contains_key_value_string(
@@ -4288,18 +4391,28 @@ class ObjectBoxC {
     );
   }
 
-  late final _qb_contains_key_value_stringPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_contains_key_value_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Bool)>>('obx_qb_contains_key_value_string');
-  late final _qb_contains_key_value_string =
-      _qb_contains_key_value_stringPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, bool)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_contains_key_value_string');
+  late final _qb_contains_key_value_string = _qb_contains_key_value_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value equal to the given one.
@@ -4322,18 +4435,28 @@ class ObjectBoxC {
     );
   }
 
-  late final _qb_equals_key_value_stringPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_equals_key_value_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Bool)>>('obx_qb_equals_key_value_string');
-  late final _qb_equals_key_value_string =
-      _qb_equals_key_value_stringPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, bool)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_equals_key_value_string');
+  late final _qb_equals_key_value_string = _qb_equals_key_value_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value equal to the given one.
@@ -4345,24 +4468,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> key,
     int value,
   ) {
-    return _qb_equals_key_value_int(
-      builder,
-      property_id,
-      key,
-      value,
-    );
+    return _qb_equals_key_value_int(builder, property_id, key, value);
   }
 
-  late final _qb_equals_key_value_intPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_equals_key_value_intPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Int64)>>('obx_qb_equals_key_value_int');
-  late final _qb_equals_key_value_int = _qb_equals_key_value_intPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Char>, int)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Int64,
+          )
+        >
+      >('obx_qb_equals_key_value_int');
+  late final _qb_equals_key_value_int = _qb_equals_key_value_intPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          int,
+        )
+      >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value equal to the given one.
@@ -4374,25 +4502,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> key,
     double value,
   ) {
-    return _qb_equals_key_value_double(
-      builder,
-      property_id,
-      key,
-      value,
-    );
+    return _qb_equals_key_value_double(builder, property_id, key, value);
   }
 
-  late final _qb_equals_key_value_doublePtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_equals_key_value_doublePtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Double)>>('obx_qb_equals_key_value_double');
-  late final _qb_equals_key_value_double =
-      _qb_equals_key_value_doublePtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, double)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Double,
+          )
+        >
+      >('obx_qb_equals_key_value_double');
+  late final _qb_equals_key_value_double = _qb_equals_key_value_doublePtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          double,
+        )
+      >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value being greater than the given one.
@@ -4415,18 +4547,28 @@ class ObjectBoxC {
     );
   }
 
-  late final _qb_greater_key_value_stringPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_greater_key_value_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Bool)>>('obx_qb_greater_key_value_string');
-  late final _qb_greater_key_value_string =
-      _qb_greater_key_value_stringPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, bool)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_greater_key_value_string');
+  late final _qb_greater_key_value_string = _qb_greater_key_value_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value being greater than the given one.
@@ -4438,25 +4580,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> key,
     int value,
   ) {
-    return _qb_greater_key_value_int(
-      builder,
-      property_id,
-      key,
-      value,
-    );
+    return _qb_greater_key_value_int(builder, property_id, key, value);
   }
 
-  late final _qb_greater_key_value_intPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_greater_key_value_intPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Int64)>>('obx_qb_greater_key_value_int');
-  late final _qb_greater_key_value_int =
-      _qb_greater_key_value_intPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, int)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Int64,
+          )
+        >
+      >('obx_qb_greater_key_value_int');
+  late final _qb_greater_key_value_int = _qb_greater_key_value_intPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          int,
+        )
+      >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value being greater than the given one.
@@ -4468,25 +4614,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> key,
     double value,
   ) {
-    return _qb_greater_key_value_double(
-      builder,
-      property_id,
-      key,
-      value,
-    );
+    return _qb_greater_key_value_double(builder, property_id, key, value);
   }
 
-  late final _qb_greater_key_value_doublePtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_greater_key_value_doublePtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Double)>>('obx_qb_greater_key_value_double');
-  late final _qb_greater_key_value_double =
-      _qb_greater_key_value_doublePtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, double)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Double,
+          )
+        >
+      >('obx_qb_greater_key_value_double');
+  late final _qb_greater_key_value_double = _qb_greater_key_value_doublePtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          double,
+        )
+      >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value being greater than or equal to the given one.
@@ -4509,18 +4659,29 @@ class ObjectBoxC {
     );
   }
 
-  late final _qb_greater_or_equal_key_value_stringPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_greater_or_equal_key_value_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Bool)>>('obx_qb_greater_or_equal_key_value_string');
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_greater_or_equal_key_value_string');
   late final _qb_greater_or_equal_key_value_string =
-      _qb_greater_or_equal_key_value_stringPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, bool)>();
+      _qb_greater_or_equal_key_value_stringPtr
+          .asFunction<
+            int Function(
+              ffi.Pointer<OBX_query_builder>,
+              int,
+              ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>,
+              bool,
+            )
+          >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value being greater than or equal to the given one.
@@ -4532,25 +4693,30 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> key,
     int value,
   ) {
-    return _qb_greater_or_equal_key_value_int(
-      builder,
-      property_id,
-      key,
-      value,
-    );
+    return _qb_greater_or_equal_key_value_int(builder, property_id, key, value);
   }
 
-  late final _qb_greater_or_equal_key_value_intPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_greater_or_equal_key_value_intPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Int64)>>('obx_qb_greater_or_equal_key_value_int');
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Int64,
+          )
+        >
+      >('obx_qb_greater_or_equal_key_value_int');
   late final _qb_greater_or_equal_key_value_int =
-      _qb_greater_or_equal_key_value_intPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, int)>();
+      _qb_greater_or_equal_key_value_intPtr
+          .asFunction<
+            int Function(
+              ffi.Pointer<OBX_query_builder>,
+              int,
+              ffi.Pointer<ffi.Char>,
+              int,
+            )
+          >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value being greater than or equal to the given one.
@@ -4570,17 +4736,27 @@ class ObjectBoxC {
     );
   }
 
-  late final _qb_greater_or_equal_key_value_doublePtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_greater_or_equal_key_value_doublePtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Double)>>('obx_qb_greater_or_equal_key_value_double');
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Double,
+          )
+        >
+      >('obx_qb_greater_or_equal_key_value_double');
   late final _qb_greater_or_equal_key_value_double =
-      _qb_greater_or_equal_key_value_doublePtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, double)>();
+      _qb_greater_or_equal_key_value_doublePtr
+          .asFunction<
+            int Function(
+              ffi.Pointer<OBX_query_builder>,
+              int,
+              ffi.Pointer<ffi.Char>,
+              double,
+            )
+          >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value being lesser than the given one.
@@ -4603,18 +4779,28 @@ class ObjectBoxC {
     );
   }
 
-  late final _qb_less_than_key_value_stringPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_less_than_key_value_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Bool)>>('obx_qb_less_than_key_value_string');
-  late final _qb_less_than_key_value_string =
-      _qb_less_than_key_value_stringPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, bool)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_less_than_key_value_string');
+  late final _qb_less_than_key_value_string = _qb_less_than_key_value_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value being lesser than the given one.
@@ -4626,25 +4812,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> key,
     int value,
   ) {
-    return _qb_less_than_key_value_int(
-      builder,
-      property_id,
-      key,
-      value,
-    );
+    return _qb_less_than_key_value_int(builder, property_id, key, value);
   }
 
-  late final _qb_less_than_key_value_intPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_less_than_key_value_intPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Int64)>>('obx_qb_less_than_key_value_int');
-  late final _qb_less_than_key_value_int =
-      _qb_less_than_key_value_intPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, int)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Int64,
+          )
+        >
+      >('obx_qb_less_than_key_value_int');
+  late final _qb_less_than_key_value_int = _qb_less_than_key_value_intPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          int,
+        )
+      >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value being lesser than the given one.
@@ -4656,25 +4846,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> key,
     double value,
   ) {
-    return _qb_less_than_key_value_double(
-      builder,
-      property_id,
-      key,
-      value,
-    );
+    return _qb_less_than_key_value_double(builder, property_id, key, value);
   }
 
-  late final _qb_less_than_key_value_doublePtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_less_than_key_value_doublePtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Double)>>('obx_qb_less_than_key_value_double');
-  late final _qb_less_than_key_value_double =
-      _qb_less_than_key_value_doublePtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, double)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Double,
+          )
+        >
+      >('obx_qb_less_than_key_value_double');
+  late final _qb_less_than_key_value_double = _qb_less_than_key_value_doublePtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          double,
+        )
+      >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value being lesser than or equal to the given one.
@@ -4697,18 +4891,29 @@ class ObjectBoxC {
     );
   }
 
-  late final _qb_less_or_equal_key_value_stringPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_less_or_equal_key_value_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Bool)>>('obx_qb_less_or_equal_key_value_string');
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_less_or_equal_key_value_string');
   late final _qb_less_or_equal_key_value_string =
-      _qb_less_or_equal_key_value_stringPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, bool)>();
+      _qb_less_or_equal_key_value_stringPtr
+          .asFunction<
+            int Function(
+              ffi.Pointer<OBX_query_builder>,
+              int,
+              ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>,
+              bool,
+            )
+          >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value being lesser than or equal to the given one.
@@ -4720,25 +4925,30 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> key,
     int value,
   ) {
-    return _qb_less_or_equal_key_value_int(
-      builder,
-      property_id,
-      key,
-      value,
-    );
+    return _qb_less_or_equal_key_value_int(builder, property_id, key, value);
   }
 
-  late final _qb_less_or_equal_key_value_intPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_less_or_equal_key_value_intPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Int64)>>('obx_qb_less_or_equal_key_value_int');
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Int64,
+          )
+        >
+      >('obx_qb_less_or_equal_key_value_int');
   late final _qb_less_or_equal_key_value_int =
-      _qb_less_or_equal_key_value_intPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, int)>();
+      _qb_less_or_equal_key_value_intPtr
+          .asFunction<
+            int Function(
+              ffi.Pointer<OBX_query_builder>,
+              int,
+              ffi.Pointer<ffi.Char>,
+              int,
+            )
+          >();
 
   /// For flex properties that have a map as root value, this looks for a matching key/value pair,
   /// with the map value being lesser than or equal to the given one.
@@ -4750,25 +4960,30 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> key,
     double value,
   ) {
-    return _qb_less_or_equal_key_value_double(
-      builder,
-      property_id,
-      key,
-      value,
-    );
+    return _qb_less_or_equal_key_value_double(builder, property_id, key, value);
   }
 
-  late final _qb_less_or_equal_key_value_doublePtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_less_or_equal_key_value_doublePtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Double)>>('obx_qb_less_or_equal_key_value_double');
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Double,
+          )
+        >
+      >('obx_qb_less_or_equal_key_value_double');
   late final _qb_less_or_equal_key_value_double =
-      _qb_less_or_equal_key_value_doublePtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, double)>();
+      _qb_less_or_equal_key_value_doublePtr
+          .asFunction<
+            int Function(
+              ffi.Pointer<OBX_query_builder>,
+              int,
+              ffi.Pointer<ffi.Char>,
+              double,
+            )
+          >();
 
   int qb_starts_with_string(
     ffi.Pointer<OBX_query_builder> builder,
@@ -4776,21 +4991,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> value,
     bool case_sensitive,
   ) {
-    return _qb_starts_with_string(
-      builder,
-      property_id,
-      value,
-      case_sensitive,
-    );
+    return _qb_starts_with_string(builder, property_id, value, case_sensitive);
   }
 
-  late final _qb_starts_with_stringPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Char>, ffi.Bool)>>('obx_qb_starts_with_string');
-  late final _qb_starts_with_string = _qb_starts_with_stringPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Char>, bool)>();
+  late final _qb_starts_with_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_starts_with_string');
+  late final _qb_starts_with_string = _qb_starts_with_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   int qb_ends_with_string(
     ffi.Pointer<OBX_query_builder> builder,
@@ -4798,21 +5021,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> value,
     bool case_sensitive,
   ) {
-    return _qb_ends_with_string(
-      builder,
-      property_id,
-      value,
-      case_sensitive,
-    );
+    return _qb_ends_with_string(builder, property_id, value, case_sensitive);
   }
 
-  late final _qb_ends_with_stringPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Char>, ffi.Bool)>>('obx_qb_ends_with_string');
-  late final _qb_ends_with_string = _qb_ends_with_stringPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Char>, bool)>();
+  late final _qb_ends_with_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_ends_with_string');
+  late final _qb_ends_with_string = _qb_ends_with_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   int qb_greater_than_string(
     ffi.Pointer<OBX_query_builder> builder,
@@ -4820,21 +5051,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> value,
     bool case_sensitive,
   ) {
-    return _qb_greater_than_string(
-      builder,
-      property_id,
-      value,
-      case_sensitive,
-    );
+    return _qb_greater_than_string(builder, property_id, value, case_sensitive);
   }
 
-  late final _qb_greater_than_stringPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Char>, ffi.Bool)>>('obx_qb_greater_than_string');
-  late final _qb_greater_than_string = _qb_greater_than_stringPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Char>, bool)>();
+  late final _qb_greater_than_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_greater_than_string');
+  late final _qb_greater_than_string = _qb_greater_than_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   int qb_greater_or_equal_string(
     ffi.Pointer<OBX_query_builder> builder,
@@ -4850,17 +5089,26 @@ class ObjectBoxC {
     );
   }
 
-  late final _qb_greater_or_equal_stringPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_greater_or_equal_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Bool)>>('obx_qb_greater_or_equal_string');
-  late final _qb_greater_or_equal_string =
-      _qb_greater_or_equal_stringPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Char>, bool)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_greater_or_equal_string');
+  late final _qb_greater_or_equal_string = _qb_greater_or_equal_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   int qb_less_than_string(
     ffi.Pointer<OBX_query_builder> builder,
@@ -4868,21 +5116,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> value,
     bool case_sensitive,
   ) {
-    return _qb_less_than_string(
-      builder,
-      property_id,
-      value,
-      case_sensitive,
-    );
+    return _qb_less_than_string(builder, property_id, value, case_sensitive);
   }
 
-  late final _qb_less_than_stringPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Char>, ffi.Bool)>>('obx_qb_less_than_string');
-  late final _qb_less_than_string = _qb_less_than_stringPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Char>, bool)>();
+  late final _qb_less_than_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_less_than_string');
+  late final _qb_less_than_string = _qb_less_than_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   int qb_less_or_equal_string(
     ffi.Pointer<OBX_query_builder> builder,
@@ -4898,13 +5154,26 @@ class ObjectBoxC {
     );
   }
 
-  late final _qb_less_or_equal_stringPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Char>, ffi.Bool)>>('obx_qb_less_or_equal_string');
-  late final _qb_less_or_equal_string = _qb_less_or_equal_stringPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Char>, bool)>();
+  late final _qb_less_or_equal_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_less_or_equal_string');
+  late final _qb_less_or_equal_string = _qb_less_or_equal_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   /// Note that all string values are copied and thus do not need to be maintained by the calling code.
   int qb_in_strings(
@@ -4914,26 +5183,31 @@ class ObjectBoxC {
     int count,
     bool case_sensitive,
   ) {
-    return _qb_in_strings(
-      builder,
-      property_id,
-      values,
-      count,
-      case_sensitive,
-    );
+    return _qb_in_strings(builder, property_id, values, count, case_sensitive);
   }
 
-  late final _qb_in_stringsPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_in_stringsPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Pointer<ffi.Char>>,
-              ffi.Size,
-              ffi.Bool)>>('obx_qb_in_strings');
-  late final _qb_in_strings = _qb_in_stringsPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query_builder>, int,
-          ffi.Pointer<ffi.Pointer<ffi.Char>>, int, bool)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Pointer<ffi.Char>>,
+            ffi.Size,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_in_strings');
+  late final _qb_in_strings = _qb_in_stringsPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Pointer<ffi.Char>>,
+          int,
+          bool,
+        )
+      >();
 
   /// For OBXPropertyType_StringVector - matches if at least one vector item equals the given value.
   int qb_any_equals_string(
@@ -4942,38 +5216,48 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> value,
     bool case_sensitive,
   ) {
-    return _qb_any_equals_string(
-      builder,
-      property_id,
-      value,
-      case_sensitive,
-    );
+    return _qb_any_equals_string(builder, property_id, value, case_sensitive);
   }
 
-  late final _qb_any_equals_stringPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Char>, ffi.Bool)>>('obx_qb_any_equals_string');
-  late final _qb_any_equals_string = _qb_any_equals_stringPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Char>, bool)>();
+  late final _qb_any_equals_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_qb_any_equals_string');
+  late final _qb_any_equals_string = _qb_any_equals_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Char>,
+          bool,
+        )
+      >();
 
   int qb_equals_int(
     ffi.Pointer<OBX_query_builder> builder,
     int property_id,
     int value,
   ) {
-    return _qb_equals_int(
-      builder,
-      property_id,
-      value,
-    );
+    return _qb_equals_int(builder, property_id, value);
   }
 
-  late final _qb_equals_intPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Int64)>>('obx_qb_equals_int');
+  late final _qb_equals_intPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Int64,
+          )
+        >
+      >('obx_qb_equals_int');
   late final _qb_equals_int = _qb_equals_intPtr
       .asFunction<int Function(ffi.Pointer<OBX_query_builder>, int, int)>();
 
@@ -4982,17 +5266,19 @@ class ObjectBoxC {
     int property_id,
     int value,
   ) {
-    return _qb_not_equals_int(
-      builder,
-      property_id,
-      value,
-    );
+    return _qb_not_equals_int(builder, property_id, value);
   }
 
-  late final _qb_not_equals_intPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Int64)>>('obx_qb_not_equals_int');
+  late final _qb_not_equals_intPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Int64,
+          )
+        >
+      >('obx_qb_not_equals_int');
   late final _qb_not_equals_int = _qb_not_equals_intPtr
       .asFunction<int Function(ffi.Pointer<OBX_query_builder>, int, int)>();
 
@@ -5001,17 +5287,19 @@ class ObjectBoxC {
     int property_id,
     int value,
   ) {
-    return _qb_greater_than_int(
-      builder,
-      property_id,
-      value,
-    );
+    return _qb_greater_than_int(builder, property_id, value);
   }
 
-  late final _qb_greater_than_intPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Int64)>>('obx_qb_greater_than_int');
+  late final _qb_greater_than_intPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Int64,
+          )
+        >
+      >('obx_qb_greater_than_int');
   late final _qb_greater_than_int = _qb_greater_than_intPtr
       .asFunction<int Function(ffi.Pointer<OBX_query_builder>, int, int)>();
 
@@ -5020,17 +5308,19 @@ class ObjectBoxC {
     int property_id,
     int value,
   ) {
-    return _qb_greater_or_equal_int(
-      builder,
-      property_id,
-      value,
-    );
+    return _qb_greater_or_equal_int(builder, property_id, value);
   }
 
-  late final _qb_greater_or_equal_intPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Int64)>>('obx_qb_greater_or_equal_int');
+  late final _qb_greater_or_equal_intPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Int64,
+          )
+        >
+      >('obx_qb_greater_or_equal_int');
   late final _qb_greater_or_equal_int = _qb_greater_or_equal_intPtr
       .asFunction<int Function(ffi.Pointer<OBX_query_builder>, int, int)>();
 
@@ -5039,17 +5329,19 @@ class ObjectBoxC {
     int property_id,
     int value,
   ) {
-    return _qb_less_than_int(
-      builder,
-      property_id,
-      value,
-    );
+    return _qb_less_than_int(builder, property_id, value);
   }
 
-  late final _qb_less_than_intPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Int64)>>('obx_qb_less_than_int');
+  late final _qb_less_than_intPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Int64,
+          )
+        >
+      >('obx_qb_less_than_int');
   late final _qb_less_than_int = _qb_less_than_intPtr
       .asFunction<int Function(ffi.Pointer<OBX_query_builder>, int, int)>();
 
@@ -5058,17 +5350,19 @@ class ObjectBoxC {
     int property_id,
     int value,
   ) {
-    return _qb_less_or_equal_int(
-      builder,
-      property_id,
-      value,
-    );
+    return _qb_less_or_equal_int(builder, property_id, value);
   }
 
-  late final _qb_less_or_equal_intPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Int64)>>('obx_qb_less_or_equal_int');
+  late final _qb_less_or_equal_intPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Int64,
+          )
+        >
+      >('obx_qb_less_or_equal_int');
   late final _qb_less_or_equal_int = _qb_less_or_equal_intPtr
       .asFunction<int Function(ffi.Pointer<OBX_query_builder>, int, int)>();
 
@@ -5078,20 +5372,24 @@ class ObjectBoxC {
     int value_a,
     int value_b,
   ) {
-    return _qb_between_2ints(
-      builder,
-      property_id,
-      value_a,
-      value_b,
-    );
+    return _qb_between_2ints(builder, property_id, value_a, value_b);
   }
 
-  late final _qb_between_2intsPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Int64, ffi.Int64)>>('obx_qb_between_2ints');
-  late final _qb_between_2ints = _qb_between_2intsPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query_builder>, int, int, int)>();
+  late final _qb_between_2intsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Int64,
+            ffi.Int64,
+          )
+        >
+      >('obx_qb_between_2ints');
+  late final _qb_between_2ints = _qb_between_2intsPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_query_builder>, int, int, int)
+      >();
 
   /// Note that all values are copied and thus do not need to be maintained by the calling code.
   int qb_in_int64s(
@@ -5100,21 +5398,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Int64> values,
     int count,
   ) {
-    return _qb_in_int64s(
-      builder,
-      property_id,
-      values,
-      count,
-    );
+    return _qb_in_int64s(builder, property_id, values, count);
   }
 
-  late final _qb_in_int64sPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Int64>, ffi.Size)>>('obx_qb_in_int64s');
-  late final _qb_in_int64s = _qb_in_int64sPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Int64>, int)>();
+  late final _qb_in_int64sPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Int64>,
+            ffi.Size,
+          )
+        >
+      >('obx_qb_in_int64s');
+  late final _qb_in_int64s = _qb_in_int64sPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Int64>,
+          int,
+        )
+      >();
 
   /// Note that all values are copied and thus do not need to be maintained by the calling code.
   int qb_not_in_int64s(
@@ -5123,21 +5429,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Int64> values,
     int count,
   ) {
-    return _qb_not_in_int64s(
-      builder,
-      property_id,
-      values,
-      count,
-    );
+    return _qb_not_in_int64s(builder, property_id, values, count);
   }
 
-  late final _qb_not_in_int64sPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Int64>, ffi.Size)>>('obx_qb_not_in_int64s');
-  late final _qb_not_in_int64s = _qb_not_in_int64sPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Int64>, int)>();
+  late final _qb_not_in_int64sPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Int64>,
+            ffi.Size,
+          )
+        >
+      >('obx_qb_not_in_int64s');
+  late final _qb_not_in_int64s = _qb_not_in_int64sPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Int64>,
+          int,
+        )
+      >();
 
   /// Note that all values are copied and thus do not need to be maintained by the calling code.
   int qb_in_int32s(
@@ -5146,21 +5460,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Int32> values,
     int count,
   ) {
-    return _qb_in_int32s(
-      builder,
-      property_id,
-      values,
-      count,
-    );
+    return _qb_in_int32s(builder, property_id, values, count);
   }
 
-  late final _qb_in_int32sPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Int32>, ffi.Size)>>('obx_qb_in_int32s');
-  late final _qb_in_int32s = _qb_in_int32sPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Int32>, int)>();
+  late final _qb_in_int32sPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Int32>,
+            ffi.Size,
+          )
+        >
+      >('obx_qb_in_int32s');
+  late final _qb_in_int32s = _qb_in_int32sPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Int32>,
+          int,
+        )
+      >();
 
   /// Note that all values are copied and thus do not need to be maintained by the calling code.
   int qb_not_in_int32s(
@@ -5169,38 +5491,48 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Int32> values,
     int count,
   ) {
-    return _qb_not_in_int32s(
-      builder,
-      property_id,
-      values,
-      count,
-    );
+    return _qb_not_in_int32s(builder, property_id, values, count);
   }
 
-  late final _qb_not_in_int32sPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Int32>, ffi.Size)>>('obx_qb_not_in_int32s');
-  late final _qb_not_in_int32s = _qb_not_in_int32sPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Int32>, int)>();
+  late final _qb_not_in_int32sPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Int32>,
+            ffi.Size,
+          )
+        >
+      >('obx_qb_not_in_int32s');
+  late final _qb_not_in_int32s = _qb_not_in_int32sPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Int32>,
+          int,
+        )
+      >();
 
   int qb_greater_than_double(
     ffi.Pointer<OBX_query_builder> builder,
     int property_id,
     double value,
   ) {
-    return _qb_greater_than_double(
-      builder,
-      property_id,
-      value,
-    );
+    return _qb_greater_than_double(builder, property_id, value);
   }
 
-  late final _qb_greater_than_doublePtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Double)>>('obx_qb_greater_than_double');
+  late final _qb_greater_than_doublePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Double,
+          )
+        >
+      >('obx_qb_greater_than_double');
   late final _qb_greater_than_double = _qb_greater_than_doublePtr
       .asFunction<int Function(ffi.Pointer<OBX_query_builder>, int, double)>();
 
@@ -5209,17 +5541,19 @@ class ObjectBoxC {
     int property_id,
     double value,
   ) {
-    return _qb_greater_or_equal_double(
-      builder,
-      property_id,
-      value,
-    );
+    return _qb_greater_or_equal_double(builder, property_id, value);
   }
 
-  late final _qb_greater_or_equal_doublePtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Double)>>('obx_qb_greater_or_equal_double');
+  late final _qb_greater_or_equal_doublePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Double,
+          )
+        >
+      >('obx_qb_greater_or_equal_double');
   late final _qb_greater_or_equal_double = _qb_greater_or_equal_doublePtr
       .asFunction<int Function(ffi.Pointer<OBX_query_builder>, int, double)>();
 
@@ -5228,17 +5562,19 @@ class ObjectBoxC {
     int property_id,
     double value,
   ) {
-    return _qb_less_than_double(
-      builder,
-      property_id,
-      value,
-    );
+    return _qb_less_than_double(builder, property_id, value);
   }
 
-  late final _qb_less_than_doublePtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Double)>>('obx_qb_less_than_double');
+  late final _qb_less_than_doublePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Double,
+          )
+        >
+      >('obx_qb_less_than_double');
   late final _qb_less_than_double = _qb_less_than_doublePtr
       .asFunction<int Function(ffi.Pointer<OBX_query_builder>, int, double)>();
 
@@ -5247,17 +5583,19 @@ class ObjectBoxC {
     int property_id,
     double value,
   ) {
-    return _qb_less_or_equal_double(
-      builder,
-      property_id,
-      value,
-    );
+    return _qb_less_or_equal_double(builder, property_id, value);
   }
 
-  late final _qb_less_or_equal_doublePtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Double)>>('obx_qb_less_or_equal_double');
+  late final _qb_less_or_equal_doublePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Double,
+          )
+        >
+      >('obx_qb_less_or_equal_double');
   late final _qb_less_or_equal_double = _qb_less_or_equal_doublePtr
       .asFunction<int Function(ffi.Pointer<OBX_query_builder>, int, double)>();
 
@@ -5267,20 +5605,24 @@ class ObjectBoxC {
     double value_a,
     double value_b,
   ) {
-    return _qb_between_2doubles(
-      builder,
-      property_id,
-      value_a,
-      value_b,
-    );
+    return _qb_between_2doubles(builder, property_id, value_a, value_b);
   }
 
-  late final _qb_between_2doublesPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Double, ffi.Double)>>('obx_qb_between_2doubles');
-  late final _qb_between_2doubles = _qb_between_2doublesPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query_builder>, int, double, double)>();
+  late final _qb_between_2doublesPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Double,
+            ffi.Double,
+          )
+        >
+      >('obx_qb_between_2doubles');
+  late final _qb_between_2doubles = _qb_between_2doublesPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_query_builder>, int, double, double)
+      >();
 
   int qb_equals_bytes(
     ffi.Pointer<OBX_query_builder> builder,
@@ -5288,21 +5630,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> value,
     int size,
   ) {
-    return _qb_equals_bytes(
-      builder,
-      property_id,
-      value,
-      size,
-    );
+    return _qb_equals_bytes(builder, property_id, value, size);
   }
 
-  late final _qb_equals_bytesPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_qb_equals_bytes');
-  late final _qb_equals_bytes = _qb_equals_bytesPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _qb_equals_bytesPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_qb_equals_bytes');
+  late final _qb_equals_bytes = _qb_equals_bytesPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+        )
+      >();
 
   int qb_greater_than_bytes(
     ffi.Pointer<OBX_query_builder> builder,
@@ -5310,21 +5660,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> value,
     int size,
   ) {
-    return _qb_greater_than_bytes(
-      builder,
-      property_id,
-      value,
-      size,
-    );
+    return _qb_greater_than_bytes(builder, property_id, value, size);
   }
 
-  late final _qb_greater_than_bytesPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_qb_greater_than_bytes');
-  late final _qb_greater_than_bytes = _qb_greater_than_bytesPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _qb_greater_than_bytesPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_qb_greater_than_bytes');
+  late final _qb_greater_than_bytes = _qb_greater_than_bytesPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+        )
+      >();
 
   int qb_greater_or_equal_bytes(
     ffi.Pointer<OBX_query_builder> builder,
@@ -5332,25 +5690,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> value,
     int size,
   ) {
-    return _qb_greater_or_equal_bytes(
-      builder,
-      property_id,
-      value,
-      size,
-    );
+    return _qb_greater_or_equal_bytes(builder, property_id, value, size);
   }
 
-  late final _qb_greater_or_equal_bytesPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_greater_or_equal_bytesPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Uint8>,
-              ffi.Size)>>('obx_qb_greater_or_equal_bytes');
-  late final _qb_greater_or_equal_bytes =
-      _qb_greater_or_equal_bytesPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Uint8>, int)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_qb_greater_or_equal_bytes');
+  late final _qb_greater_or_equal_bytes = _qb_greater_or_equal_bytesPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+        )
+      >();
 
   int qb_less_than_bytes(
     ffi.Pointer<OBX_query_builder> builder,
@@ -5358,21 +5720,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> value,
     int size,
   ) {
-    return _qb_less_than_bytes(
-      builder,
-      property_id,
-      value,
-      size,
-    );
+    return _qb_less_than_bytes(builder, property_id, value, size);
   }
 
-  late final _qb_less_than_bytesPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_qb_less_than_bytes');
-  late final _qb_less_than_bytes = _qb_less_than_bytesPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _qb_less_than_bytesPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_qb_less_than_bytes');
+  late final _qb_less_than_bytes = _qb_less_than_bytesPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+        )
+      >();
 
   int qb_less_or_equal_bytes(
     ffi.Pointer<OBX_query_builder> builder,
@@ -5380,21 +5750,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> value,
     int size,
   ) {
-    return _qb_less_or_equal_bytes(
-      builder,
-      property_id,
-      value,
-      size,
-    );
+    return _qb_less_or_equal_bytes(builder, property_id, value, size);
   }
 
-  late final _qb_less_or_equal_bytesPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_qb_less_or_equal_bytes');
-  late final _qb_less_or_equal_bytes = _qb_less_or_equal_bytesPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _qb_less_or_equal_bytesPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_qb_less_or_equal_bytes');
+  late final _qb_less_or_equal_bytes = _qb_less_or_equal_bytesPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+        )
+      >();
 
   /// An object matches, if it has a given number of related objects pointing to it.
   /// At this point, there are a couple of limitations (later version may improve on that):
@@ -5418,13 +5796,21 @@ class ObjectBoxC {
     );
   }
 
-  late final _qb_relation_count_propertyPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              obx_schema_id, ffi.Uint32)>>('obx_qb_relation_count_property');
-  late final _qb_relation_count_property =
-      _qb_relation_count_propertyPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int, int, int)>();
+  late final _qb_relation_count_propertyPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            obx_schema_id,
+            ffi.Uint32,
+          )
+        >
+      >('obx_qb_relation_count_property');
+  late final _qb_relation_count_property = _qb_relation_count_propertyPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_query_builder>, int, int, int)
+      >();
 
   /// Combine conditions[] to a new condition using operator AND (all).
   int qb_all(
@@ -5432,20 +5818,27 @@ class ObjectBoxC {
     ffi.Pointer<obx_qb_cond> conditions,
     int count,
   ) {
-    return _qb_all(
-      builder,
-      conditions,
-      count,
-    );
+    return _qb_all(builder, conditions, count);
   }
 
-  late final _qb_allPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>,
-              ffi.Pointer<obx_qb_cond>, ffi.Size)>>('obx_qb_all');
-  late final _qb_all = _qb_allPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, ffi.Pointer<obx_qb_cond>, int)>();
+  late final _qb_allPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            ffi.Pointer<obx_qb_cond>,
+            ffi.Size,
+          )
+        >
+      >('obx_qb_all');
+  late final _qb_all = _qb_allPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          ffi.Pointer<obx_qb_cond>,
+          int,
+        )
+      >();
 
   /// Combine conditions[] to a new condition using operator OR (any).
   int qb_any(
@@ -5453,20 +5846,27 @@ class ObjectBoxC {
     ffi.Pointer<obx_qb_cond> conditions,
     int count,
   ) {
-    return _qb_any(
-      builder,
-      conditions,
-      count,
-    );
+    return _qb_any(builder, conditions, count);
   }
 
-  late final _qb_anyPtr = _lookup<
-      ffi.NativeFunction<
-          obx_qb_cond Function(ffi.Pointer<OBX_query_builder>,
-              ffi.Pointer<obx_qb_cond>, ffi.Size)>>('obx_qb_any');
-  late final _qb_any = _qb_anyPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query_builder>, ffi.Pointer<obx_qb_cond>, int)>();
+  late final _qb_anyPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_qb_cond Function(
+            ffi.Pointer<OBX_query_builder>,
+            ffi.Pointer<obx_qb_cond>,
+            ffi.Size,
+          )
+        >
+      >('obx_qb_any');
+  late final _qb_any = _qb_anyPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          ffi.Pointer<obx_qb_cond>,
+          int,
+        )
+      >();
 
   /// Create an alias for the previous condition (the one added just before calling this function).
   /// This is useful when you have a query with multiple conditions of the same property (e.g. height < 20 or height > 50)
@@ -5492,18 +5892,22 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query_builder> builder,
     ffi.Pointer<ffi.Char> alias,
   ) {
-    return _qb_param_alias(
-      builder,
-      alias,
-    );
+    return _qb_param_alias(builder, alias);
   }
 
-  late final _qb_param_aliasPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query_builder>,
-              ffi.Pointer<ffi.Char>)>>('obx_qb_param_alias');
-  late final _qb_param_alias = _qb_param_aliasPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query_builder>, ffi.Pointer<ffi.Char>)>();
+  late final _qb_param_aliasPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query_builder>,
+            ffi.Pointer<ffi.Char>,
+          )
+        >
+      >('obx_qb_param_alias');
+  late final _qb_param_alias = _qb_param_aliasPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_query_builder>, ffi.Pointer<ffi.Char>)
+      >();
 
   /// Configures an order of results in the query
   int qb_order(
@@ -5511,17 +5915,19 @@ class ObjectBoxC {
     int property_id,
     int flags,
   ) {
-    return _qb_order(
-      builder,
-      property_id,
-      flags,
-    );
+    return _qb_order(builder, property_id, flags);
   }
 
-  late final _qb_orderPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query_builder>, obx_schema_id,
-              ffi.Uint32)>>('obx_qb_order');
+  late final _qb_orderPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Uint32,
+          )
+        >
+      >('obx_qb_order');
   late final _qb_order = _qb_orderPtr
       .asFunction<int Function(ffi.Pointer<OBX_query_builder>, int, int)>();
 
@@ -5530,20 +5936,25 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query_builder> builder,
     int property_id,
   ) {
-    return _qb_link_property(
-      builder,
-      property_id,
-    );
+    return _qb_link_property(builder, property_id);
   }
 
-  late final _qb_link_propertyPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_link_propertyPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_query_builder> Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id)>>('obx_qb_link_property');
-  late final _qb_link_property = _qb_link_propertyPtr.asFunction<
-      ffi.Pointer<OBX_query_builder> Function(
-          ffi.Pointer<OBX_query_builder>, int)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+          )
+        >
+      >('obx_qb_link_property');
+  late final _qb_link_property = _qb_link_propertyPtr
+      .asFunction<
+        ffi.Pointer<OBX_query_builder> Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+        )
+      >();
 
   /// Create a backlink based on a property-relation used in reverse (one-to-many)
   ffi.Pointer<OBX_query_builder> qb_backlink_property(
@@ -5551,62 +5962,77 @@ class ObjectBoxC {
     int source_entity_id,
     int source_property_id,
   ) {
-    return _qb_backlink_property(
-      builder,
-      source_entity_id,
-      source_property_id,
-    );
+    return _qb_backlink_property(builder, source_entity_id, source_property_id);
   }
 
-  late final _qb_backlink_propertyPtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_backlink_propertyPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_query_builder> Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              obx_schema_id)>>('obx_qb_backlink_property');
-  late final _qb_backlink_property = _qb_backlink_propertyPtr.asFunction<
-      ffi.Pointer<OBX_query_builder> Function(
-          ffi.Pointer<OBX_query_builder>, int, int)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            obx_schema_id,
+          )
+        >
+      >('obx_qb_backlink_property');
+  late final _qb_backlink_property = _qb_backlink_propertyPtr
+      .asFunction<
+        ffi.Pointer<OBX_query_builder> Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          int,
+        )
+      >();
 
   /// Create a link based on a standalone relation (many-to-many)
   ffi.Pointer<OBX_query_builder> qb_link_standalone(
     ffi.Pointer<OBX_query_builder> builder,
     int relation_id,
   ) {
-    return _qb_link_standalone(
-      builder,
-      relation_id,
-    );
+    return _qb_link_standalone(builder, relation_id);
   }
 
-  late final _qb_link_standalonePtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_link_standalonePtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_query_builder> Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id)>>('obx_qb_link_standalone');
-  late final _qb_link_standalone = _qb_link_standalonePtr.asFunction<
-      ffi.Pointer<OBX_query_builder> Function(
-          ffi.Pointer<OBX_query_builder>, int)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+          )
+        >
+      >('obx_qb_link_standalone');
+  late final _qb_link_standalone = _qb_link_standalonePtr
+      .asFunction<
+        ffi.Pointer<OBX_query_builder> Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+        )
+      >();
 
   /// Create a backlink based on a standalone relation (many-to-many, reverse direction)
   ffi.Pointer<OBX_query_builder> qb_backlink_standalone(
     ffi.Pointer<OBX_query_builder> builder,
     int relation_id,
   ) {
-    return _qb_backlink_standalone(
-      builder,
-      relation_id,
-    );
+    return _qb_backlink_standalone(builder, relation_id);
   }
 
-  late final _qb_backlink_standalonePtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_backlink_standalonePtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_query_builder> Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id)>>('obx_qb_backlink_standalone');
-  late final _qb_backlink_standalone = _qb_backlink_standalonePtr.asFunction<
-      ffi.Pointer<OBX_query_builder> Function(
-          ffi.Pointer<OBX_query_builder>, int)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+          )
+        >
+      >('obx_qb_backlink_standalone');
+  late final _qb_backlink_standalone = _qb_backlink_standalonePtr
+      .asFunction<
+        ffi.Pointer<OBX_query_builder> Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+        )
+      >();
 
   /// Link the (time series) entity type to another entity space using a time point or range defined in the given
   /// linked entity type and properties.
@@ -5631,16 +6057,26 @@ class ObjectBoxC {
     );
   }
 
-  late final _qb_link_timePtr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_link_timePtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_query_builder> Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              obx_schema_id,
-              obx_schema_id)>>('obx_qb_link_time');
-  late final _qb_link_time = _qb_link_timePtr.asFunction<
-      ffi.Pointer<OBX_query_builder> Function(
-          ffi.Pointer<OBX_query_builder>, int, int, int)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            obx_schema_id,
+            obx_schema_id,
+          )
+        >
+      >('obx_qb_link_time');
+  late final _qb_link_time = _qb_link_timePtr
+      .asFunction<
+        ffi.Pointer<OBX_query_builder> Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          int,
+          int,
+        )
+      >();
 
   /// Performs an approximate nearest neighbor (ANN) search to find objects near to the given query_vector.
   /// This requires the vector property to have a HNSW index.
@@ -5665,180 +6101,169 @@ class ObjectBoxC {
     );
   }
 
-  late final _qb_nearest_neighbors_f32Ptr = _lookup<
-      ffi.NativeFunction<
+  late final _qb_nearest_neighbors_f32Ptr =
+      _lookup<
+        ffi.NativeFunction<
           obx_qb_cond Function(
-              ffi.Pointer<OBX_query_builder>,
-              obx_schema_id,
-              ffi.Pointer<ffi.Float>,
-              ffi.Size)>>('obx_qb_nearest_neighbors_f32');
-  late final _qb_nearest_neighbors_f32 =
-      _qb_nearest_neighbors_f32Ptr.asFunction<
-          int Function(ffi.Pointer<OBX_query_builder>, int,
-              ffi.Pointer<ffi.Float>, int)>();
+            ffi.Pointer<OBX_query_builder>,
+            obx_schema_id,
+            ffi.Pointer<ffi.Float>,
+            ffi.Size,
+          )
+        >
+      >('obx_qb_nearest_neighbors_f32');
+  late final _qb_nearest_neighbors_f32 = _qb_nearest_neighbors_f32Ptr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_builder>,
+          int,
+          ffi.Pointer<ffi.Float>,
+          int,
+        )
+      >();
 
   /// @returns NULL if the operation failed, see functions like obx_last_error_code() to get error details
-  ffi.Pointer<OBX_query> query(
-    ffi.Pointer<OBX_query_builder> builder,
-  ) {
-    return _query(
-      builder,
-    );
+  ffi.Pointer<OBX_query> query(ffi.Pointer<OBX_query_builder> builder) {
+    return _query(builder);
   }
 
-  late final _queryPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_query> Function(
-              ffi.Pointer<OBX_query_builder>)>>('obx_query');
-  late final _query = _queryPtr.asFunction<
-      ffi.Pointer<OBX_query> Function(ffi.Pointer<OBX_query_builder>)>();
+  late final _queryPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_query> Function(ffi.Pointer<OBX_query_builder>)
+        >
+      >('obx_query');
+  late final _query = _queryPtr
+      .asFunction<
+        ffi.Pointer<OBX_query> Function(ffi.Pointer<OBX_query_builder>)
+      >();
 
   /// Close the query and free resources.
-  int query_close(
-    ffi.Pointer<OBX_query> query,
-  ) {
-    return _query_close(
-      query,
-    );
+  int query_close(ffi.Pointer<OBX_query> query) {
+    return _query_close(query);
   }
 
   late final _query_closePtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_query>)>>(
-          'obx_query_close');
-  late final _query_close =
-      _query_closePtr.asFunction<int Function(ffi.Pointer<OBX_query>)>();
+        'obx_query_close',
+      );
+  late final _query_close = _query_closePtr
+      .asFunction<int Function(ffi.Pointer<OBX_query>)>();
 
   /// Create a clone of the given query such that it can be run on a separate thread
-  ffi.Pointer<OBX_query> query_clone(
-    ffi.Pointer<OBX_query> query,
-  ) {
-    return _query_clone(
-      query,
-    );
+  ffi.Pointer<OBX_query> query_clone(ffi.Pointer<OBX_query> query) {
+    return _query_clone(query);
   }
 
-  late final _query_clonePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_query> Function(
-              ffi.Pointer<OBX_query>)>>('obx_query_clone');
+  late final _query_clonePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_query> Function(ffi.Pointer<OBX_query>)
+        >
+      >('obx_query_clone');
   late final _query_clone = _query_clonePtr
       .asFunction<ffi.Pointer<OBX_query> Function(ffi.Pointer<OBX_query>)>();
 
   /// Configure an offset for this query - all methods that support offset will return/process objects starting at this
   /// offset. Example use case: use together with limit to get a slice of the whole result, e.g. for "result paging".
   /// Call with offset=0 to reset to the default behavior, i.e. starting from the first element.
-  int query_offset(
-    ffi.Pointer<OBX_query> query,
-    int offset,
-  ) {
-    return _query_offset(
-      query,
-      offset,
-    );
+  int query_offset(ffi.Pointer<OBX_query> query, int offset) {
+    return _query_offset(query, offset);
   }
 
-  late final _query_offsetPtr = _lookup<
-          ffi
-          .NativeFunction<obx_err Function(ffi.Pointer<OBX_query>, ffi.Size)>>(
-      'obx_query_offset');
-  late final _query_offset =
-      _query_offsetPtr.asFunction<int Function(ffi.Pointer<OBX_query>, int)>();
+  late final _query_offsetPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_query>, ffi.Size)>
+      >('obx_query_offset');
+  late final _query_offset = _query_offsetPtr
+      .asFunction<int Function(ffi.Pointer<OBX_query>, int)>();
 
   /// Configure an offset and a limit for this query - all methods that support an offset/limit will return/process
   /// objects starting at this offset and up to the given limit. Example use case: get a slice of the whole result, e.g.
   /// for "result paging". Call with offset/limit=0 to reset to the default behavior, i.e. starting from the first element
   /// without limit.
-  int query_offset_limit(
-    ffi.Pointer<OBX_query> query,
-    int offset,
-    int limit,
-  ) {
-    return _query_offset_limit(
-      query,
-      offset,
-      limit,
-    );
+  int query_offset_limit(ffi.Pointer<OBX_query> query, int offset, int limit) {
+    return _query_offset_limit(query, offset, limit);
   }
 
-  late final _query_offset_limitPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, ffi.Size,
-              ffi.Size)>>('obx_query_offset_limit');
+  late final _query_offset_limitPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_query>, ffi.Size, ffi.Size)
+        >
+      >('obx_query_offset_limit');
   late final _query_offset_limit = _query_offset_limitPtr
       .asFunction<int Function(ffi.Pointer<OBX_query>, int, int)>();
 
   /// Configure a limit for this query - all methods that support limit will return/process only the given number of
   /// objects. Example use case: use together with offset to get a slice of the whole result, e.g. for "result paging".
   /// Call with limit=0 to reset to the default behavior - zero limit means no limit applied.
-  int query_limit(
-    ffi.Pointer<OBX_query> query,
-    int limit,
-  ) {
-    return _query_limit(
-      query,
-      limit,
-    );
+  int query_limit(ffi.Pointer<OBX_query> query, int limit) {
+    return _query_limit(query, limit);
   }
 
-  late final _query_limitPtr = _lookup<
-          ffi
-          .NativeFunction<obx_err Function(ffi.Pointer<OBX_query>, ffi.Size)>>(
-      'obx_query_limit');
-  late final _query_limit =
-      _query_limitPtr.asFunction<int Function(ffi.Pointer<OBX_query>, int)>();
+  late final _query_limitPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_query>, ffi.Size)>
+      >('obx_query_limit');
+  late final _query_limit = _query_limitPtr
+      .asFunction<int Function(ffi.Pointer<OBX_query>, int)>();
 
   /// Find objects matching the query.
   /// NOTE: You must use an explicit transaction and the returned data is only valid as long the transaction is active!
   /// Note: if no order conditions is present, the order is arbitrary (sometimes ordered by ID, but never guaranteed to).
-  ffi.Pointer<OBX_bytes_array> query_find(
-    ffi.Pointer<OBX_query> query,
-  ) {
-    return _query_find(
-      query,
-    );
+  ffi.Pointer<OBX_bytes_array> query_find(ffi.Pointer<OBX_query> query) {
+    return _query_find(query);
   }
 
-  late final _query_findPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_bytes_array> Function(
-              ffi.Pointer<OBX_query>)>>('obx_query_find');
-  late final _query_find = _query_findPtr.asFunction<
-      ffi.Pointer<OBX_bytes_array> Function(ffi.Pointer<OBX_query>)>();
+  late final _query_findPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_bytes_array> Function(ffi.Pointer<OBX_query>)
+        >
+      >('obx_query_find');
+  late final _query_find = _query_findPtr
+      .asFunction<
+        ffi.Pointer<OBX_bytes_array> Function(ffi.Pointer<OBX_query>)
+      >();
 
   /// Find objects matching the query associated to their query score (e.g. distance in NN search).
   /// The resulting array is sorted by score in ascending order (unlike obx_query_find()).
   ffi.Pointer<OBX_bytes_score_array> query_find_with_scores(
     ffi.Pointer<OBX_query> query,
   ) {
-    return _query_find_with_scores(
-      query,
-    );
+    return _query_find_with_scores(query);
   }
 
-  late final _query_find_with_scoresPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_bytes_score_array> Function(
-              ffi.Pointer<OBX_query>)>>('obx_query_find_with_scores');
-  late final _query_find_with_scores = _query_find_with_scoresPtr.asFunction<
-      ffi.Pointer<OBX_bytes_score_array> Function(ffi.Pointer<OBX_query>)>();
+  late final _query_find_with_scoresPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_bytes_score_array> Function(ffi.Pointer<OBX_query>)
+        >
+      >('obx_query_find_with_scores');
+  late final _query_find_with_scores = _query_find_with_scoresPtr
+      .asFunction<
+        ffi.Pointer<OBX_bytes_score_array> Function(ffi.Pointer<OBX_query>)
+      >();
 
   /// Find object IDs matching the query associated to their query score (e.g. distance in NN search).
   /// The resulting array is sorted by score in ascending order (unlike obx_query_find_ids()).
   ffi.Pointer<OBX_id_score_array> query_find_ids_with_scores(
     ffi.Pointer<OBX_query> query,
   ) {
-    return _query_find_ids_with_scores(
-      query,
-    );
+    return _query_find_ids_with_scores(query);
   }
 
-  late final _query_find_ids_with_scoresPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_id_score_array> Function(
-              ffi.Pointer<OBX_query>)>>('obx_query_find_ids_with_scores');
-  late final _query_find_ids_with_scores =
-      _query_find_ids_with_scoresPtr.asFunction<
-          ffi.Pointer<OBX_id_score_array> Function(ffi.Pointer<OBX_query>)>();
+  late final _query_find_ids_with_scoresPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_id_score_array> Function(ffi.Pointer<OBX_query>)
+        >
+      >('obx_query_find_ids_with_scores');
+  late final _query_find_ids_with_scores = _query_find_ids_with_scoresPtr
+      .asFunction<
+        ffi.Pointer<OBX_id_score_array> Function(ffi.Pointer<OBX_query>)
+      >();
 
   /// Find object IDs matching the query ordered by their query score (e.g. distance in NN search).
   /// The resulting array is sorted by score in ascending order (unlike obx_query_find_ids()).
@@ -5846,15 +6271,15 @@ class ObjectBoxC {
   ffi.Pointer<OBX_id_array> query_find_ids_by_score(
     ffi.Pointer<OBX_query> query,
   ) {
-    return _query_find_ids_by_score(
-      query,
-    );
+    return _query_find_ids_by_score(query);
   }
 
-  late final _query_find_ids_by_scorePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_id_array> Function(
-              ffi.Pointer<OBX_query>)>>('obx_query_find_ids_by_score');
+  late final _query_find_ids_by_scorePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_query>)
+        >
+      >('obx_query_find_ids_by_score');
   late final _query_find_ids_by_score = _query_find_ids_by_scorePtr
       .asFunction<ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_query>)>();
 
@@ -5869,22 +6294,27 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Pointer<ffi.Uint8>> data,
     ffi.Pointer<ffi.Size> size,
   ) {
-    return _query_find_first(
-      query,
-      data,
-      size,
-    );
+    return _query_find_first(query, data, size);
   }
 
-  late final _query_find_firstPtr = _lookup<
-      ffi.NativeFunction<
+  late final _query_find_firstPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_query>,
-              ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-              ffi.Pointer<ffi.Size>)>>('obx_query_find_first');
-  late final _query_find_first = _query_find_firstPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-          ffi.Pointer<ffi.Size>)>();
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+            ffi.Pointer<ffi.Size>,
+          )
+        >
+      >('obx_query_find_first');
+  late final _query_find_first = _query_find_firstPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+          ffi.Pointer<ffi.Size>,
+        )
+      >();
 
   /// Find the only object matching the query.
   /// @returns OBX_NOT_FOUND if no object matches, an error if there are multiple objects matching the query.
@@ -5897,22 +6327,27 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Pointer<ffi.Uint8>> data,
     ffi.Pointer<ffi.Size> size,
   ) {
-    return _query_find_unique(
-      query,
-      data,
-      size,
-    );
+    return _query_find_unique(query, data, size);
   }
 
-  late final _query_find_uniquePtr = _lookup<
-      ffi.NativeFunction<
+  late final _query_find_uniquePtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_query>,
-              ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-              ffi.Pointer<ffi.Size>)>>('obx_query_find_unique');
-  late final _query_find_unique = _query_find_uniquePtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-          ffi.Pointer<ffi.Size>)>();
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+            ffi.Pointer<ffi.Size>,
+          )
+        >
+      >('obx_query_find_unique');
+  late final _query_find_unique = _query_find_uniquePtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+          ffi.Pointer<ffi.Size>,
+        )
+      >();
 
   /// Walk over matching objects one-by-one using the given data visitor (a callback function).
   /// Note: if no order conditions is present, the order is arbitrary (sometimes ordered by ID, but never guaranteed to).
@@ -5921,22 +6356,27 @@ class ObjectBoxC {
     ffi.Pointer<obx_data_visitor> visitor,
     ffi.Pointer<ffi.Void> user_data,
   ) {
-    return _query_visit(
-      query,
-      visitor,
-      user_data,
-    );
+    return _query_visit(query, visitor, user_data);
   }
 
-  late final _query_visitPtr = _lookup<
-      ffi.NativeFunction<
+  late final _query_visitPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_query>,
-              ffi.Pointer<obx_data_visitor>,
-              ffi.Pointer<ffi.Void>)>>('obx_query_visit');
-  late final _query_visit = _query_visitPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, ffi.Pointer<obx_data_visitor>,
-          ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<obx_data_visitor>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_query_visit');
+  late final _query_visit = _query_visitPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<obx_data_visitor>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Walk over matching objects with their query score one-by-one using the given data visitor (a callback function).
   /// Note: the elements are ordered by the score (ascending).
@@ -5945,37 +6385,40 @@ class ObjectBoxC {
     ffi.Pointer<obx_data_score_visitor> visitor,
     ffi.Pointer<ffi.Void> user_data,
   ) {
-    return _query_visit_with_score(
-      query,
-      visitor,
-      user_data,
-    );
+    return _query_visit_with_score(query, visitor, user_data);
   }
 
-  late final _query_visit_with_scorePtr = _lookup<
-      ffi.NativeFunction<
+  late final _query_visit_with_scorePtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_query>,
-              ffi.Pointer<obx_data_score_visitor>,
-              ffi.Pointer<ffi.Void>)>>('obx_query_visit_with_score');
-  late final _query_visit_with_score = _query_visit_with_scorePtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, ffi.Pointer<obx_data_score_visitor>,
-          ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<obx_data_score_visitor>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_query_visit_with_score');
+  late final _query_visit_with_score = _query_visit_with_scorePtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<obx_data_score_visitor>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Return the IDs of all matching objects.
   /// Note: if no order conditions is present, the order is arbitrary (sometimes ordered by ID, but never guaranteed to).
-  ffi.Pointer<OBX_id_array> query_find_ids(
-    ffi.Pointer<OBX_query> query,
-  ) {
-    return _query_find_ids(
-      query,
-    );
+  ffi.Pointer<OBX_id_array> query_find_ids(ffi.Pointer<OBX_query> query) {
+    return _query_find_ids(query);
   }
 
-  late final _query_find_idsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_id_array> Function(
-              ffi.Pointer<OBX_query>)>>('obx_query_find_ids');
+  late final _query_find_idsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_query>)
+        >
+      >('obx_query_find_ids');
   late final _query_find_ids = _query_find_idsPtr
       .asFunction<ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_query>)>();
 
@@ -5984,66 +6427,64 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query> query,
     ffi.Pointer<ffi.Uint64> out_count,
   ) {
-    return _query_count(
-      query,
-      out_count,
-    );
+    return _query_count(query, out_count);
   }
 
-  late final _query_countPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>,
-              ffi.Pointer<ffi.Uint64>)>>('obx_query_count');
-  late final _query_count = _query_countPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Uint64>)>();
+  late final _query_countPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Uint64>)
+        >
+      >('obx_query_count');
+  late final _query_count = _query_countPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Uint64>)
+      >();
 
   /// Remove all matching objects from the database & return the number of deleted objects
   int query_remove(
     ffi.Pointer<OBX_query> query,
     ffi.Pointer<ffi.Uint64> out_count,
   ) {
-    return _query_remove(
-      query,
-      out_count,
-    );
+    return _query_remove(query, out_count);
   }
 
-  late final _query_removePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>,
-              ffi.Pointer<ffi.Uint64>)>>('obx_query_remove');
-  late final _query_remove = _query_removePtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Uint64>)>();
+  late final _query_removePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Uint64>)
+        >
+      >('obx_query_remove');
+  late final _query_remove = _query_removePtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Uint64>)
+      >();
 
   /// The returned char* is valid until another call to describe() is made on the query or until the query is freed
-  ffi.Pointer<ffi.Char> query_describe(
-    ffi.Pointer<OBX_query> query,
-  ) {
-    return _query_describe(
-      query,
-    );
+  ffi.Pointer<ffi.Char> query_describe(ffi.Pointer<OBX_query> query) {
+    return _query_describe(query);
   }
 
-  late final _query_describePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<ffi.Char> Function(
-              ffi.Pointer<OBX_query>)>>('obx_query_describe');
+  late final _query_describePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_query>)
+        >
+      >('obx_query_describe');
   late final _query_describe = _query_describePtr
       .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_query>)>();
 
   /// The returned char* is valid until another call to describe_params() is made on the query or until the query is freed
-  ffi.Pointer<ffi.Char> query_describe_params(
-    ffi.Pointer<OBX_query> query,
-  ) {
-    return _query_describe_params(
-      query,
-    );
+  ffi.Pointer<ffi.Char> query_describe_params(ffi.Pointer<OBX_query> query) {
+    return _query_describe_params(query);
   }
 
-  late final _query_describe_paramsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<ffi.Char> Function(
-              ffi.Pointer<OBX_query>)>>('obx_query_describe_params');
+  late final _query_describe_paramsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_query>)
+        >
+      >('obx_query_describe_params');
   late final _query_describe_params = _query_describe_paramsPtr
       .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_query>)>();
 
@@ -6053,24 +6494,29 @@ class ObjectBoxC {
     ffi.Pointer<obx_data_visitor> visitor,
     ffi.Pointer<ffi.Void> user_data,
   ) {
-    return _query_cursor_visit(
-      query,
-      cursor,
-      visitor,
-      user_data,
-    );
+    return _query_cursor_visit(query, cursor, visitor, user_data);
   }
 
-  late final _query_cursor_visitPtr = _lookup<
-      ffi.NativeFunction<
+  late final _query_cursor_visitPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_query>,
-              ffi.Pointer<OBX_cursor>,
-              ffi.Pointer<obx_data_visitor>,
-              ffi.Pointer<ffi.Void>)>>('obx_query_cursor_visit');
-  late final _query_cursor_visit = _query_cursor_visitPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, ffi.Pointer<OBX_cursor>,
-          ffi.Pointer<obx_data_visitor>, ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<OBX_cursor>,
+            ffi.Pointer<obx_data_visitor>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_query_cursor_visit');
+  late final _query_cursor_visit = _query_cursor_visitPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<OBX_cursor>,
+          ffi.Pointer<obx_data_visitor>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Find entities matching the query; NOTE: the returned data is only valid as long the transaction is active!
   /// @returns NULL if the operation failed, see functions like obx_last_error_code() to get error details
@@ -6078,57 +6524,76 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query> query,
     ffi.Pointer<OBX_cursor> cursor,
   ) {
-    return _query_cursor_find(
-      query,
-      cursor,
-    );
+    return _query_cursor_find(query, cursor);
   }
 
-  late final _query_cursor_findPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_bytes_array> Function(ffi.Pointer<OBX_query>,
-              ffi.Pointer<OBX_cursor>)>>('obx_query_cursor_find');
-  late final _query_cursor_find = _query_cursor_findPtr.asFunction<
-      ffi.Pointer<OBX_bytes_array> Function(
-          ffi.Pointer<OBX_query>, ffi.Pointer<OBX_cursor>)>();
+  late final _query_cursor_findPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_bytes_array> Function(
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<OBX_cursor>,
+          )
+        >
+      >('obx_query_cursor_find');
+  late final _query_cursor_find = _query_cursor_findPtr
+      .asFunction<
+        ffi.Pointer<OBX_bytes_array> Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<OBX_cursor>,
+        )
+      >();
 
   ffi.Pointer<OBX_id_array> query_cursor_find_ids(
     ffi.Pointer<OBX_query> query,
     ffi.Pointer<OBX_cursor> cursor,
   ) {
-    return _query_cursor_find_ids(
-      query,
-      cursor,
-    );
+    return _query_cursor_find_ids(query, cursor);
   }
 
-  late final _query_cursor_find_idsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_id_array> Function(ffi.Pointer<OBX_query>,
-              ffi.Pointer<OBX_cursor>)>>('obx_query_cursor_find_ids');
-  late final _query_cursor_find_ids = _query_cursor_find_idsPtr.asFunction<
-      ffi.Pointer<OBX_id_array> Function(
-          ffi.Pointer<OBX_query>, ffi.Pointer<OBX_cursor>)>();
+  late final _query_cursor_find_idsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_id_array> Function(
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<OBX_cursor>,
+          )
+        >
+      >('obx_query_cursor_find_ids');
+  late final _query_cursor_find_ids = _query_cursor_find_idsPtr
+      .asFunction<
+        ffi.Pointer<OBX_id_array> Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<OBX_cursor>,
+        )
+      >();
 
   int query_cursor_count(
     ffi.Pointer<OBX_query> query,
     ffi.Pointer<OBX_cursor> cursor,
     ffi.Pointer<ffi.Uint64> out_count,
   ) {
-    return _query_cursor_count(
-      query,
-      cursor,
-      out_count,
-    );
+    return _query_cursor_count(query, cursor, out_count);
   }
 
-  late final _query_cursor_countPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, ffi.Pointer<OBX_cursor>,
-              ffi.Pointer<ffi.Uint64>)>>('obx_query_cursor_count');
-  late final _query_cursor_count = _query_cursor_countPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, ffi.Pointer<OBX_cursor>,
-          ffi.Pointer<ffi.Uint64>)>();
+  late final _query_cursor_countPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<OBX_cursor>,
+            ffi.Pointer<ffi.Uint64>,
+          )
+        >
+      >('obx_query_cursor_count');
+  late final _query_cursor_count = _query_cursor_countPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<OBX_cursor>,
+          ffi.Pointer<ffi.Uint64>,
+        )
+      >();
 
   /// Remove (delete!) all matching objects.
   int query_cursor_remove(
@@ -6136,20 +6601,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_cursor> cursor,
     ffi.Pointer<ffi.Uint64> out_count,
   ) {
-    return _query_cursor_remove(
-      query,
-      cursor,
-      out_count,
-    );
+    return _query_cursor_remove(query, cursor, out_count);
   }
 
-  late final _query_cursor_removePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, ffi.Pointer<OBX_cursor>,
-              ffi.Pointer<ffi.Uint64>)>>('obx_query_cursor_remove');
-  late final _query_cursor_remove = _query_cursor_removePtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, ffi.Pointer<OBX_cursor>,
-          ffi.Pointer<ffi.Uint64>)>();
+  late final _query_cursor_removePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<OBX_cursor>,
+            ffi.Pointer<ffi.Uint64>,
+          )
+        >
+      >('obx_query_cursor_remove');
+  late final _query_cursor_remove = _query_cursor_removePtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<OBX_cursor>,
+          ffi.Pointer<ffi.Uint64>,
+        )
+      >();
 
   int query_param_string(
     ffi.Pointer<OBX_query> query,
@@ -6157,20 +6629,24 @@ class ObjectBoxC {
     int property_id,
     ffi.Pointer<ffi.Char> value,
   ) {
-    return _query_param_string(
-      query,
-      entity_id,
-      property_id,
-      value,
-    );
+    return _query_param_string(query, entity_id, property_id, value);
   }
 
-  late final _query_param_stringPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, obx_schema_id, obx_schema_id,
-              ffi.Pointer<ffi.Char>)>>('obx_query_param_string');
-  late final _query_param_string = _query_param_stringPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, int, int, ffi.Pointer<ffi.Char>)>();
+  late final _query_param_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            obx_schema_id,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+          )
+        >
+      >('obx_query_param_string');
+  late final _query_param_string = _query_param_stringPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_query>, int, int, ffi.Pointer<ffi.Char>)
+      >();
 
   int query_param_2strings(
     ffi.Pointer<OBX_query> query,
@@ -6179,26 +6655,31 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> value,
     ffi.Pointer<ffi.Char> value2,
   ) {
-    return _query_param_2strings(
-      query,
-      entity_id,
-      property_id,
-      value,
-      value2,
-    );
+    return _query_param_2strings(query, entity_id, property_id, value, value2);
   }
 
-  late final _query_param_2stringsPtr = _lookup<
-      ffi.NativeFunction<
+  late final _query_param_2stringsPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_query>,
-              obx_schema_id,
-              obx_schema_id,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>)>>('obx_query_param_2strings');
-  late final _query_param_2strings = _query_param_2stringsPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, int, int, ffi.Pointer<ffi.Char>,
-          ffi.Pointer<ffi.Char>)>();
+            ffi.Pointer<OBX_query>,
+            obx_schema_id,
+            obx_schema_id,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Char>,
+          )
+        >
+      >('obx_query_param_2strings');
+  late final _query_param_2strings = _query_param_2stringsPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          int,
+          int,
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>,
+        )
+      >();
 
   int query_param_strings(
     ffi.Pointer<OBX_query> query,
@@ -6207,26 +6688,31 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Pointer<ffi.Char>> values,
     int count,
   ) {
-    return _query_param_strings(
-      query,
-      entity_id,
-      property_id,
-      values,
-      count,
-    );
+    return _query_param_strings(query, entity_id, property_id, values, count);
   }
 
-  late final _query_param_stringsPtr = _lookup<
-      ffi.NativeFunction<
+  late final _query_param_stringsPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_query>,
-              obx_schema_id,
-              obx_schema_id,
-              ffi.Pointer<ffi.Pointer<ffi.Char>>,
-              ffi.Size)>>('obx_query_param_strings');
-  late final _query_param_strings = _query_param_stringsPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, int, int,
-          ffi.Pointer<ffi.Pointer<ffi.Char>>, int)>();
+            ffi.Pointer<OBX_query>,
+            obx_schema_id,
+            obx_schema_id,
+            ffi.Pointer<ffi.Pointer<ffi.Char>>,
+            ffi.Size,
+          )
+        >
+      >('obx_query_param_strings');
+  late final _query_param_strings = _query_param_stringsPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          int,
+          int,
+          ffi.Pointer<ffi.Pointer<ffi.Char>>,
+          int,
+        )
+      >();
 
   int query_param_int(
     ffi.Pointer<OBX_query> query,
@@ -6234,18 +6720,20 @@ class ObjectBoxC {
     int property_id,
     int value,
   ) {
-    return _query_param_int(
-      query,
-      entity_id,
-      property_id,
-      value,
-    );
+    return _query_param_int(query, entity_id, property_id, value);
   }
 
-  late final _query_param_intPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, obx_schema_id, obx_schema_id,
-              ffi.Int64)>>('obx_query_param_int');
+  late final _query_param_intPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            obx_schema_id,
+            obx_schema_id,
+            ffi.Int64,
+          )
+        >
+      >('obx_query_param_int');
   late final _query_param_int = _query_param_intPtr
       .asFunction<int Function(ffi.Pointer<OBX_query>, int, int, int)>();
 
@@ -6256,19 +6744,21 @@ class ObjectBoxC {
     int value_a,
     int value_b,
   ) {
-    return _query_param_2ints(
-      query,
-      entity_id,
-      property_id,
-      value_a,
-      value_b,
-    );
+    return _query_param_2ints(query, entity_id, property_id, value_a, value_b);
   }
 
-  late final _query_param_2intsPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, obx_schema_id, obx_schema_id,
-              ffi.Int64, ffi.Int64)>>('obx_query_param_2ints');
+  late final _query_param_2intsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            obx_schema_id,
+            obx_schema_id,
+            ffi.Int64,
+            ffi.Int64,
+          )
+        >
+      >('obx_query_param_2ints');
   late final _query_param_2ints = _query_param_2intsPtr
       .asFunction<int Function(ffi.Pointer<OBX_query>, int, int, int, int)>();
 
@@ -6279,22 +6769,31 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Int64> values,
     int count,
   ) {
-    return _query_param_int64s(
-      query,
-      entity_id,
-      property_id,
-      values,
-      count,
-    );
+    return _query_param_int64s(query, entity_id, property_id, values, count);
   }
 
-  late final _query_param_int64sPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, obx_schema_id, obx_schema_id,
-              ffi.Pointer<ffi.Int64>, ffi.Size)>>('obx_query_param_int64s');
-  late final _query_param_int64s = _query_param_int64sPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query>, int, int, ffi.Pointer<ffi.Int64>, int)>();
+  late final _query_param_int64sPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            obx_schema_id,
+            obx_schema_id,
+            ffi.Pointer<ffi.Int64>,
+            ffi.Size,
+          )
+        >
+      >('obx_query_param_int64s');
+  late final _query_param_int64s = _query_param_int64sPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          int,
+          int,
+          ffi.Pointer<ffi.Int64>,
+          int,
+        )
+      >();
 
   int query_param_int32s(
     ffi.Pointer<OBX_query> query,
@@ -6303,22 +6802,31 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Int32> values,
     int count,
   ) {
-    return _query_param_int32s(
-      query,
-      entity_id,
-      property_id,
-      values,
-      count,
-    );
+    return _query_param_int32s(query, entity_id, property_id, values, count);
   }
 
-  late final _query_param_int32sPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, obx_schema_id, obx_schema_id,
-              ffi.Pointer<ffi.Int32>, ffi.Size)>>('obx_query_param_int32s');
-  late final _query_param_int32s = _query_param_int32sPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query>, int, int, ffi.Pointer<ffi.Int32>, int)>();
+  late final _query_param_int32sPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            obx_schema_id,
+            obx_schema_id,
+            ffi.Pointer<ffi.Int32>,
+            ffi.Size,
+          )
+        >
+      >('obx_query_param_int32s');
+  late final _query_param_int32s = _query_param_int32sPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          int,
+          int,
+          ffi.Pointer<ffi.Int32>,
+          int,
+        )
+      >();
 
   int query_param_double(
     ffi.Pointer<OBX_query> query,
@@ -6326,18 +6834,20 @@ class ObjectBoxC {
     int property_id,
     double value,
   ) {
-    return _query_param_double(
-      query,
-      entity_id,
-      property_id,
-      value,
-    );
+    return _query_param_double(query, entity_id, property_id, value);
   }
 
-  late final _query_param_doublePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, obx_schema_id, obx_schema_id,
-              ffi.Double)>>('obx_query_param_double');
+  late final _query_param_doublePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            obx_schema_id,
+            obx_schema_id,
+            ffi.Double,
+          )
+        >
+      >('obx_query_param_double');
   late final _query_param_double = _query_param_doublePtr
       .asFunction<int Function(ffi.Pointer<OBX_query>, int, int, double)>();
 
@@ -6357,12 +6867,22 @@ class ObjectBoxC {
     );
   }
 
-  late final _query_param_2doublesPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, obx_schema_id, obx_schema_id,
-              ffi.Double, ffi.Double)>>('obx_query_param_2doubles');
-  late final _query_param_2doubles = _query_param_2doublesPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, int, int, double, double)>();
+  late final _query_param_2doublesPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            obx_schema_id,
+            obx_schema_id,
+            ffi.Double,
+            ffi.Double,
+          )
+        >
+      >('obx_query_param_2doubles');
+  late final _query_param_2doubles = _query_param_2doublesPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_query>, int, int, double, double)
+      >();
 
   int query_param_bytes(
     ffi.Pointer<OBX_query> query,
@@ -6371,22 +6891,31 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> value,
     int size,
   ) {
-    return _query_param_bytes(
-      query,
-      entity_id,
-      property_id,
-      value,
-      size,
-    );
+    return _query_param_bytes(query, entity_id, property_id, value, size);
   }
 
-  late final _query_param_bytesPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, obx_schema_id, obx_schema_id,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_query_param_bytes');
-  late final _query_param_bytes = _query_param_bytesPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_query>, int, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _query_param_bytesPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            obx_schema_id,
+            obx_schema_id,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_query_param_bytes');
+  late final _query_param_bytes = _query_param_bytesPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          int,
+          int,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+        )
+      >();
 
   int query_param_vector_float32(
     ffi.Pointer<OBX_query> query,
@@ -6404,18 +6933,28 @@ class ObjectBoxC {
     );
   }
 
-  late final _query_param_vector_float32Ptr = _lookup<
-      ffi.NativeFunction<
+  late final _query_param_vector_float32Ptr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_query>,
-              obx_schema_id,
-              obx_schema_id,
-              ffi.Pointer<ffi.Float>,
-              ffi.Size)>>('obx_query_param_vector_float32');
-  late final _query_param_vector_float32 =
-      _query_param_vector_float32Ptr.asFunction<
-          int Function(
-              ffi.Pointer<OBX_query>, int, int, ffi.Pointer<ffi.Float>, int)>();
+            ffi.Pointer<OBX_query>,
+            obx_schema_id,
+            obx_schema_id,
+            ffi.Pointer<ffi.Float>,
+            ffi.Size,
+          )
+        >
+      >('obx_query_param_vector_float32');
+  late final _query_param_vector_float32 = _query_param_vector_float32Ptr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          int,
+          int,
+          ffi.Pointer<ffi.Float>,
+          int,
+        )
+      >();
 
   /// Gets the size of the property type used in a query condition.
   /// A typical use case of this is to allow language bindings (e.g. Swift) use the right type (e.g. 32 bit ints) even
@@ -6427,17 +6966,19 @@ class ObjectBoxC {
     int entity_id,
     int property_id,
   ) {
-    return _query_param_get_type_size(
-      query,
-      entity_id,
-      property_id,
-    );
+    return _query_param_get_type_size(query, entity_id, property_id);
   }
 
-  late final _query_param_get_type_sizePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Size Function(ffi.Pointer<OBX_query>, obx_schema_id,
-              obx_schema_id)>>('obx_query_param_get_type_size');
+  late final _query_param_get_type_sizePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Size Function(
+            ffi.Pointer<OBX_query>,
+            obx_schema_id,
+            obx_schema_id,
+          )
+        >
+      >('obx_query_param_get_type_size');
   late final _query_param_get_type_size = _query_param_get_type_sizePtr
       .asFunction<int Function(ffi.Pointer<OBX_query>, int, int)>();
 
@@ -6446,21 +6987,27 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> alias,
     ffi.Pointer<ffi.Char> value,
   ) {
-    return _query_param_alias_string(
-      query,
-      alias,
-      value,
-    );
+    return _query_param_alias_string(query, alias, value);
   }
 
-  late final _query_param_alias_stringPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>)>>('obx_query_param_alias_string');
-  late final _query_param_alias_string =
-      _query_param_alias_stringPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>)>();
+  late final _query_param_alias_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Char>,
+          )
+        >
+      >('obx_query_param_alias_string');
+  late final _query_param_alias_string = _query_param_alias_stringPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>,
+        )
+      >();
 
   int query_param_alias_strings(
     ffi.Pointer<OBX_query> query,
@@ -6468,44 +7015,52 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Pointer<ffi.Char>> values,
     int count,
   ) {
-    return _query_param_alias_strings(
-      query,
-      alias,
-      values,
-      count,
-    );
+    return _query_param_alias_strings(query, alias, values, count);
   }
 
-  late final _query_param_alias_stringsPtr = _lookup<
-      ffi.NativeFunction<
+  late final _query_param_alias_stringsPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_query>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Pointer<ffi.Char>>,
-              ffi.Size)>>('obx_query_param_alias_strings');
-  late final _query_param_alias_strings =
-      _query_param_alias_stringsPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Pointer<ffi.Char>>, int)>();
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Pointer<ffi.Char>>,
+            ffi.Size,
+          )
+        >
+      >('obx_query_param_alias_strings');
+  late final _query_param_alias_strings = _query_param_alias_stringsPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Pointer<ffi.Char>>,
+          int,
+        )
+      >();
 
   int query_param_alias_int(
     ffi.Pointer<OBX_query> query,
     ffi.Pointer<ffi.Char> alias,
     int value,
   ) {
-    return _query_param_alias_int(
-      query,
-      alias,
-      value,
-    );
+    return _query_param_alias_int(query, alias, value);
   }
 
-  late final _query_param_alias_intPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>,
-              ffi.Int64)>>('obx_query_param_alias_int');
-  late final _query_param_alias_int = _query_param_alias_intPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>, int)>();
+  late final _query_param_alias_intPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Int64,
+          )
+        >
+      >('obx_query_param_alias_int');
+  late final _query_param_alias_int = _query_param_alias_intPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>, int)
+      >();
 
   int query_param_alias_2ints(
     ffi.Pointer<OBX_query> query,
@@ -6513,20 +7068,24 @@ class ObjectBoxC {
     int value_a,
     int value_b,
   ) {
-    return _query_param_alias_2ints(
-      query,
-      alias,
-      value_a,
-      value_b,
-    );
+    return _query_param_alias_2ints(query, alias, value_a, value_b);
   }
 
-  late final _query_param_alias_2intsPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>,
-              ffi.Int64, ffi.Int64)>>('obx_query_param_alias_2ints');
-  late final _query_param_alias_2ints = _query_param_alias_2intsPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>, int, int)>();
+  late final _query_param_alias_2intsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Int64,
+            ffi.Int64,
+          )
+        >
+      >('obx_query_param_alias_2ints');
+  late final _query_param_alias_2ints = _query_param_alias_2intsPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>, int, int)
+      >();
 
   int query_param_alias_int64s(
     ffi.Pointer<OBX_query> query,
@@ -6534,25 +7093,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Int64> values,
     int count,
   ) {
-    return _query_param_alias_int64s(
-      query,
-      alias,
-      values,
-      count,
-    );
+    return _query_param_alias_int64s(query, alias, values, count);
   }
 
-  late final _query_param_alias_int64sPtr = _lookup<
-      ffi.NativeFunction<
+  late final _query_param_alias_int64sPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_query>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Int64>,
-              ffi.Size)>>('obx_query_param_alias_int64s');
-  late final _query_param_alias_int64s =
-      _query_param_alias_int64sPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Int64>, int)>();
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Int64>,
+            ffi.Size,
+          )
+        >
+      >('obx_query_param_alias_int64s');
+  late final _query_param_alias_int64s = _query_param_alias_int64sPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Int64>,
+          int,
+        )
+      >();
 
   int query_param_alias_int32s(
     ffi.Pointer<OBX_query> query,
@@ -6560,46 +7123,52 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Int32> values,
     int count,
   ) {
-    return _query_param_alias_int32s(
-      query,
-      alias,
-      values,
-      count,
-    );
+    return _query_param_alias_int32s(query, alias, values, count);
   }
 
-  late final _query_param_alias_int32sPtr = _lookup<
-      ffi.NativeFunction<
+  late final _query_param_alias_int32sPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_query>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Int32>,
-              ffi.Size)>>('obx_query_param_alias_int32s');
-  late final _query_param_alias_int32s =
-      _query_param_alias_int32sPtr.asFunction<
-          int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Int32>, int)>();
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Int32>,
+            ffi.Size,
+          )
+        >
+      >('obx_query_param_alias_int32s');
+  late final _query_param_alias_int32s = _query_param_alias_int32sPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Int32>,
+          int,
+        )
+      >();
 
   int query_param_alias_double(
     ffi.Pointer<OBX_query> query,
     ffi.Pointer<ffi.Char> alias,
     double value,
   ) {
-    return _query_param_alias_double(
-      query,
-      alias,
-      value,
-    );
+    return _query_param_alias_double(query, alias, value);
   }
 
-  late final _query_param_alias_doublePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>,
-              ffi.Double)>>('obx_query_param_alias_double');
-  late final _query_param_alias_double =
-      _query_param_alias_doublePtr.asFunction<
-          int Function(
-              ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>, double)>();
+  late final _query_param_alias_doublePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Double,
+          )
+        >
+      >('obx_query_param_alias_double');
+  late final _query_param_alias_double = _query_param_alias_doublePtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>, double)
+      >();
 
   int query_param_alias_2doubles(
     ffi.Pointer<OBX_query> query,
@@ -6607,22 +7176,29 @@ class ObjectBoxC {
     double value_a,
     double value_b,
   ) {
-    return _query_param_alias_2doubles(
-      query,
-      alias,
-      value_a,
-      value_b,
-    );
+    return _query_param_alias_2doubles(query, alias, value_a, value_b);
   }
 
-  late final _query_param_alias_2doublesPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>,
-              ffi.Double, ffi.Double)>>('obx_query_param_alias_2doubles');
-  late final _query_param_alias_2doubles =
-      _query_param_alias_2doublesPtr.asFunction<
-          int Function(
-              ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>, double, double)>();
+  late final _query_param_alias_2doublesPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Double,
+            ffi.Double,
+          )
+        >
+      >('obx_query_param_alias_2doubles');
+  late final _query_param_alias_2doubles = _query_param_alias_2doublesPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<ffi.Char>,
+          double,
+          double,
+        )
+      >();
 
   int query_param_alias_bytes(
     ffi.Pointer<OBX_query> query,
@@ -6630,24 +7206,29 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> value,
     int size,
   ) {
-    return _query_param_alias_bytes(
-      query,
-      alias,
-      value,
-      size,
-    );
+    return _query_param_alias_bytes(query, alias, value, size);
   }
 
-  late final _query_param_alias_bytesPtr = _lookup<
-      ffi.NativeFunction<
+  late final _query_param_alias_bytesPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_query>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Uint8>,
-              ffi.Size)>>('obx_query_param_alias_bytes');
-  late final _query_param_alias_bytes = _query_param_alias_bytesPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>,
-          ffi.Pointer<ffi.Uint8>, int)>();
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_query_param_alias_bytes');
+  late final _query_param_alias_bytes = _query_param_alias_bytesPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query>,
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+        )
+      >();
 
   int query_param_alias_vector_float32(
     ffi.Pointer<OBX_query> query,
@@ -6663,17 +7244,27 @@ class ObjectBoxC {
     );
   }
 
-  late final _query_param_alias_vector_float32Ptr = _lookup<
-      ffi.NativeFunction<
+  late final _query_param_alias_vector_float32Ptr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
+            ffi.Pointer<OBX_query>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Float>,
+            ffi.Size,
+          )
+        >
+      >('obx_query_param_alias_vector_float32');
+  late final _query_param_alias_vector_float32 =
+      _query_param_alias_vector_float32Ptr
+          .asFunction<
+            int Function(
               ffi.Pointer<OBX_query>,
               ffi.Pointer<ffi.Char>,
               ffi.Pointer<ffi.Float>,
-              ffi.Size)>>('obx_query_param_alias_vector_float32');
-  late final _query_param_alias_vector_float32 =
-      _query_param_alias_vector_float32Ptr.asFunction<
-          int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Float>, int)>();
+              int,
+            )
+          >();
 
   /// Gets the size of the property type used in a query condition.
   /// A typical use case of this is to allow language bindings (e.g. Swift) use the right type (e.g. 32 bit ints) even
@@ -6684,19 +7275,20 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query> query,
     ffi.Pointer<ffi.Char> alias,
   ) {
-    return _query_param_alias_get_type_size(
-      query,
-      alias,
-    );
+    return _query_param_alias_get_type_size(query, alias);
   }
 
-  late final _query_param_alias_get_type_sizePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Size Function(ffi.Pointer<OBX_query>,
-              ffi.Pointer<ffi.Char>)>>('obx_query_param_alias_get_type_size');
+  late final _query_param_alias_get_type_sizePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Size Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>)
+        >
+      >('obx_query_param_alias_get_type_size');
   late final _query_param_alias_get_type_size =
-      _query_param_alias_get_type_sizePtr.asFunction<
-          int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>)>();
+      _query_param_alias_get_type_sizePtr
+          .asFunction<
+            int Function(ffi.Pointer<OBX_query>, ffi.Pointer<ffi.Char>)
+          >();
 
   /// Create a "property query" with results referring to single property (not complete objects).
   /// Also provides aggregates like for example obx_query_prop_avg().
@@ -6704,50 +7296,47 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query> query,
     int property_id,
   ) {
-    return _query_prop(
-      query,
-      property_id,
-    );
+    return _query_prop(query, property_id);
   }
 
-  late final _query_propPtr = _lookup<
-      ffi.NativeFunction<
+  late final _query_propPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_query_prop> Function(
-              ffi.Pointer<OBX_query>, obx_schema_id)>>('obx_query_prop');
-  late final _query_prop = _query_propPtr.asFunction<
-      ffi.Pointer<OBX_query_prop> Function(ffi.Pointer<OBX_query>, int)>();
+            ffi.Pointer<OBX_query>,
+            obx_schema_id,
+          )
+        >
+      >('obx_query_prop');
+  late final _query_prop = _query_propPtr
+      .asFunction<
+        ffi.Pointer<OBX_query_prop> Function(ffi.Pointer<OBX_query>, int)
+      >();
 
   /// Close the property query and release resources.
-  int query_prop_close(
-    ffi.Pointer<OBX_query_prop> query,
-  ) {
-    return _query_prop_close(
-      query,
-    );
+  int query_prop_close(ffi.Pointer<OBX_query_prop> query) {
+    return _query_prop_close(query);
   }
 
-  late final _query_prop_closePtr = _lookup<
-          ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_query_prop>)>>(
-      'obx_query_prop_close');
+  late final _query_prop_closePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_query_prop>)>
+      >('obx_query_prop_close');
   late final _query_prop_close = _query_prop_closePtr
       .asFunction<int Function(ffi.Pointer<OBX_query_prop>)>();
 
   /// Configure the property query to work only on distinct values.
   /// @note not all methods support distinct, those that don't will return an error
-  int query_prop_distinct(
-    ffi.Pointer<OBX_query_prop> query,
-    bool distinct,
-  ) {
-    return _query_prop_distinct(
-      query,
-      distinct,
-    );
+  int query_prop_distinct(ffi.Pointer<OBX_query_prop> query, bool distinct) {
+    return _query_prop_distinct(query, distinct);
   }
 
-  late final _query_prop_distinctPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query_prop>,
-              ffi.Bool)>>('obx_query_prop_distinct');
+  late final _query_prop_distinctPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_query_prop>, ffi.Bool)
+        >
+      >('obx_query_prop_distinct');
   late final _query_prop_distinct = _query_prop_distinctPtr
       .asFunction<int Function(ffi.Pointer<OBX_query_prop>, bool)>();
 
@@ -6759,17 +7348,15 @@ class ObjectBoxC {
     bool distinct,
     bool case_sensitive,
   ) {
-    return _query_prop_distinct_case(
-      query,
-      distinct,
-      case_sensitive,
-    );
+    return _query_prop_distinct_case(query, distinct, case_sensitive);
   }
 
-  late final _query_prop_distinct_casePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query_prop>, ffi.Bool,
-              ffi.Bool)>>('obx_query_prop_distinct_case');
+  late final _query_prop_distinct_casePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_query_prop>, ffi.Bool, ffi.Bool)
+        >
+      >('obx_query_prop_distinct_case');
   late final _query_prop_distinct_case = _query_prop_distinct_casePtr
       .asFunction<int Function(ffi.Pointer<OBX_query_prop>, bool, bool)>();
 
@@ -6778,18 +7365,19 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query_prop> query,
     ffi.Pointer<ffi.Uint64> out_count,
   ) {
-    return _query_prop_count(
-      query,
-      out_count,
-    );
+    return _query_prop_count(query, out_count);
   }
 
-  late final _query_prop_countPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query_prop>,
-              ffi.Pointer<ffi.Uint64>)>>('obx_query_prop_count');
-  late final _query_prop_count = _query_prop_countPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Uint64>)>();
+  late final _query_prop_countPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Uint64>)
+        >
+      >('obx_query_prop_count');
+  late final _query_prop_count = _query_prop_countPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Uint64>)
+      >();
 
   /// Calculate an average value for the given numeric property across all objects matching the query.
   /// @param query the query to run
@@ -6803,20 +7391,27 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Double> out_average,
     ffi.Pointer<ffi.Int64> out_count,
   ) {
-    return _query_prop_avg(
-      query,
-      out_average,
-      out_count,
-    );
+    return _query_prop_avg(query, out_average, out_count);
   }
 
-  late final _query_prop_avgPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Double>,
-              ffi.Pointer<ffi.Int64>)>>('obx_query_prop_avg');
-  late final _query_prop_avg = _query_prop_avgPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Double>,
-          ffi.Pointer<ffi.Int64>)>();
+  late final _query_prop_avgPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Double>,
+            ffi.Pointer<ffi.Int64>,
+          )
+        >
+      >('obx_query_prop_avg');
+  late final _query_prop_avg = _query_prop_avgPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Double>,
+          ffi.Pointer<ffi.Int64>,
+        )
+      >();
 
   /// Calculate an average value for the given numeric property across all objects matching the query.
   /// @param query the query to run
@@ -6829,20 +7424,27 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Int64> out_average,
     ffi.Pointer<ffi.Int64> out_count,
   ) {
-    return _query_prop_avg_int(
-      query,
-      out_average,
-      out_count,
-    );
+    return _query_prop_avg_int(query, out_average, out_count);
   }
 
-  late final _query_prop_avg_intPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Int64>,
-              ffi.Pointer<ffi.Int64>)>>('obx_query_prop_avg_int');
-  late final _query_prop_avg_int = _query_prop_avg_intPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Int64>,
-          ffi.Pointer<ffi.Int64>)>();
+  late final _query_prop_avg_intPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Int64>,
+            ffi.Pointer<ffi.Int64>,
+          )
+        >
+      >('obx_query_prop_avg_int');
+  late final _query_prop_avg_int = _query_prop_avg_intPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Int64>,
+          ffi.Pointer<ffi.Int64>,
+        )
+      >();
 
   /// Find the minimum value of the given floating-point property across all objects matching the query.
   /// @param query the query to run
@@ -6855,20 +7457,27 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Double> out_minimum,
     ffi.Pointer<ffi.Int64> out_count,
   ) {
-    return _query_prop_min(
-      query,
-      out_minimum,
-      out_count,
-    );
+    return _query_prop_min(query, out_minimum, out_count);
   }
 
-  late final _query_prop_minPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Double>,
-              ffi.Pointer<ffi.Int64>)>>('obx_query_prop_min');
-  late final _query_prop_min = _query_prop_minPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Double>,
-          ffi.Pointer<ffi.Int64>)>();
+  late final _query_prop_minPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Double>,
+            ffi.Pointer<ffi.Int64>,
+          )
+        >
+      >('obx_query_prop_min');
+  late final _query_prop_min = _query_prop_minPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Double>,
+          ffi.Pointer<ffi.Int64>,
+        )
+      >();
 
   /// Find the maximum value of the given floating-point property across all objects matching the query
   /// @param query the query to run
@@ -6881,20 +7490,27 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Double> out_maximum,
     ffi.Pointer<ffi.Int64> out_count,
   ) {
-    return _query_prop_max(
-      query,
-      out_maximum,
-      out_count,
-    );
+    return _query_prop_max(query, out_maximum, out_count);
   }
 
-  late final _query_prop_maxPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Double>,
-              ffi.Pointer<ffi.Int64>)>>('obx_query_prop_max');
-  late final _query_prop_max = _query_prop_maxPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Double>,
-          ffi.Pointer<ffi.Int64>)>();
+  late final _query_prop_maxPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Double>,
+            ffi.Pointer<ffi.Int64>,
+          )
+        >
+      >('obx_query_prop_max');
+  late final _query_prop_max = _query_prop_maxPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Double>,
+          ffi.Pointer<ffi.Int64>,
+        )
+      >();
 
   /// Calculate the sum of the given floating-point property across all objects matching the query.
   /// @param query the query to run
@@ -6908,20 +7524,27 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Double> out_sum,
     ffi.Pointer<ffi.Int64> out_count,
   ) {
-    return _query_prop_sum(
-      query,
-      out_sum,
-      out_count,
-    );
+    return _query_prop_sum(query, out_sum, out_count);
   }
 
-  late final _query_prop_sumPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Double>,
-              ffi.Pointer<ffi.Int64>)>>('obx_query_prop_sum');
-  late final _query_prop_sum = _query_prop_sumPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Double>,
-          ffi.Pointer<ffi.Int64>)>();
+  late final _query_prop_sumPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Double>,
+            ffi.Pointer<ffi.Int64>,
+          )
+        >
+      >('obx_query_prop_sum');
+  late final _query_prop_sum = _query_prop_sumPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Double>,
+          ffi.Pointer<ffi.Int64>,
+        )
+      >();
 
   /// Find the minimum value of the given property across all objects matching the query.
   /// @param query the query to run
@@ -6934,20 +7557,27 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Int64> out_minimum,
     ffi.Pointer<ffi.Int64> out_count,
   ) {
-    return _query_prop_min_int(
-      query,
-      out_minimum,
-      out_count,
-    );
+    return _query_prop_min_int(query, out_minimum, out_count);
   }
 
-  late final _query_prop_min_intPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Int64>,
-              ffi.Pointer<ffi.Int64>)>>('obx_query_prop_min_int');
-  late final _query_prop_min_int = _query_prop_min_intPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Int64>,
-          ffi.Pointer<ffi.Int64>)>();
+  late final _query_prop_min_intPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Int64>,
+            ffi.Pointer<ffi.Int64>,
+          )
+        >
+      >('obx_query_prop_min_int');
+  late final _query_prop_min_int = _query_prop_min_intPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Int64>,
+          ffi.Pointer<ffi.Int64>,
+        )
+      >();
 
   /// Find the maximum value of the given property across all objects matching the query.
   /// @param query the query to run
@@ -6960,20 +7590,27 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Int64> out_maximum,
     ffi.Pointer<ffi.Int64> out_count,
   ) {
-    return _query_prop_max_int(
-      query,
-      out_maximum,
-      out_count,
-    );
+    return _query_prop_max_int(query, out_maximum, out_count);
   }
 
-  late final _query_prop_max_intPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Int64>,
-              ffi.Pointer<ffi.Int64>)>>('obx_query_prop_max_int');
-  late final _query_prop_max_int = _query_prop_max_intPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Int64>,
-          ffi.Pointer<ffi.Int64>)>();
+  late final _query_prop_max_intPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Int64>,
+            ffi.Pointer<ffi.Int64>,
+          )
+        >
+      >('obx_query_prop_max_int');
+  late final _query_prop_max_int = _query_prop_max_intPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Int64>,
+          ffi.Pointer<ffi.Int64>,
+        )
+      >();
 
   /// Calculate the sum of the given property across all objects matching the query.
   /// @param query the query to run
@@ -6986,20 +7623,27 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Int64> out_sum,
     ffi.Pointer<ffi.Int64> out_count,
   ) {
-    return _query_prop_sum_int(
-      query,
-      out_sum,
-      out_count,
-    );
+    return _query_prop_sum_int(query, out_sum, out_count);
   }
 
-  late final _query_prop_sum_intPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Int64>,
-              ffi.Pointer<ffi.Int64>)>>('obx_query_prop_sum_int');
-  late final _query_prop_sum_int = _query_prop_sum_intPtr.asFunction<
-      int Function(ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Int64>,
-          ffi.Pointer<ffi.Int64>)>();
+  late final _query_prop_sum_intPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Int64>,
+            ffi.Pointer<ffi.Int64>,
+          )
+        >
+      >('obx_query_prop_sum_int');
+  late final _query_prop_sum_int = _query_prop_sum_intPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Int64>,
+          ffi.Pointer<ffi.Int64>,
+        )
+      >();
 
   /// Return an array of strings stored as the given property across all objects matching the query.
   /// @param value_if_null value that should be used in place of NULL values on object fields;
@@ -7008,19 +7652,25 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query_prop> query,
     ffi.Pointer<ffi.Char> value_if_null,
   ) {
-    return _query_prop_find_strings(
-      query,
-      value_if_null,
-    );
+    return _query_prop_find_strings(query, value_if_null);
   }
 
-  late final _query_prop_find_stringsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_string_array> Function(ffi.Pointer<OBX_query_prop>,
-              ffi.Pointer<ffi.Char>)>>('obx_query_prop_find_strings');
-  late final _query_prop_find_strings = _query_prop_find_stringsPtr.asFunction<
-      ffi.Pointer<OBX_string_array> Function(
-          ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Char>)>();
+  late final _query_prop_find_stringsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_string_array> Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Char>,
+          )
+        >
+      >('obx_query_prop_find_strings');
+  late final _query_prop_find_strings = _query_prop_find_stringsPtr
+      .asFunction<
+        ffi.Pointer<OBX_string_array> Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Char>,
+        )
+      >();
 
   /// Return an array of ints stored as the given property across all objects matching the query.
   /// @param value_if_null value that should be used in place of NULL values on object fields;
@@ -7030,19 +7680,25 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query_prop> query,
     ffi.Pointer<ffi.Int64> value_if_null,
   ) {
-    return _query_prop_find_int64s(
-      query,
-      value_if_null,
-    );
+    return _query_prop_find_int64s(query, value_if_null);
   }
 
-  late final _query_prop_find_int64sPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_int64_array> Function(ffi.Pointer<OBX_query_prop>,
-              ffi.Pointer<ffi.Int64>)>>('obx_query_prop_find_int64s');
-  late final _query_prop_find_int64s = _query_prop_find_int64sPtr.asFunction<
-      ffi.Pointer<OBX_int64_array> Function(
-          ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Int64>)>();
+  late final _query_prop_find_int64sPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_int64_array> Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Int64>,
+          )
+        >
+      >('obx_query_prop_find_int64s');
+  late final _query_prop_find_int64s = _query_prop_find_int64sPtr
+      .asFunction<
+        ffi.Pointer<OBX_int64_array> Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Int64>,
+        )
+      >();
 
   /// Return an array of ints stored as the given property across all objects matching the query.
   /// @param value_if_null value that should be used in place of NULL values on object fields;
@@ -7052,19 +7708,25 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query_prop> query,
     ffi.Pointer<ffi.Int32> value_if_null,
   ) {
-    return _query_prop_find_int32s(
-      query,
-      value_if_null,
-    );
+    return _query_prop_find_int32s(query, value_if_null);
   }
 
-  late final _query_prop_find_int32sPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_int32_array> Function(ffi.Pointer<OBX_query_prop>,
-              ffi.Pointer<ffi.Int32>)>>('obx_query_prop_find_int32s');
-  late final _query_prop_find_int32s = _query_prop_find_int32sPtr.asFunction<
-      ffi.Pointer<OBX_int32_array> Function(
-          ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Int32>)>();
+  late final _query_prop_find_int32sPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_int32_array> Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Int32>,
+          )
+        >
+      >('obx_query_prop_find_int32s');
+  late final _query_prop_find_int32s = _query_prop_find_int32sPtr
+      .asFunction<
+        ffi.Pointer<OBX_int32_array> Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Int32>,
+        )
+      >();
 
   /// Return an array of ints stored as the given property across all objects matching the query.
   /// @param value_if_null value that should be used in place of NULL values on object fields;
@@ -7074,19 +7736,25 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query_prop> query,
     ffi.Pointer<ffi.Int16> value_if_null,
   ) {
-    return _query_prop_find_int16s(
-      query,
-      value_if_null,
-    );
+    return _query_prop_find_int16s(query, value_if_null);
   }
 
-  late final _query_prop_find_int16sPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_int16_array> Function(ffi.Pointer<OBX_query_prop>,
-              ffi.Pointer<ffi.Int16>)>>('obx_query_prop_find_int16s');
-  late final _query_prop_find_int16s = _query_prop_find_int16sPtr.asFunction<
-      ffi.Pointer<OBX_int16_array> Function(
-          ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Int16>)>();
+  late final _query_prop_find_int16sPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_int16_array> Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Int16>,
+          )
+        >
+      >('obx_query_prop_find_int16s');
+  late final _query_prop_find_int16s = _query_prop_find_int16sPtr
+      .asFunction<
+        ffi.Pointer<OBX_int16_array> Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Int16>,
+        )
+      >();
 
   /// Return an array of ints stored as the given property across all objects matching the query.
   /// @param value_if_null value that should be used in place of NULL values on object fields;
@@ -7096,19 +7764,25 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query_prop> query,
     ffi.Pointer<ffi.Int8> value_if_null,
   ) {
-    return _query_prop_find_int8s(
-      query,
-      value_if_null,
-    );
+    return _query_prop_find_int8s(query, value_if_null);
   }
 
-  late final _query_prop_find_int8sPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_int8_array> Function(ffi.Pointer<OBX_query_prop>,
-              ffi.Pointer<ffi.Int8>)>>('obx_query_prop_find_int8s');
-  late final _query_prop_find_int8s = _query_prop_find_int8sPtr.asFunction<
-      ffi.Pointer<OBX_int8_array> Function(
-          ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Int8>)>();
+  late final _query_prop_find_int8sPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_int8_array> Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Int8>,
+          )
+        >
+      >('obx_query_prop_find_int8s');
+  late final _query_prop_find_int8s = _query_prop_find_int8sPtr
+      .asFunction<
+        ffi.Pointer<OBX_int8_array> Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Int8>,
+        )
+      >();
 
   /// Return an array of doubles stored as the given property across all objects matching the query.
   /// @param value_if_null value that should be used in place of NULL values on object fields;
@@ -7118,19 +7792,25 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query_prop> query,
     ffi.Pointer<ffi.Double> value_if_null,
   ) {
-    return _query_prop_find_doubles(
-      query,
-      value_if_null,
-    );
+    return _query_prop_find_doubles(query, value_if_null);
   }
 
-  late final _query_prop_find_doublesPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_double_array> Function(ffi.Pointer<OBX_query_prop>,
-              ffi.Pointer<ffi.Double>)>>('obx_query_prop_find_doubles');
-  late final _query_prop_find_doubles = _query_prop_find_doublesPtr.asFunction<
-      ffi.Pointer<OBX_double_array> Function(
-          ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Double>)>();
+  late final _query_prop_find_doublesPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_double_array> Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Double>,
+          )
+        >
+      >('obx_query_prop_find_doubles');
+  late final _query_prop_find_doubles = _query_prop_find_doublesPtr
+      .asFunction<
+        ffi.Pointer<OBX_double_array> Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Double>,
+        )
+      >();
 
   /// Return an array of int stored as the given property across all objects matching the query.
   /// @param value_if_null value that should be used in place of NULL values on object fields;
@@ -7140,19 +7820,25 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query_prop> query,
     ffi.Pointer<ffi.Float> value_if_null,
   ) {
-    return _query_prop_find_floats(
-      query,
-      value_if_null,
-    );
+    return _query_prop_find_floats(query, value_if_null);
   }
 
-  late final _query_prop_find_floatsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_float_array> Function(ffi.Pointer<OBX_query_prop>,
-              ffi.Pointer<ffi.Float>)>>('obx_query_prop_find_floats');
-  late final _query_prop_find_floats = _query_prop_find_floatsPtr.asFunction<
-      ffi.Pointer<OBX_float_array> Function(
-          ffi.Pointer<OBX_query_prop>, ffi.Pointer<ffi.Float>)>();
+  late final _query_prop_find_floatsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_float_array> Function(
+            ffi.Pointer<OBX_query_prop>,
+            ffi.Pointer<ffi.Float>,
+          )
+        >
+      >('obx_query_prop_find_floats');
+  late final _query_prop_find_floats = _query_prop_find_floatsPtr
+      .asFunction<
+        ffi.Pointer<OBX_float_array> Function(
+          ffi.Pointer<OBX_query_prop>,
+          ffi.Pointer<ffi.Float>,
+        )
+      >();
 
   /// Create an observer (callback) to be notified about all data changes (for all object types).
   /// The callback is invoked right after a successful commit.
@@ -7171,22 +7857,27 @@ class ObjectBoxC {
     ffi.Pointer<obx_observer> callback,
     ffi.Pointer<ffi.Void> user_data,
   ) {
-    return _observe(
-      store,
-      callback,
-      user_data,
-    );
+    return _observe(store, callback, user_data);
   }
 
-  late final _observePtr = _lookup<
-      ffi.NativeFunction<
+  late final _observePtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_observer> Function(
-              ffi.Pointer<OBX_store>,
-              ffi.Pointer<obx_observer>,
-              ffi.Pointer<ffi.Void>)>>('obx_observe');
-  late final _observe = _observePtr.asFunction<
-      ffi.Pointer<OBX_observer> Function(ffi.Pointer<OBX_store>,
-          ffi.Pointer<obx_observer>, ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_store>,
+            ffi.Pointer<obx_observer>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_observe');
+  late final _observe = _observePtr
+      .asFunction<
+        ffi.Pointer<OBX_observer> Function(
+          ffi.Pointer<OBX_store>,
+          ffi.Pointer<obx_observer>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Create an observer (callback) to be notified about data changes for a given object type.
   /// The callback is invoked right after a successful commit.
@@ -7208,42 +7899,44 @@ class ObjectBoxC {
     ffi.Pointer<obx_observer_single_type> callback,
     ffi.Pointer<ffi.Void> user_data,
   ) {
-    return _observe_single_type(
-      store,
-      type_id,
-      callback,
-      user_data,
-    );
+    return _observe_single_type(store, type_id, callback, user_data);
   }
 
-  late final _observe_single_typePtr = _lookup<
-      ffi.NativeFunction<
+  late final _observe_single_typePtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_observer> Function(
-              ffi.Pointer<OBX_store>,
-              obx_schema_id,
-              ffi.Pointer<obx_observer_single_type>,
-              ffi.Pointer<ffi.Void>)>>('obx_observe_single_type');
-  late final _observe_single_type = _observe_single_typePtr.asFunction<
-      ffi.Pointer<OBX_observer> Function(ffi.Pointer<OBX_store>, int,
-          ffi.Pointer<obx_observer_single_type>, ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_store>,
+            obx_schema_id,
+            ffi.Pointer<obx_observer_single_type>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_observe_single_type');
+  late final _observe_single_type = _observe_single_typePtr
+      .asFunction<
+        ffi.Pointer<OBX_observer> Function(
+          ffi.Pointer<OBX_store>,
+          int,
+          ffi.Pointer<obx_observer_single_type>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Free the memory used by the given observer and unsubscribe it from its box or query.
   /// @returns OBX_ERROR_ILLEGAL_STATE if a illegal locking situation was detected, e.g. called from an observer itself
   /// or a timeout/deadlock was detected. In that case, the caller must try to close again in a valid situation
   /// not causing lock failures.
-  int observer_close(
-    ffi.Pointer<OBX_observer> observer,
-  ) {
-    return _observer_close(
-      observer,
-    );
+  int observer_close(ffi.Pointer<OBX_observer> observer) {
+    return _observer_close(observer);
   }
 
   late final _observer_closePtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_observer>)>>(
-          'obx_observer_close');
-  late final _observer_close =
-      _observer_closePtr.asFunction<int Function(ffi.Pointer<OBX_observer>)>();
+        'obx_observer_close',
+      );
+  late final _observer_close = _observer_closePtr
+      .asFunction<int Function(ffi.Pointer<OBX_observer>)>();
 
   /// Creates a options object that is passed to tree creation via obx_tree().
   ffi.Pointer<OBX_tree_options> tree_options() {
@@ -7252,23 +7945,21 @@ class ObjectBoxC {
 
   late final _tree_optionsPtr =
       _lookup<ffi.NativeFunction<ffi.Pointer<OBX_tree_options> Function()>>(
-          'obx_tree_options');
-  late final _tree_options =
-      _tree_optionsPtr.asFunction<ffi.Pointer<OBX_tree_options> Function()>();
+        'obx_tree_options',
+      );
+  late final _tree_options = _tree_optionsPtr
+      .asFunction<ffi.Pointer<OBX_tree_options> Function()>();
 
   /// Free the tree options if they were not used (and "consumed") by obx_tree().
   /// Note: Only free *unused* options, obx_tree() frees the options internally.
-  void tree_options_free(
-    ffi.Pointer<OBX_tree_options> options,
-  ) {
-    return _tree_options_free(
-      options,
-    );
+  void tree_options_free(ffi.Pointer<OBX_tree_options> options) {
+    return _tree_options_free(options);
   }
 
-  late final _tree_options_freePtr = _lookup<
-          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_tree_options>)>>(
-      'obx_tree_options_free');
+  late final _tree_options_freePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_tree_options>)>
+      >('obx_tree_options_free');
   late final _tree_options_free = _tree_options_freePtr
       .asFunction<void Function(ffi.Pointer<OBX_tree_options>)>();
 
@@ -7277,35 +7968,30 @@ class ObjectBoxC {
     ffi.Pointer<OBX_tree_options> options,
     int path_delimiter,
   ) {
-    return _tree_opt_path_delimiter(
-      options,
-      path_delimiter,
-    );
+    return _tree_opt_path_delimiter(options, path_delimiter);
   }
 
-  late final _tree_opt_path_delimiterPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_tree_options>,
-              ffi.Char)>>('obx_tree_opt_path_delimiter');
+  late final _tree_opt_path_delimiterPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_tree_options>, ffi.Char)
+        >
+      >('obx_tree_opt_path_delimiter');
   late final _tree_opt_path_delimiter = _tree_opt_path_delimiterPtr
       .asFunction<int Function(ffi.Pointer<OBX_tree_options>, int)>();
 
   /// Sets the given OBXTreeOptionFlags at the tree options.
   /// Combine multiple flags using bitwise OR.
-  int tree_opt_flags(
-    ffi.Pointer<OBX_tree_options> options,
-    int flags,
-  ) {
-    return _tree_opt_flags(
-      options,
-      flags,
-    );
+  int tree_opt_flags(ffi.Pointer<OBX_tree_options> options, int flags) {
+    return _tree_opt_flags(options, flags);
   }
 
-  late final _tree_opt_flagsPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_tree_options>,
-              ffi.Uint32)>>('obx_tree_opt_flags');
+  late final _tree_opt_flagsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_tree_options>, ffi.Uint32)
+        >
+      >('obx_tree_opt_flags');
   late final _tree_opt_flags = _tree_opt_flagsPtr
       .asFunction<int Function(ffi.Pointer<OBX_tree_options>, int)>();
 
@@ -7316,33 +8002,36 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store> store,
     ffi.Pointer<OBX_tree_options> options,
   ) {
-    return _tree(
-      store,
-      options,
-    );
+    return _tree(store, options);
   }
 
-  late final _treePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_tree> Function(ffi.Pointer<OBX_store>,
-              ffi.Pointer<OBX_tree_options>)>>('obx_tree');
-  late final _tree = _treePtr.asFunction<
-      ffi.Pointer<OBX_tree> Function(
-          ffi.Pointer<OBX_store>, ffi.Pointer<OBX_tree_options>)>();
+  late final _treePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_tree> Function(
+            ffi.Pointer<OBX_store>,
+            ffi.Pointer<OBX_tree_options>,
+          )
+        >
+      >('obx_tree');
+  late final _tree = _treePtr
+      .asFunction<
+        ffi.Pointer<OBX_tree> Function(
+          ffi.Pointer<OBX_store>,
+          ffi.Pointer<OBX_tree_options>,
+        )
+      >();
 
-  void tree_close(
-    ffi.Pointer<OBX_tree> tree,
-  ) {
-    return _tree_close(
-      tree,
-    );
+  void tree_close(ffi.Pointer<OBX_tree> tree) {
+    return _tree_close(tree);
   }
 
   late final _tree_closePtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_tree>)>>(
-          'obx_tree_close');
-  late final _tree_close =
-      _tree_closePtr.asFunction<void Function(ffi.Pointer<OBX_tree>)>();
+        'obx_tree_close',
+      );
+  late final _tree_close = _tree_closePtr
+      .asFunction<void Function(ffi.Pointer<OBX_tree>)>();
 
   /// To get/put data from tree, you need to create a tree cursor using this method.
   /// @param txn may be null if the transaction will be set later via obx_tree_cursor_txn()
@@ -7350,51 +8039,51 @@ class ObjectBoxC {
     ffi.Pointer<OBX_tree> tree,
     ffi.Pointer<OBX_txn> txn,
   ) {
-    return _tree_cursor(
-      tree,
-      txn,
-    );
+    return _tree_cursor(tree, txn);
   }
 
-  late final _tree_cursorPtr = _lookup<
-      ffi.NativeFunction<
+  late final _tree_cursorPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_tree_cursor> Function(
-              ffi.Pointer<OBX_tree>, ffi.Pointer<OBX_txn>)>>('obx_tree_cursor');
-  late final _tree_cursor = _tree_cursorPtr.asFunction<
-      ffi.Pointer<OBX_tree_cursor> Function(
-          ffi.Pointer<OBX_tree>, ffi.Pointer<OBX_txn>)>();
+            ffi.Pointer<OBX_tree>,
+            ffi.Pointer<OBX_txn>,
+          )
+        >
+      >('obx_tree_cursor');
+  late final _tree_cursor = _tree_cursorPtr
+      .asFunction<
+        ffi.Pointer<OBX_tree_cursor> Function(
+          ffi.Pointer<OBX_tree>,
+          ffi.Pointer<OBX_txn>,
+        )
+      >();
 
   /// Gets the number of currently tracked node conflicts (non-unique nodes at the same path).
   /// This count gets resent when conflicts get consolidated.
   /// Only tracked if OBXTreeOptionFlags_DetectNonUniqueNodes (or OBXTreeOptionFlags_AutoConsolidateNonUniqueNodes) is
   /// set.
-  int tree_node_conflict_count(
-    ffi.Pointer<OBX_tree> tree,
-  ) {
-    return _tree_node_conflict_count(
-      tree,
-    );
+  int tree_node_conflict_count(ffi.Pointer<OBX_tree> tree) {
+    return _tree_node_conflict_count(tree);
   }
 
   late final _tree_node_conflict_countPtr =
       _lookup<ffi.NativeFunction<ffi.Size Function(ffi.Pointer<OBX_tree>)>>(
-          'obx_tree_node_conflict_count');
+        'obx_tree_node_conflict_count',
+      );
   late final _tree_node_conflict_count = _tree_node_conflict_countPtr
       .asFunction<int Function(ffi.Pointer<OBX_tree>)>();
 
   /// \brief Closes the tree cursor, e.g. before a transaction is ending.
   /// The cursor cannot be used afterwards (consider obx_tree_cursor_reset() if you want to keep using it).
-  void tree_cursor_close(
-    ffi.Pointer<OBX_tree_cursor> cursor,
-  ) {
-    return _tree_cursor_close(
-      cursor,
-    );
+  void tree_cursor_close(ffi.Pointer<OBX_tree_cursor> cursor) {
+    return _tree_cursor_close(cursor);
   }
 
-  late final _tree_cursor_closePtr = _lookup<
-          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_tree_cursor>)>>(
-      'obx_tree_cursor_close');
+  late final _tree_cursor_closePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_tree_cursor>)>
+      >('obx_tree_cursor_close');
   late final _tree_cursor_close = _tree_cursor_closePtr
       .asFunction<void Function(ffi.Pointer<OBX_tree_cursor>)>();
 
@@ -7406,18 +8095,19 @@ class ObjectBoxC {
     ffi.Pointer<OBX_tree_cursor> cursor,
     ffi.Pointer<OBX_txn> txn,
   ) {
-    return _tree_cursor_txn(
-      cursor,
-      txn,
-    );
+    return _tree_cursor_txn(cursor, txn);
   }
 
-  late final _tree_cursor_txnPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_tree_cursor>,
-              ffi.Pointer<OBX_txn>)>>('obx_tree_cursor_txn');
-  late final _tree_cursor_txn = _tree_cursor_txnPtr.asFunction<
-      int Function(ffi.Pointer<OBX_tree_cursor>, ffi.Pointer<OBX_txn>)>();
+  late final _tree_cursor_txnPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_tree_cursor>, ffi.Pointer<OBX_txn>)
+        >
+      >('obx_tree_cursor_txn');
+  late final _tree_cursor_txn = _tree_cursor_txnPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_tree_cursor>, ffi.Pointer<OBX_txn>)
+      >();
 
   /// \brief A "low-level" get operation to access a tree leaf using the raw FlatBuffer bytes stored in the database.
   /// As usual, the data is only valid during the lifetime of the transaction and before the first write to the DB.
@@ -7444,23 +8134,30 @@ class ObjectBoxC {
     );
   }
 
-  late final _tree_cursor_get_rawPtr = _lookup<
-      ffi.NativeFunction<
+  late final _tree_cursor_get_rawPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_tree_cursor>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-              ffi.Pointer<ffi.Size>,
-              ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-              ffi.Pointer<ffi.Size>)>>('obx_tree_cursor_get_raw');
-  late final _tree_cursor_get_raw = _tree_cursor_get_rawPtr.asFunction<
-      int Function(
+            ffi.Pointer<OBX_tree_cursor>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+            ffi.Pointer<ffi.Size>,
+            ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
+            ffi.Pointer<ffi.Size>,
+          )
+        >
+      >('obx_tree_cursor_get_raw');
+  late final _tree_cursor_get_raw = _tree_cursor_get_rawPtr
+      .asFunction<
+        int Function(
           ffi.Pointer<OBX_tree_cursor>,
           ffi.Pointer<ffi.Char>,
           ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
           ffi.Pointer<ffi.Size>,
           ffi.Pointer<ffi.Pointer<ffi.Uint8>>,
-          ffi.Pointer<ffi.Size>)>();
+          ffi.Pointer<ffi.Size>,
+        )
+      >();
 
   /// Gets the full path (from the root) of the given leaf ID.
   /// @returns If successful, an allocated path is returned (malloc), which must be free()-ed by the caller.
@@ -7469,19 +8166,19 @@ class ObjectBoxC {
     ffi.Pointer<OBX_tree_cursor> cursor,
     int leaf_id,
   ) {
-    return _tree_cursor_get_leaf_path(
-      cursor,
-      leaf_id,
-    );
+    return _tree_cursor_get_leaf_path(cursor, leaf_id);
   }
 
-  late final _tree_cursor_get_leaf_pathPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_tree_cursor>,
-              obx_id)>>('obx_tree_cursor_get_leaf_path');
-  late final _tree_cursor_get_leaf_path =
-      _tree_cursor_get_leaf_pathPtr.asFunction<
-          ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_tree_cursor>, int)>();
+  late final _tree_cursor_get_leaf_pathPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_tree_cursor>, obx_id)
+        >
+      >('obx_tree_cursor_get_leaf_path');
+  late final _tree_cursor_get_leaf_path = _tree_cursor_get_leaf_pathPtr
+      .asFunction<
+        ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_tree_cursor>, int)
+      >();
 
   /// \brief A "low-level" put operation for a tree leaf using given raw FlatBuffer bytes.
   /// Any non-existing branches and meta nodes are put on the fly if an optional meta-leaf FlatBuffers is given.
@@ -7524,20 +8221,25 @@ class ObjectBoxC {
     );
   }
 
-  late final _tree_cursor_put_rawPtr = _lookup<
-      ffi.NativeFunction<
+  late final _tree_cursor_put_rawPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_tree_cursor>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Void>,
-              ffi.Size,
-              ffi.Int32,
-              ffi.Pointer<obx_id>,
-              ffi.Pointer<ffi.Void>,
-              ffi.Size,
-              ffi.Int32)>>('obx_tree_cursor_put_raw');
-  late final _tree_cursor_put_raw = _tree_cursor_put_rawPtr.asFunction<
-      int Function(
+            ffi.Pointer<OBX_tree_cursor>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Void>,
+            ffi.Size,
+            ffi.Int32,
+            ffi.Pointer<obx_id>,
+            ffi.Pointer<ffi.Void>,
+            ffi.Size,
+            ffi.Int32,
+          )
+        >
+      >('obx_tree_cursor_put_raw');
+  late final _tree_cursor_put_raw = _tree_cursor_put_rawPtr
+      .asFunction<
+        int Function(
           ffi.Pointer<OBX_tree_cursor>,
           ffi.Pointer<ffi.Char>,
           ffi.Pointer<ffi.Void>,
@@ -7546,7 +8248,9 @@ class ObjectBoxC {
           ffi.Pointer<obx_id>,
           ffi.Pointer<ffi.Void>,
           int,
-          int)>();
+          int,
+        )
+      >();
 
   /// Explicitly consolidates tree node conflicts (non unique nodes sharing a common path).
   /// See also obx_tree_async_consolidate_node_conflicts() for an asynchronous version.
@@ -7560,14 +8264,17 @@ class ObjectBoxC {
     );
   }
 
-  late final _tree_cursor_consolidate_node_conflictsPtr = _lookup<
-          ffi.NativeFunction<
-              obx_err Function(
-                  ffi.Pointer<OBX_tree_cursor>, ffi.Pointer<ffi.Size>)>>(
-      'obx_tree_cursor_consolidate_node_conflicts');
+  late final _tree_cursor_consolidate_node_conflictsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_tree_cursor>, ffi.Pointer<ffi.Size>)
+        >
+      >('obx_tree_cursor_consolidate_node_conflicts');
   late final _tree_cursor_consolidate_node_conflicts =
-      _tree_cursor_consolidate_node_conflictsPtr.asFunction<
-          int Function(ffi.Pointer<OBX_tree_cursor>, ffi.Pointer<ffi.Size>)>();
+      _tree_cursor_consolidate_node_conflictsPtr
+          .asFunction<
+            int Function(ffi.Pointer<OBX_tree_cursor>, ffi.Pointer<ffi.Size>)
+          >();
 
   /// \brief Given an existing path, return all existing leaves with their paths.
   /// As this traverses the data tree (i.e. not the meta tree), it will only return nodes that exist (obviously).
@@ -7579,35 +8286,36 @@ class ObjectBoxC {
     ffi.Pointer<OBX_tree_cursor> cursor,
     ffi.Pointer<ffi.Char> path,
   ) {
-    return _tree_cursor_get_child_leaves_info(
-      cursor,
-      path,
-    );
+    return _tree_cursor_get_child_leaves_info(cursor, path);
   }
 
-  late final _tree_cursor_get_child_leaves_infoPtr = _lookup<
-      ffi.NativeFunction<
+  late final _tree_cursor_get_child_leaves_infoPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_tree_leaves_info> Function(
-              ffi.Pointer<OBX_tree_cursor>,
-              ffi.Pointer<ffi.Char>)>>('obx_tree_cursor_get_child_leaves_info');
+            ffi.Pointer<OBX_tree_cursor>,
+            ffi.Pointer<ffi.Char>,
+          )
+        >
+      >('obx_tree_cursor_get_child_leaves_info');
   late final _tree_cursor_get_child_leaves_info =
-      _tree_cursor_get_child_leaves_infoPtr.asFunction<
-          ffi.Pointer<OBX_tree_leaves_info> Function(
-              ffi.Pointer<OBX_tree_cursor>, ffi.Pointer<ffi.Char>)>();
+      _tree_cursor_get_child_leaves_infoPtr
+          .asFunction<
+            ffi.Pointer<OBX_tree_leaves_info> Function(
+              ffi.Pointer<OBX_tree_cursor>,
+              ffi.Pointer<ffi.Char>,
+            )
+          >();
 
   /// Gets the number of leaves from the given leaves info.
-  int tree_leaves_info_size(
-    ffi.Pointer<OBX_tree_leaves_info> leaves_info,
-  ) {
-    return _tree_leaves_info_size(
-      leaves_info,
-    );
+  int tree_leaves_info_size(ffi.Pointer<OBX_tree_leaves_info> leaves_info) {
+    return _tree_leaves_info_size(leaves_info);
   }
 
-  late final _tree_leaves_info_sizePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Size Function(
-              ffi.Pointer<OBX_tree_leaves_info>)>>('obx_tree_leaves_info_size');
+  late final _tree_leaves_info_sizePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Size Function(ffi.Pointer<OBX_tree_leaves_info>)>
+      >('obx_tree_leaves_info_size');
   late final _tree_leaves_info_size = _tree_leaves_info_sizePtr
       .asFunction<int Function(ffi.Pointer<OBX_tree_leaves_info>)>();
 
@@ -7616,18 +8324,22 @@ class ObjectBoxC {
     ffi.Pointer<OBX_tree_leaves_info> leaves_info,
     int index,
   ) {
-    return _tree_leaves_info_path(
-      leaves_info,
-      index,
-    );
+    return _tree_leaves_info_path(leaves_info, index);
   }
 
-  late final _tree_leaves_info_pathPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_tree_leaves_info>,
-              ffi.Size)>>('obx_tree_leaves_info_path');
-  late final _tree_leaves_info_path = _tree_leaves_info_pathPtr.asFunction<
-      ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_tree_leaves_info>, int)>();
+  late final _tree_leaves_info_pathPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(
+            ffi.Pointer<OBX_tree_leaves_info>,
+            ffi.Size,
+          )
+        >
+      >('obx_tree_leaves_info_path');
+  late final _tree_leaves_info_path = _tree_leaves_info_pathPtr
+      .asFunction<
+        ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_tree_leaves_info>, int)
+      >();
 
   /// Gets the property type (as OBXPropertyType) of a given leaf (by index).
   /// @returns OBXPropertyType_Unknown if no property type was found.
@@ -7635,16 +8347,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_tree_leaves_info> leaves_info,
     int index,
   ) {
-    return _tree_leaves_info_type(
-      leaves_info,
-      index,
-    );
+    return _tree_leaves_info_type(leaves_info, index);
   }
 
-  late final _tree_leaves_info_typePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Int32 Function(ffi.Pointer<OBX_tree_leaves_info>,
-              ffi.Size)>>('obx_tree_leaves_info_type');
+  late final _tree_leaves_info_typePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Int32 Function(ffi.Pointer<OBX_tree_leaves_info>, ffi.Size)
+        >
+      >('obx_tree_leaves_info_type');
   late final _tree_leaves_info_type = _tree_leaves_info_typePtr
       .asFunction<int Function(ffi.Pointer<OBX_tree_leaves_info>, int)>();
 
@@ -7653,32 +8364,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_tree_leaves_info> leaves_info,
     int index,
   ) {
-    return _tree_leaves_info_id(
-      leaves_info,
-      index,
-    );
+    return _tree_leaves_info_id(leaves_info, index);
   }
 
-  late final _tree_leaves_info_idPtr = _lookup<
-      ffi.NativeFunction<
-          obx_id Function(ffi.Pointer<OBX_tree_leaves_info>,
-              ffi.Size)>>('obx_tree_leaves_info_id');
+  late final _tree_leaves_info_idPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_id Function(ffi.Pointer<OBX_tree_leaves_info>, ffi.Size)
+        >
+      >('obx_tree_leaves_info_id');
   late final _tree_leaves_info_id = _tree_leaves_info_idPtr
       .asFunction<int Function(ffi.Pointer<OBX_tree_leaves_info>, int)>();
 
   /// Frees a leaves info reference.
-  void tree_leaves_info_free(
-    ffi.Pointer<OBX_tree_leaves_info> leaves_info,
-  ) {
-    return _tree_leaves_info_free(
-      leaves_info,
-    );
+  void tree_leaves_info_free(ffi.Pointer<OBX_tree_leaves_info> leaves_info) {
+    return _tree_leaves_info_free(leaves_info);
   }
 
-  late final _tree_leaves_info_freePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(
-              ffi.Pointer<OBX_tree_leaves_info>)>>('obx_tree_leaves_info_free');
+  late final _tree_leaves_info_freePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_tree_leaves_info>)>
+      >('obx_tree_leaves_info_free');
   late final _tree_leaves_info_free = _tree_leaves_info_freePtr
       .asFunction<void Function(ffi.Pointer<OBX_tree_leaves_info>)>();
 
@@ -7703,17 +8409,28 @@ class ObjectBoxC {
     );
   }
 
-  late final _tree_async_get_rawPtr = _lookup<
-      ffi.NativeFunction<
+  late final _tree_async_get_rawPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_tree>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Bool,
-              ffi.Pointer<obx_tree_async_get_callback>,
-              ffi.Pointer<ffi.Void>)>>('obx_tree_async_get_raw');
-  late final _tree_async_get_raw = _tree_async_get_rawPtr.asFunction<
-      int Function(ffi.Pointer<OBX_tree>, ffi.Pointer<ffi.Char>, bool,
-          ffi.Pointer<obx_tree_async_get_callback>, ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_tree>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+            ffi.Pointer<obx_tree_async_get_callback>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_tree_async_get_raw');
+  late final _tree_async_get_raw = _tree_async_get_rawPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_tree>,
+          ffi.Pointer<ffi.Char>,
+          bool,
+          ffi.Pointer<obx_tree_async_get_callback>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Like obx_tree_cursor_put_raw(), but asynchronous.
   /// @param callback Optional (may be null) function that is called with results once the async operation completes.
@@ -7745,21 +8462,26 @@ class ObjectBoxC {
     );
   }
 
-  late final _tree_async_put_rawPtr = _lookup<
-      ffi.NativeFunction<
+  late final _tree_async_put_rawPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_tree>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Void>,
-              ffi.Size,
-              ffi.Int32,
-              ffi.Pointer<ffi.Void>,
-              ffi.Size,
-              ffi.Int32,
-              ffi.Pointer<obx_tree_async_put_callback>,
-              ffi.Pointer<ffi.Void>)>>('obx_tree_async_put_raw');
-  late final _tree_async_put_raw = _tree_async_put_rawPtr.asFunction<
-      int Function(
+            ffi.Pointer<OBX_tree>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Void>,
+            ffi.Size,
+            ffi.Int32,
+            ffi.Pointer<ffi.Void>,
+            ffi.Size,
+            ffi.Int32,
+            ffi.Pointer<obx_tree_async_put_callback>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_tree_async_put_raw');
+  late final _tree_async_put_raw = _tree_async_put_rawPtr
+      .asFunction<
+        int Function(
           ffi.Pointer<OBX_tree>,
           ffi.Pointer<ffi.Char>,
           ffi.Pointer<ffi.Void>,
@@ -7769,69 +8491,62 @@ class ObjectBoxC {
           int,
           int,
           ffi.Pointer<obx_tree_async_put_callback>,
-          ffi.Pointer<ffi.Void>)>();
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Explicitly consolidates tree node conflicts (non unique nodes sharing a common path) asynchronously.
   /// See also obx_tree_cursor_consolidate_node_conflicts() for a synchronous version.
-  int tree_async_consolidate_node_conflicts(
-    ffi.Pointer<OBX_tree> tree,
-  ) {
-    return _tree_async_consolidate_node_conflicts(
-      tree,
-    );
+  int tree_async_consolidate_node_conflicts(ffi.Pointer<OBX_tree> tree) {
+    return _tree_async_consolidate_node_conflicts(tree);
   }
 
   late final _tree_async_consolidate_node_conflictsPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_tree>)>>(
-          'obx_tree_async_consolidate_node_conflicts');
+        'obx_tree_async_consolidate_node_conflicts',
+      );
   late final _tree_async_consolidate_node_conflicts =
       _tree_async_consolidate_node_conflictsPtr
           .asFunction<int Function(ffi.Pointer<OBX_tree>)>();
 
   /// Creates a weak reference to the given store.
-  ffi.Pointer<OBX_weak_store> weak_store(
-    ffi.Pointer<OBX_store> store,
-  ) {
-    return _weak_store(
-      store,
-    );
+  ffi.Pointer<OBX_weak_store> weak_store(ffi.Pointer<OBX_store> store) {
+    return _weak_store(store);
   }
 
-  late final _weak_storePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_weak_store> Function(
-              ffi.Pointer<OBX_store>)>>('obx_weak_store');
-  late final _weak_store = _weak_storePtr.asFunction<
-      ffi.Pointer<OBX_weak_store> Function(ffi.Pointer<OBX_store>)>();
+  late final _weak_storePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_weak_store> Function(ffi.Pointer<OBX_store>)
+        >
+      >('obx_weak_store');
+  late final _weak_store = _weak_storePtr
+      .asFunction<
+        ffi.Pointer<OBX_weak_store> Function(ffi.Pointer<OBX_store>)
+      >();
 
   /// Frees a weak store reference.
-  void weak_store_free(
-    ffi.Pointer<OBX_weak_store> weak_store,
-  ) {
-    return _weak_store_free(
-      weak_store,
-    );
+  void weak_store_free(ffi.Pointer<OBX_weak_store> weak_store) {
+    return _weak_store_free(weak_store);
   }
 
-  late final _weak_store_freePtr = _lookup<
-          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_weak_store>)>>(
-      'obx_weak_store_free');
+  late final _weak_store_freePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_weak_store>)>
+      >('obx_weak_store_free');
   late final _weak_store_free = _weak_store_freePtr
       .asFunction<void Function(ffi.Pointer<OBX_weak_store>)>();
 
   /// Tries to get a weak reference to the store with the given ID.
   /// @returns null if no store was found for the given ID
-  ffi.Pointer<OBX_weak_store> weak_store_by_id(
-    int store_id,
-  ) {
-    return _weak_store_by_id(
-      store_id,
-    );
+  ffi.Pointer<OBX_weak_store> weak_store_by_id(int store_id) {
+    return _weak_store_by_id(store_id);
   }
 
-  late final _weak_store_by_idPtr = _lookup<
-          ffi.NativeFunction<ffi.Pointer<OBX_weak_store> Function(ffi.Uint64)>>(
-      'obx_weak_store_by_id');
+  late final _weak_store_by_idPtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Pointer<OBX_weak_store> Function(ffi.Uint64)>
+      >('obx_weak_store_by_id');
   late final _weak_store_by_id = _weak_store_by_idPtr
       .asFunction<ffi.Pointer<OBX_weak_store> Function(int)>();
 
@@ -7840,63 +8555,57 @@ class ObjectBoxC {
   ffi.Pointer<OBX_store> weak_store_lock(
     ffi.Pointer<OBX_weak_store> weak_store,
   ) {
-    return _weak_store_lock(
-      weak_store,
-    );
+    return _weak_store_lock(weak_store);
   }
 
-  late final _weak_store_lockPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_store> Function(
-              ffi.Pointer<OBX_weak_store>)>>('obx_weak_store_lock');
-  late final _weak_store_lock = _weak_store_lockPtr.asFunction<
-      ffi.Pointer<OBX_store> Function(ffi.Pointer<OBX_weak_store>)>();
+  late final _weak_store_lockPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_store> Function(ffi.Pointer<OBX_weak_store>)
+        >
+      >('obx_weak_store_lock');
+  late final _weak_store_lock = _weak_store_lockPtr
+      .asFunction<
+        ffi.Pointer<OBX_store> Function(ffi.Pointer<OBX_weak_store>)
+      >();
 
-  void bytes_free(
-    ffi.Pointer<OBX_bytes> bytes,
-  ) {
-    return _bytes_free(
-      bytes,
-    );
+  void bytes_free(ffi.Pointer<OBX_bytes> bytes) {
+    return _bytes_free(bytes);
   }
 
   late final _bytes_freePtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_bytes>)>>(
-          'obx_bytes_free');
-  late final _bytes_free =
-      _bytes_freePtr.asFunction<void Function(ffi.Pointer<OBX_bytes>)>();
+        'obx_bytes_free',
+      );
+  late final _bytes_free = _bytes_freePtr
+      .asFunction<void Function(ffi.Pointer<OBX_bytes>)>();
 
   /// Free the array struct
-  void bytes_score_array_free(
-    ffi.Pointer<OBX_bytes_score_array> array,
-  ) {
-    return _bytes_score_array_free(
-      array,
-    );
+  void bytes_score_array_free(ffi.Pointer<OBX_bytes_score_array> array) {
+    return _bytes_score_array_free(array);
   }
 
-  late final _bytes_score_array_freePtr = _lookup<
-          ffi.NativeFunction<
-              ffi.Void Function(ffi.Pointer<OBX_bytes_score_array>)>>(
-      'obx_bytes_score_array_free');
+  late final _bytes_score_array_freePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Void Function(ffi.Pointer<OBX_bytes_score_array>)
+        >
+      >('obx_bytes_score_array_free');
   late final _bytes_score_array_free = _bytes_score_array_freePtr
       .asFunction<void Function(ffi.Pointer<OBX_bytes_score_array>)>();
 
   /// Allocate a bytes array struct of the given size, ready for the data to be pushed
   /// @returns NULL if the operation failed, see functions like obx_last_error_code() to get error details
-  ffi.Pointer<OBX_bytes_array> bytes_array(
-    int count,
-  ) {
-    return _bytes_array(
-      count,
-    );
+  ffi.Pointer<OBX_bytes_array> bytes_array(int count) {
+    return _bytes_array(count);
   }
 
-  late final _bytes_arrayPtr = _lookup<
-          ffi.NativeFunction<ffi.Pointer<OBX_bytes_array> Function(ffi.Size)>>(
-      'obx_bytes_array');
-  late final _bytes_array =
-      _bytes_arrayPtr.asFunction<ffi.Pointer<OBX_bytes_array> Function(int)>();
+  late final _bytes_arrayPtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Pointer<OBX_bytes_array> Function(ffi.Size)>
+      >('obx_bytes_array');
+  late final _bytes_array = _bytes_arrayPtr
+      .asFunction<ffi.Pointer<OBX_bytes_array> Function(int)>();
 
   /// Set the given data as the index in the bytes array. The data is not copied, just referenced through the pointer
   int bytes_array_set(
@@ -7905,189 +8614,164 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> data,
     int size,
   ) {
-    return _bytes_array_set(
-      array,
-      index,
-      data,
-      size,
-    );
+    return _bytes_array_set(array, index, data, size);
   }
 
-  late final _bytes_array_setPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_bytes_array>, ffi.Size,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_bytes_array_set');
-  late final _bytes_array_set = _bytes_array_setPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_bytes_array>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _bytes_array_setPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_bytes_array>,
+            ffi.Size,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_bytes_array_set');
+  late final _bytes_array_set = _bytes_array_setPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_bytes_array>,
+          int,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+        )
+      >();
 
   /// Free the bytes array struct
-  void bytes_array_free(
-    ffi.Pointer<OBX_bytes_array> array,
-  ) {
-    return _bytes_array_free(
-      array,
-    );
+  void bytes_array_free(ffi.Pointer<OBX_bytes_array> array) {
+    return _bytes_array_free(array);
   }
 
-  late final _bytes_array_freePtr = _lookup<
-          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_bytes_array>)>>(
-      'obx_bytes_array_free');
+  late final _bytes_array_freePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_bytes_array>)>
+      >('obx_bytes_array_free');
   late final _bytes_array_free = _bytes_array_freePtr
       .asFunction<void Function(ffi.Pointer<OBX_bytes_array>)>();
 
   /// Create an ID array struct, copying the given IDs as the contents
   /// @returns NULL if the operation failed, see functions like obx_last_error_code() to get error details
-  ffi.Pointer<OBX_id_array> id_array(
-    ffi.Pointer<obx_id> ids,
-    int count,
-  ) {
-    return _id_array(
-      ids,
-      count,
-    );
+  ffi.Pointer<OBX_id_array> id_array(ffi.Pointer<obx_id> ids, int count) {
+    return _id_array(ids, count);
   }
 
-  late final _id_arrayPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_id_array> Function(
-              ffi.Pointer<obx_id>, ffi.Size)>>('obx_id_array');
-  late final _id_array = _id_arrayPtr.asFunction<
-      ffi.Pointer<OBX_id_array> Function(ffi.Pointer<obx_id>, int)>();
+  late final _id_arrayPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_id_array> Function(ffi.Pointer<obx_id>, ffi.Size)
+        >
+      >('obx_id_array');
+  late final _id_array = _id_arrayPtr
+      .asFunction<
+        ffi.Pointer<OBX_id_array> Function(ffi.Pointer<obx_id>, int)
+      >();
 
   /// Free the array struct
-  void id_array_free(
-    ffi.Pointer<OBX_id_array> array,
-  ) {
-    return _id_array_free(
-      array,
-    );
+  void id_array_free(ffi.Pointer<OBX_id_array> array) {
+    return _id_array_free(array);
   }
 
   late final _id_array_freePtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_id_array>)>>(
-          'obx_id_array_free');
-  late final _id_array_free =
-      _id_array_freePtr.asFunction<void Function(ffi.Pointer<OBX_id_array>)>();
+        'obx_id_array_free',
+      );
+  late final _id_array_free = _id_array_freePtr
+      .asFunction<void Function(ffi.Pointer<OBX_id_array>)>();
 
   /// Free the array struct
-  void string_array_free(
-    ffi.Pointer<OBX_string_array> array,
-  ) {
-    return _string_array_free(
-      array,
-    );
+  void string_array_free(ffi.Pointer<OBX_string_array> array) {
+    return _string_array_free(array);
   }
 
-  late final _string_array_freePtr = _lookup<
-          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_string_array>)>>(
-      'obx_string_array_free');
+  late final _string_array_freePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_string_array>)>
+      >('obx_string_array_free');
   late final _string_array_free = _string_array_freePtr
       .asFunction<void Function(ffi.Pointer<OBX_string_array>)>();
 
   /// Free the array struct
-  void id_score_array_free(
-    ffi.Pointer<OBX_id_score_array> array,
-  ) {
-    return _id_score_array_free(
-      array,
-    );
+  void id_score_array_free(ffi.Pointer<OBX_id_score_array> array) {
+    return _id_score_array_free(array);
   }
 
-  late final _id_score_array_freePtr = _lookup<
-          ffi
-          .NativeFunction<ffi.Void Function(ffi.Pointer<OBX_id_score_array>)>>(
-      'obx_id_score_array_free');
+  late final _id_score_array_freePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_id_score_array>)>
+      >('obx_id_score_array_free');
   late final _id_score_array_free = _id_score_array_freePtr
       .asFunction<void Function(ffi.Pointer<OBX_id_score_array>)>();
 
   /// Free the array struct
-  void int64_array_free(
-    ffi.Pointer<OBX_int64_array> array,
-  ) {
-    return _int64_array_free(
-      array,
-    );
+  void int64_array_free(ffi.Pointer<OBX_int64_array> array) {
+    return _int64_array_free(array);
   }
 
-  late final _int64_array_freePtr = _lookup<
-          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_int64_array>)>>(
-      'obx_int64_array_free');
+  late final _int64_array_freePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_int64_array>)>
+      >('obx_int64_array_free');
   late final _int64_array_free = _int64_array_freePtr
       .asFunction<void Function(ffi.Pointer<OBX_int64_array>)>();
 
   /// Free the array struct
-  void int32_array_free(
-    ffi.Pointer<OBX_int32_array> array,
-  ) {
-    return _int32_array_free(
-      array,
-    );
+  void int32_array_free(ffi.Pointer<OBX_int32_array> array) {
+    return _int32_array_free(array);
   }
 
-  late final _int32_array_freePtr = _lookup<
-          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_int32_array>)>>(
-      'obx_int32_array_free');
+  late final _int32_array_freePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_int32_array>)>
+      >('obx_int32_array_free');
   late final _int32_array_free = _int32_array_freePtr
       .asFunction<void Function(ffi.Pointer<OBX_int32_array>)>();
 
   /// Free the array struct
-  void int16_array_free(
-    ffi.Pointer<OBX_int16_array> array,
-  ) {
-    return _int16_array_free(
-      array,
-    );
+  void int16_array_free(ffi.Pointer<OBX_int16_array> array) {
+    return _int16_array_free(array);
   }
 
-  late final _int16_array_freePtr = _lookup<
-          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_int16_array>)>>(
-      'obx_int16_array_free');
+  late final _int16_array_freePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_int16_array>)>
+      >('obx_int16_array_free');
   late final _int16_array_free = _int16_array_freePtr
       .asFunction<void Function(ffi.Pointer<OBX_int16_array>)>();
 
   /// Free the array struct
-  void int8_array_free(
-    ffi.Pointer<OBX_int8_array> array,
-  ) {
-    return _int8_array_free(
-      array,
-    );
+  void int8_array_free(ffi.Pointer<OBX_int8_array> array) {
+    return _int8_array_free(array);
   }
 
-  late final _int8_array_freePtr = _lookup<
-          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_int8_array>)>>(
-      'obx_int8_array_free');
+  late final _int8_array_freePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_int8_array>)>
+      >('obx_int8_array_free');
   late final _int8_array_free = _int8_array_freePtr
       .asFunction<void Function(ffi.Pointer<OBX_int8_array>)>();
 
   /// Free the array struct
-  void double_array_free(
-    ffi.Pointer<OBX_double_array> array,
-  ) {
-    return _double_array_free(
-      array,
-    );
+  void double_array_free(ffi.Pointer<OBX_double_array> array) {
+    return _double_array_free(array);
   }
 
-  late final _double_array_freePtr = _lookup<
-          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_double_array>)>>(
-      'obx_double_array_free');
+  late final _double_array_freePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_double_array>)>
+      >('obx_double_array_free');
   late final _double_array_free = _double_array_freePtr
       .asFunction<void Function(ffi.Pointer<OBX_double_array>)>();
 
   /// Free the array struct
-  void float_array_free(
-    ffi.Pointer<OBX_float_array> array,
-  ) {
-    return _float_array_free(
-      array,
-    );
+  void float_array_free(ffi.Pointer<OBX_float_array> array) {
+    return _float_array_free(array);
   }
 
-  late final _float_array_freePtr = _lookup<
-          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_float_array>)>>(
-      'obx_float_array_free');
+  late final _float_array_freePtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Void Function(ffi.Pointer<OBX_float_array>)>
+      >('obx_float_array_free');
   late final _float_array_free = _float_array_freePtr
       .asFunction<void Function(ffi.Pointer<OBX_float_array>)>();
 
@@ -8095,17 +8779,14 @@ class ObjectBoxC {
   /// You must supply the application group identifier for sand-boxed macOS apps here; see also:
   /// https://developer.apple.com/library/archive/documentation/Security/Conceptual/AppSandboxDesignGuide/AppSandboxInDepth/AppSandboxInDepth.html#//apple_ref/doc/uid/TP40011183-CH3-SW24
   /// @param prefix must be at most 20 characters long and end with a forward slash '/'.
-  int posix_sem_prefix_set(
-    ffi.Pointer<ffi.Char> prefix,
-  ) {
-    return _posix_sem_prefix_set(
-      prefix,
-    );
+  int posix_sem_prefix_set(ffi.Pointer<ffi.Char> prefix) {
+    return _posix_sem_prefix_set(prefix);
   }
 
   late final _posix_sem_prefix_setPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<ffi.Char>)>>(
-          'obx_posix_sem_prefix_set');
+        'obx_posix_sem_prefix_set',
+      );
   late final _posix_sem_prefix_set = _posix_sem_prefix_setPtr
       .asFunction<int Function(ffi.Pointer<ffi.Char>)>();
 
@@ -8117,9 +8798,10 @@ class ObjectBoxC {
 
   late final _admin_optPtr =
       _lookup<ffi.NativeFunction<ffi.Pointer<OBX_admin_options> Function()>>(
-          'obx_admin_opt');
-  late final _admin_opt =
-      _admin_optPtr.asFunction<ffi.Pointer<OBX_admin_options> Function()>();
+        'obx_admin_opt',
+      );
+  late final _admin_opt = _admin_optPtr
+      .asFunction<ffi.Pointer<OBX_admin_options> Function()>();
 
   /// Configure admin with an existing, open OBX_store*.
   /// @see also obx_admin_opt_store_path() as an alternative.
@@ -8127,18 +8809,22 @@ class ObjectBoxC {
     ffi.Pointer<OBX_admin_options> opt,
     ffi.Pointer<OBX_store> store,
   ) {
-    return _admin_opt_store(
-      opt,
-      store,
-    );
+    return _admin_opt_store(opt, store);
   }
 
-  late final _admin_opt_storePtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_admin_options>,
-              ffi.Pointer<OBX_store>)>>('obx_admin_opt_store');
-  late final _admin_opt_store = _admin_opt_storePtr.asFunction<
-      int Function(ffi.Pointer<OBX_admin_options>, ffi.Pointer<OBX_store>)>();
+  late final _admin_opt_storePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_admin_options>,
+            ffi.Pointer<OBX_store>,
+          )
+        >
+      >('obx_admin_opt_store');
+  late final _admin_opt_store = _admin_opt_storePtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_admin_options>, ffi.Pointer<OBX_store>)
+      >();
 
   /// Configure admin with an existing, open OBX_store*.
   /// @see also obx_admin_opt_store() as an alternative.
@@ -8146,18 +8832,22 @@ class ObjectBoxC {
     ffi.Pointer<OBX_admin_options> opt,
     ffi.Pointer<ffi.Char> directory,
   ) {
-    return _admin_opt_store_path(
-      opt,
-      directory,
-    );
+    return _admin_opt_store_path(opt, directory);
   }
 
-  late final _admin_opt_store_pathPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_admin_options>,
-              ffi.Pointer<ffi.Char>)>>('obx_admin_opt_store_path');
-  late final _admin_opt_store_path = _admin_opt_store_pathPtr.asFunction<
-      int Function(ffi.Pointer<OBX_admin_options>, ffi.Pointer<ffi.Char>)>();
+  late final _admin_opt_store_pathPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_admin_options>,
+            ffi.Pointer<ffi.Char>,
+          )
+        >
+      >('obx_admin_opt_store_path');
+  late final _admin_opt_store_path = _admin_opt_store_pathPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_admin_options>, ffi.Pointer<ffi.Char>)
+      >();
 
   /// Set the address and port on which the underlying http-server should server the admin web UI.
   /// Defaults to "http://127.0.0.1:8081"
@@ -8166,18 +8856,22 @@ class ObjectBoxC {
     ffi.Pointer<OBX_admin_options> opt,
     ffi.Pointer<ffi.Char> uri,
   ) {
-    return _admin_opt_bind(
-      opt,
-      uri,
-    );
+    return _admin_opt_bind(opt, uri);
   }
 
-  late final _admin_opt_bindPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_admin_options>,
-              ffi.Pointer<ffi.Char>)>>('obx_admin_opt_bind');
-  late final _admin_opt_bind = _admin_opt_bindPtr.asFunction<
-      int Function(ffi.Pointer<OBX_admin_options>, ffi.Pointer<ffi.Char>)>();
+  late final _admin_opt_bindPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_admin_options>,
+            ffi.Pointer<ffi.Char>,
+          )
+        >
+      >('obx_admin_opt_bind');
+  late final _admin_opt_bind = _admin_opt_bindPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_admin_options>, ffi.Pointer<ffi.Char>)
+      >();
 
   /// Configure the server to use SSL, with the given certificate.
   /// @param cert_path - the file must be in PEM format, and it must have both private key and certificate (public key).
@@ -8185,34 +8879,37 @@ class ObjectBoxC {
     ffi.Pointer<OBX_admin_options> opt,
     ffi.Pointer<ffi.Char> cert_path,
   ) {
-    return _admin_opt_ssl_cert(
-      opt,
-      cert_path,
-    );
+    return _admin_opt_ssl_cert(opt, cert_path);
   }
 
-  late final _admin_opt_ssl_certPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_admin_options>,
-              ffi.Pointer<ffi.Char>)>>('obx_admin_opt_ssl_cert');
-  late final _admin_opt_ssl_cert = _admin_opt_ssl_certPtr.asFunction<
-      int Function(ffi.Pointer<OBX_admin_options>, ffi.Pointer<ffi.Char>)>();
+  late final _admin_opt_ssl_certPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_admin_options>,
+            ffi.Pointer<ffi.Char>,
+          )
+        >
+      >('obx_admin_opt_ssl_cert');
+  late final _admin_opt_ssl_cert = _admin_opt_ssl_certPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_admin_options>, ffi.Pointer<ffi.Char>)
+      >();
 
   /// Sets the number of worker threads the http-server uses to serve requests. Default: 4
   int admin_opt_num_threads(
     ffi.Pointer<OBX_admin_options> opt,
     int num_threads,
   ) {
-    return _admin_opt_num_threads(
-      opt,
-      num_threads,
-    );
+    return _admin_opt_num_threads(opt, num_threads);
   }
 
-  late final _admin_opt_num_threadsPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_admin_options>,
-              ffi.Size)>>('obx_admin_opt_num_threads');
+  late final _admin_opt_num_threadsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_admin_options>, ffi.Size)
+        >
+      >('obx_admin_opt_num_threads');
   late final _admin_opt_num_threads = _admin_opt_num_threadsPtr
       .asFunction<int Function(ffi.Pointer<OBX_admin_options>, int)>();
 
@@ -8222,16 +8919,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_admin_options> opt,
     bool value,
   ) {
-    return _admin_opt_unsecured_no_authentication(
-      opt,
-      value,
-    );
+    return _admin_opt_unsecured_no_authentication(opt, value);
   }
 
-  late final _admin_opt_unsecured_no_authenticationPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_admin_options>,
-              ffi.Bool)>>('obx_admin_opt_unsecured_no_authentication');
+  late final _admin_opt_unsecured_no_authenticationPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_admin_options>, ffi.Bool)
+        >
+      >('obx_admin_opt_unsecured_no_authentication');
   late final _admin_opt_unsecured_no_authentication =
       _admin_opt_unsecured_no_authenticationPtr
           .asFunction<int Function(ffi.Pointer<OBX_admin_options>, bool)>();
@@ -8241,50 +8937,42 @@ class ObjectBoxC {
     ffi.Pointer<OBX_admin_options> opt,
     bool value,
   ) {
-    return _admin_opt_user_management(
-      opt,
-      value,
-    );
+    return _admin_opt_user_management(opt, value);
   }
 
-  late final _admin_opt_user_managementPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_admin_options>,
-              ffi.Bool)>>('obx_admin_opt_user_management');
+  late final _admin_opt_user_managementPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_admin_options>, ffi.Bool)
+        >
+      >('obx_admin_opt_user_management');
   late final _admin_opt_user_management = _admin_opt_user_managementPtr
       .asFunction<int Function(ffi.Pointer<OBX_admin_options>, bool)>();
 
   /// Logs request info, e.g. timing for serving a request
-  int admin_opt_log_requests(
-    ffi.Pointer<OBX_admin_options> opt,
-    bool value,
-  ) {
-    return _admin_opt_log_requests(
-      opt,
-      value,
-    );
+  int admin_opt_log_requests(ffi.Pointer<OBX_admin_options> opt, bool value) {
+    return _admin_opt_log_requests(opt, value);
   }
 
-  late final _admin_opt_log_requestsPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_admin_options>,
-              ffi.Bool)>>('obx_admin_opt_log_requests');
+  late final _admin_opt_log_requestsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_admin_options>, ffi.Bool)
+        >
+      >('obx_admin_opt_log_requests');
   late final _admin_opt_log_requests = _admin_opt_log_requestsPtr
       .asFunction<int Function(ffi.Pointer<OBX_admin_options>, bool)>();
 
   /// Free the options.
   /// Note: Only free *unused* options, obx_admin() frees the options internally
-  int admin_opt_free(
-    ffi.Pointer<OBX_admin_options> opt,
-  ) {
-    return _admin_opt_free(
-      opt,
-    );
+  int admin_opt_free(ffi.Pointer<OBX_admin_options> opt) {
+    return _admin_opt_free(opt);
   }
 
-  late final _admin_opt_freePtr = _lookup<
-          ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_admin_options>)>>(
-      'obx_admin_opt_free');
+  late final _admin_opt_freePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_admin_options>)>
+      >('obx_admin_opt_free');
   late final _admin_opt_free = _admin_opt_freePtr
       .asFunction<int Function(ffi.Pointer<OBX_admin_options>)>();
 
@@ -8292,52 +8980,46 @@ class ObjectBoxC {
   /// Note: the given options are always freed by this function, including when an error occurs.
   /// @param options required parameter holding the options (see obx_admin_opt_*())
   /// @returns NULL if the operation failed, see functions like obx_last_error_code() to get error details
-  ffi.Pointer<OBX_admin> admin(
-    ffi.Pointer<OBX_admin_options> options,
-  ) {
-    return _admin(
-      options,
-    );
+  ffi.Pointer<OBX_admin> admin(ffi.Pointer<OBX_admin_options> options) {
+    return _admin(options);
   }
 
-  late final _adminPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_admin> Function(
-              ffi.Pointer<OBX_admin_options>)>>('obx_admin');
-  late final _admin = _adminPtr.asFunction<
-      ffi.Pointer<OBX_admin> Function(ffi.Pointer<OBX_admin_options>)>();
+  late final _adminPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_admin> Function(ffi.Pointer<OBX_admin_options>)
+        >
+      >('obx_admin');
+  late final _admin = _adminPtr
+      .asFunction<
+        ffi.Pointer<OBX_admin> Function(ffi.Pointer<OBX_admin_options>)
+      >();
 
   /// Returns a port this server listens on. This is especially useful if the port was assigned arbitrarily
   /// (a "0" port was used in the URL given to obx_admin_opt_bind()).
-  int admin_port(
-    ffi.Pointer<OBX_admin> admin,
-  ) {
-    return _admin_port(
-      admin,
-    );
+  int admin_port(ffi.Pointer<OBX_admin> admin) {
+    return _admin_port(admin);
   }
 
   late final _admin_portPtr =
       _lookup<ffi.NativeFunction<ffi.Uint16 Function(ffi.Pointer<OBX_admin>)>>(
-          'obx_admin_port');
-  late final _admin_port =
-      _admin_portPtr.asFunction<int Function(ffi.Pointer<OBX_admin>)>();
+        'obx_admin_port',
+      );
+  late final _admin_port = _admin_portPtr
+      .asFunction<int Function(ffi.Pointer<OBX_admin>)>();
 
   /// Stop the http-server and free all the resources.
   /// @param admin may be NULL
-  int admin_close(
-    ffi.Pointer<OBX_admin> admin,
-  ) {
-    return _admin_close(
-      admin,
-    );
+  int admin_close(ffi.Pointer<OBX_admin> admin) {
+    return _admin_close(admin);
   }
 
   late final _admin_closePtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_admin>)>>(
-          'obx_admin_close');
-  late final _admin_close =
-      _admin_closePtr.asFunction<int Function(ffi.Pointer<OBX_admin>)>();
+        'obx_admin_close',
+      );
+  late final _admin_close = _admin_closePtr
+      .asFunction<int Function(ffi.Pointer<OBX_admin>)>();
 
   /// Creates a sync client associated with the given store and sync server URL.
   /// This does not initiate any connection attempts yet: call obx_sync_start() to do so.
@@ -8348,19 +9030,25 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store> store,
     ffi.Pointer<ffi.Char> server_url,
   ) {
-    return _sync1(
-      store,
-      server_url,
-    );
+    return _sync1(store, server_url);
   }
 
-  late final _sync1Ptr = _lookup<
-      ffi.NativeFunction<
+  late final _sync1Ptr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_sync> Function(
-              ffi.Pointer<OBX_store>, ffi.Pointer<ffi.Char>)>>('obx_sync');
-  late final _sync1 = _sync1Ptr.asFunction<
-      ffi.Pointer<OBX_sync> Function(
-          ffi.Pointer<OBX_store>, ffi.Pointer<ffi.Char>)>();
+            ffi.Pointer<OBX_store>,
+            ffi.Pointer<ffi.Char>,
+          )
+        >
+      >('obx_sync');
+  late final _sync1 = _sync1Ptr
+      .asFunction<
+        ffi.Pointer<OBX_sync> Function(
+          ffi.Pointer<OBX_store>,
+          ffi.Pointer<ffi.Char>,
+        )
+      >();
 
   /// Creates a sync client associated with the given store and a list of sync server URL.
   /// For details, see obx_sync()
@@ -8369,35 +9057,39 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Pointer<ffi.Char>> server_urls,
     int server_urls_count,
   ) {
-    return _sync_urls(
-      store,
-      server_urls,
-      server_urls_count,
-    );
+    return _sync_urls(store, server_urls, server_urls_count);
   }
 
-  late final _sync_urlsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_sync> Function(ffi.Pointer<OBX_store>,
-              ffi.Pointer<ffi.Pointer<ffi.Char>>, ffi.Size)>>('obx_sync_urls');
-  late final _sync_urls = _sync_urlsPtr.asFunction<
-      ffi.Pointer<OBX_sync> Function(
-          ffi.Pointer<OBX_store>, ffi.Pointer<ffi.Pointer<ffi.Char>>, int)>();
+  late final _sync_urlsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_sync> Function(
+            ffi.Pointer<OBX_store>,
+            ffi.Pointer<ffi.Pointer<ffi.Char>>,
+            ffi.Size,
+          )
+        >
+      >('obx_sync_urls');
+  late final _sync_urls = _sync_urlsPtr
+      .asFunction<
+        ffi.Pointer<OBX_sync> Function(
+          ffi.Pointer<OBX_store>,
+          ffi.Pointer<ffi.Pointer<ffi.Char>>,
+          int,
+        )
+      >();
 
   /// Stops and closes (deletes) the sync client, freeing its resources.
-  int sync_close(
-    ffi.Pointer<OBX_sync> sync1,
-  ) {
-    return _sync_close(
-      sync1,
-    );
+  int sync_close(ffi.Pointer<OBX_sync> sync1) {
+    return _sync_close(sync1);
   }
 
   late final _sync_closePtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>)>>(
-          'obx_sync_close');
-  late final _sync_close =
-      _sync_closePtr.asFunction<int Function(ffi.Pointer<OBX_sync>)>();
+        'obx_sync_close',
+      );
+  late final _sync_close = _sync_closePtr
+      .asFunction<int Function(ffi.Pointer<OBX_sync>)>();
 
   /// Sets credentials to authenticate the client with the server.
   /// Any credentials that were set before are replaced;
@@ -8412,20 +9104,24 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> data,
     int size,
   ) {
-    return _sync_credentials(
-      sync1,
-      type,
-      data,
-      size,
-    );
+    return _sync_credentials(sync1, type, data, size);
   }
 
-  late final _sync_credentialsPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_sync>, ffi.Int32,
-              ffi.Pointer<ffi.Uint8>, ffi.Size)>>('obx_sync_credentials');
-  late final _sync_credentials = _sync_credentialsPtr.asFunction<
-      int Function(ffi.Pointer<OBX_sync>, int, ffi.Pointer<ffi.Uint8>, int)>();
+  late final _sync_credentialsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_sync>,
+            ffi.Int32,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_sync_credentials');
+  late final _sync_credentials = _sync_credentialsPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_sync>, int, ffi.Pointer<ffi.Uint8>, int)
+      >();
 
   /// Set username/password credentials to authenticate the client with the server.
   /// This is suitable for OBXSyncCredentialsType_OBX_ADMIN_USER and OBXSyncCredentialsType_USER_PASSWORD credential
@@ -8438,25 +9134,30 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Char> username,
     ffi.Pointer<ffi.Char> password,
   ) {
-    return _sync_credentials_user_password(
-      sync1,
-      type,
-      username,
-      password,
-    );
+    return _sync_credentials_user_password(sync1, type, username, password);
   }
 
-  late final _sync_credentials_user_passwordPtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_credentials_user_passwordPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Int32,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>)>>('obx_sync_credentials_user_password');
+            ffi.Pointer<OBX_sync>,
+            ffi.Int32,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Char>,
+          )
+        >
+      >('obx_sync_credentials_user_password');
   late final _sync_credentials_user_password =
-      _sync_credentials_user_passwordPtr.asFunction<
-          int Function(ffi.Pointer<OBX_sync>, int, ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>)>();
+      _sync_credentials_user_passwordPtr
+          .asFunction<
+            int Function(
+              ffi.Pointer<OBX_sync>,
+              int,
+              ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>,
+            )
+          >();
 
   /// For authentication with multiple credentials, collect credentials by calling this function multiple times.
   /// When adding the last credentials element, the "complete" flag must be set to true.
@@ -8473,26 +9174,31 @@ class ObjectBoxC {
     int size,
     bool complete,
   ) {
-    return _sync_credentials_add(
-      sync1,
-      type,
-      data,
-      size,
-      complete,
-    );
+    return _sync_credentials_add(sync1, type, data, size, complete);
   }
 
-  late final _sync_credentials_addPtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_credentials_addPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Int32,
-              ffi.Pointer<ffi.Uint8>,
-              ffi.Size,
-              ffi.Bool)>>('obx_sync_credentials_add');
-  late final _sync_credentials_add = _sync_credentials_addPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_sync>, int, ffi.Pointer<ffi.Uint8>, int, bool)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Int32,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+            ffi.Bool,
+          )
+        >
+      >('obx_sync_credentials_add');
+  late final _sync_credentials_add = _sync_credentials_addPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_sync>,
+          int,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+          bool,
+        )
+      >();
 
   /// For authentication with multiple credentials, collect credentials by calling this function multiple times.
   /// When adding the last credentials element, the "complete" flag must be set to true.
@@ -8519,51 +9225,54 @@ class ObjectBoxC {
     );
   }
 
-  late final _sync_credentials_add_user_passwordPtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_credentials_add_user_passwordPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Int32,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Bool)>>('obx_sync_credentials_add_user_password');
+            ffi.Pointer<OBX_sync>,
+            ffi.Int32,
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Bool,
+          )
+        >
+      >('obx_sync_credentials_add_user_password');
   late final _sync_credentials_add_user_password =
-      _sync_credentials_add_user_passwordPtr.asFunction<
-          int Function(ffi.Pointer<OBX_sync>, int, ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>, bool)>();
+      _sync_credentials_add_user_passwordPtr
+          .asFunction<
+            int Function(
+              ffi.Pointer<OBX_sync>,
+              int,
+              ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>,
+              bool,
+            )
+          >();
 
   /// Configures the maximum number of outgoing TX messages that can be sent without an ACK from the server.
   /// @returns OBX_ERROR_ILLEGAL_ARGUMENT if value is not in the range 1-20
-  int sync_max_messages_in_flight(
-    ffi.Pointer<OBX_sync> sync1,
-    int value,
-  ) {
-    return _sync_max_messages_in_flight(
-      sync1,
-      value,
-    );
+  int sync_max_messages_in_flight(ffi.Pointer<OBX_sync> sync1, int value) {
+    return _sync_max_messages_in_flight(sync1, value);
   }
 
-  late final _sync_max_messages_in_flightPtr = _lookup<
-          ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>, ffi.Int)>>(
-      'obx_sync_max_messages_in_flight');
+  late final _sync_max_messages_in_flightPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>, ffi.Int)>
+      >('obx_sync_max_messages_in_flight');
   late final _sync_max_messages_in_flight = _sync_max_messages_in_flightPtr
       .asFunction<int Function(ffi.Pointer<OBX_sync>, int)>();
 
   /// Triggers a reconnection attempt immediately.
   /// By default, an increasing backoff interval is used for reconnection attempts.
   /// But sometimes the user of this API has additional knowledge and can initiate a reconnection attempt sooner.
-  int sync_trigger_reconnect(
-    ffi.Pointer<OBX_sync> sync1,
-  ) {
-    return _sync_trigger_reconnect(
-      sync1,
-    );
+  int sync_trigger_reconnect(ffi.Pointer<OBX_sync> sync1) {
+    return _sync_trigger_reconnect(sync1);
   }
 
   late final _sync_trigger_reconnectPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>)>>(
-          'obx_sync_trigger_reconnect');
+        'obx_sync_trigger_reconnect',
+      );
   late final _sync_trigger_reconnect = _sync_trigger_reconnectPtr
       .asFunction<int Function(ffi.Pointer<OBX_sync>)>();
 
@@ -8574,55 +9283,40 @@ class ObjectBoxC {
   /// @param interval_ms interval in milliseconds; the default is 25 minutes (1 500 000 milliseconds),
   /// which is also the allowed maximum.
   /// @returns OBX_ERROR_ILLEGAL_ARGUMENT if value is not in the allowed range, e.g. larger than the maximum (1 500 000).
-  int sync_heartbeat_interval(
-    ffi.Pointer<OBX_sync> sync1,
-    int interval_ms,
-  ) {
-    return _sync_heartbeat_interval(
-      sync1,
-      interval_ms,
-    );
+  int sync_heartbeat_interval(ffi.Pointer<OBX_sync> sync1, int interval_ms) {
+    return _sync_heartbeat_interval(sync1, interval_ms);
   }
 
-  late final _sync_heartbeat_intervalPtr = _lookup<
-          ffi
-          .NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>, ffi.Uint64)>>(
-      'obx_sync_heartbeat_interval');
+  late final _sync_heartbeat_intervalPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>, ffi.Uint64)>
+      >('obx_sync_heartbeat_interval');
   late final _sync_heartbeat_interval = _sync_heartbeat_intervalPtr
       .asFunction<int Function(ffi.Pointer<OBX_sync>, int)>();
 
   /// Triggers the heartbeat sending immediately. This lets you check the network connection at any time.
   /// @see obx_sync_heartbeat_interval()
-  int sync_send_heartbeat(
-    ffi.Pointer<OBX_sync> sync1,
-  ) {
-    return _sync_send_heartbeat(
-      sync1,
-    );
+  int sync_send_heartbeat(ffi.Pointer<OBX_sync> sync1) {
+    return _sync_send_heartbeat(sync1);
   }
 
   late final _sync_send_heartbeatPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>)>>(
-          'obx_sync_send_heartbeat');
-  late final _sync_send_heartbeat =
-      _sync_send_heartbeatPtr.asFunction<int Function(ffi.Pointer<OBX_sync>)>();
+        'obx_sync_send_heartbeat',
+      );
+  late final _sync_send_heartbeat = _sync_send_heartbeatPtr
+      .asFunction<int Function(ffi.Pointer<OBX_sync>)>();
 
   /// Switches operation mode that's initialized after successful login
   /// Must be called before obx_sync_start() (returns OBX_ERROR_ILLEGAL_STATE if it was already started)
-  int sync_request_updates_mode(
-    ffi.Pointer<OBX_sync> sync1,
-    int mode,
-  ) {
-    return _sync_request_updates_mode(
-      sync1,
-      mode,
-    );
+  int sync_request_updates_mode(ffi.Pointer<OBX_sync> sync1, int mode) {
+    return _sync_request_updates_mode(sync1, mode);
   }
 
-  late final _sync_request_updates_modePtr = _lookup<
-          ffi
-          .NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>, ffi.Int32)>>(
-      'obx_sync_request_updates_mode');
+  late final _sync_request_updates_modePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>, ffi.Int32)>
+      >('obx_sync_request_updates_mode');
   late final _sync_request_updates_mode = _sync_request_updates_modePtr
       .asFunction<int Function(ffi.Pointer<OBX_sync>, int)>();
 
@@ -8632,49 +9326,40 @@ class ObjectBoxC {
   /// log in (authenticate) and, depending on "update request mode", start syncing data.
   /// If the device, network or server is currently offline, connection attempts will be retried later using
   /// increasing backoff intervals.
-  int sync_start(
-    ffi.Pointer<OBX_sync> sync1,
-  ) {
-    return _sync_start(
-      sync1,
-    );
+  int sync_start(ffi.Pointer<OBX_sync> sync1) {
+    return _sync_start(sync1);
   }
 
   late final _sync_startPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>)>>(
-          'obx_sync_start');
-  late final _sync_start =
-      _sync_startPtr.asFunction<int Function(ffi.Pointer<OBX_sync>)>();
+        'obx_sync_start',
+      );
+  late final _sync_start = _sync_startPtr
+      .asFunction<int Function(ffi.Pointer<OBX_sync>)>();
 
   /// Stops this sync client and thus stopping the synchronization. Does nothing if it is already stopped.
-  int sync_stop(
-    ffi.Pointer<OBX_sync> sync1,
-  ) {
-    return _sync_stop(
-      sync1,
-    );
+  int sync_stop(ffi.Pointer<OBX_sync> sync1) {
+    return _sync_stop(sync1);
   }
 
   late final _sync_stopPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>)>>(
-          'obx_sync_stop');
-  late final _sync_stop =
-      _sync_stopPtr.asFunction<int Function(ffi.Pointer<OBX_sync>)>();
+        'obx_sync_stop',
+      );
+  late final _sync_stop = _sync_stopPtr
+      .asFunction<int Function(ffi.Pointer<OBX_sync>)>();
 
   /// Gets the current state of the sync client (0 on error, e.g. given sync was NULL)
-  int sync_state(
-    ffi.Pointer<OBX_sync> sync1,
-  ) {
-    return _sync_state(
-      sync1,
-    );
+  int sync_state(ffi.Pointer<OBX_sync> sync1) {
+    return _sync_state(sync1);
   }
 
   late final _sync_statePtr =
       _lookup<ffi.NativeFunction<ffi.Int32 Function(ffi.Pointer<OBX_sync>)>>(
-          'obx_sync_state');
-  late final _sync_state =
-      _sync_statePtr.asFunction<int Function(ffi.Pointer<OBX_sync>)>();
+        'obx_sync_state',
+      );
+  late final _sync_state = _sync_statePtr
+      .asFunction<int Function(ffi.Pointer<OBX_sync>)>();
 
   /// Waits for the sync client to get into the given state or until the given timeout is reached.
   /// For an asynchronous alternative, please check the listeners.
@@ -8688,16 +9373,13 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync> sync1,
     int timeout_millis,
   ) {
-    return _sync_wait_for_logged_in_state(
-      sync1,
-      timeout_millis,
-    );
+    return _sync_wait_for_logged_in_state(sync1, timeout_millis);
   }
 
-  late final _sync_wait_for_logged_in_statePtr = _lookup<
-          ffi
-          .NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>, ffi.Uint64)>>(
-      'obx_sync_wait_for_logged_in_state');
+  late final _sync_wait_for_logged_in_statePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>, ffi.Uint64)>
+      >('obx_sync_wait_for_logged_in_state');
   late final _sync_wait_for_logged_in_state = _sync_wait_for_logged_in_statePtr
       .asFunction<int Function(ffi.Pointer<OBX_sync>, int)>();
 
@@ -8711,16 +9393,13 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync> sync1,
     bool subscribe_for_pushes,
   ) {
-    return _sync_updates_request(
-      sync1,
-      subscribe_for_pushes,
-    );
+    return _sync_updates_request(sync1, subscribe_for_pushes);
   }
 
-  late final _sync_updates_requestPtr = _lookup<
-          ffi
-          .NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>, ffi.Bool)>>(
-      'obx_sync_updates_request');
+  late final _sync_updates_requestPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>, ffi.Bool)>
+      >('obx_sync_updates_request');
   late final _sync_updates_request = _sync_updates_requestPtr
       .asFunction<int Function(ffi.Pointer<OBX_sync>, bool)>();
 
@@ -8730,19 +9409,16 @@ class ObjectBoxC {
   /// @returns OBX_SUCCESS if the request was likely sent (e.g. the sync client is in "logged in" state)
   /// @returns OBX_NO_SUCCESS if the request was not sent (and will not be sent in the future).
   /// Note: obx_last_error_code() is not set.
-  int sync_updates_cancel(
-    ffi.Pointer<OBX_sync> sync1,
-  ) {
-    return _sync_updates_cancel(
-      sync1,
-    );
+  int sync_updates_cancel(ffi.Pointer<OBX_sync> sync1) {
+    return _sync_updates_cancel(sync1);
   }
 
   late final _sync_updates_cancelPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>)>>(
-          'obx_sync_updates_cancel');
-  late final _sync_updates_cancel =
-      _sync_updates_cancelPtr.asFunction<int Function(ffi.Pointer<OBX_sync>)>();
+        'obx_sync_updates_cancel',
+      );
+  late final _sync_updates_cancel = _sync_updates_cancelPtr
+      .asFunction<int Function(ffi.Pointer<OBX_sync>)>();
 
   /// Count the number of messages in the outgoing queue, i.e. those waiting to be sent to the server.
   /// @param limit pass 0 to count all messages without any limitation or a lower number that's enough for your app logic.
@@ -8754,20 +9430,23 @@ class ObjectBoxC {
     int limit,
     ffi.Pointer<ffi.Uint64> out_count,
   ) {
-    return _sync_outgoing_message_count(
-      sync1,
-      limit,
-      out_count,
-    );
+    return _sync_outgoing_message_count(sync1, limit, out_count);
   }
 
-  late final _sync_outgoing_message_countPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_sync>, ffi.Uint64,
-              ffi.Pointer<ffi.Uint64>)>>('obx_sync_outgoing_message_count');
-  late final _sync_outgoing_message_count =
-      _sync_outgoing_message_countPtr.asFunction<
-          int Function(ffi.Pointer<OBX_sync>, int, ffi.Pointer<ffi.Uint64>)>();
+  late final _sync_outgoing_message_countPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_sync>,
+            ffi.Uint64,
+            ffi.Pointer<ffi.Uint64>,
+          )
+        >
+      >('obx_sync_outgoing_message_count');
+  late final _sync_outgoing_message_count = _sync_outgoing_message_countPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_sync>, int, ffi.Pointer<ffi.Uint64>)
+      >();
 
   /// Experimental. This API is likely to be replaced/removed in a future version.
   /// Quickly bring our database up-to-date in a single transaction, without transmitting all the history.
@@ -8775,19 +9454,16 @@ class ObjectBoxC {
   /// @returns OBX_SUCCESS if the request was likely sent (e.g. the sync client is in "logged in" state)
   /// @returns OBX_NO_SUCCESS if the request was not sent (and will not be sent in the future).
   /// Note: obx_last_error_code() is not set.
-  int sync_full(
-    ffi.Pointer<OBX_sync> sync1,
-  ) {
-    return _sync_full(
-      sync1,
-    );
+  int sync_full(ffi.Pointer<OBX_sync> sync1) {
+    return _sync_full(sync1);
   }
 
   late final _sync_fullPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync>)>>(
-          'obx_sync_full');
-  late final _sync_full =
-      _sync_fullPtr.asFunction<int Function(ffi.Pointer<OBX_sync>)>();
+        'obx_sync_full',
+      );
+  late final _sync_full = _sync_fullPtr
+      .asFunction<int Function(ffi.Pointer<OBX_sync>)>();
 
   /// Estimates the current server timestamp based on the last known server time and local steady clock.
   /// @param out_timestamp_ns - unix timestamp in nanoseconds - may be set to zero if the last server's time is unknown.
@@ -8795,18 +9471,19 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync> sync1,
     ffi.Pointer<ffi.Int64> out_timestamp_ns,
   ) {
-    return _sync_time_server(
-      sync1,
-      out_timestamp_ns,
-    );
+    return _sync_time_server(sync1, out_timestamp_ns);
   }
 
-  late final _sync_time_serverPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_sync>,
-              ffi.Pointer<ffi.Int64>)>>('obx_sync_time_server');
-  late final _sync_time_server = _sync_time_serverPtr.asFunction<
-      int Function(ffi.Pointer<OBX_sync>, ffi.Pointer<ffi.Int64>)>();
+  late final _sync_time_serverPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_sync>, ffi.Pointer<ffi.Int64>)
+        >
+      >('obx_sync_time_server');
+  late final _sync_time_server = _sync_time_serverPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_sync>, ffi.Pointer<ffi.Int64>)
+      >();
 
   /// Returns the estimated difference between the server time and the local timestamp.
   /// Equivalent to calculating obx_sync_time_server() - "current time" (nanos since epoch).
@@ -8816,18 +9493,19 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync> sync1,
     ffi.Pointer<ffi.Int64> out_diff_ns,
   ) {
-    return _sync_time_server_diff(
-      sync1,
-      out_diff_ns,
-    );
+    return _sync_time_server_diff(sync1, out_diff_ns);
   }
 
-  late final _sync_time_server_diffPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_sync>,
-              ffi.Pointer<ffi.Int64>)>>('obx_sync_time_server_diff');
-  late final _sync_time_server_diff = _sync_time_server_diffPtr.asFunction<
-      int Function(ffi.Pointer<OBX_sync>, ffi.Pointer<ffi.Int64>)>();
+  late final _sync_time_server_diffPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_sync>, ffi.Pointer<ffi.Int64>)
+        >
+      >('obx_sync_time_server_diff');
+  late final _sync_time_server_diff = _sync_time_server_diffPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_sync>, ffi.Pointer<ffi.Int64>)
+      >();
 
   /// Gets the protocol version this client uses.
   int sync_protocol_version() {
@@ -8836,22 +9514,20 @@ class ObjectBoxC {
 
   late final _sync_protocol_versionPtr =
       _lookup<ffi.NativeFunction<ffi.Uint32 Function()>>(
-          'obx_sync_protocol_version');
-  late final _sync_protocol_version =
-      _sync_protocol_versionPtr.asFunction<int Function()>();
+        'obx_sync_protocol_version',
+      );
+  late final _sync_protocol_version = _sync_protocol_versionPtr
+      .asFunction<int Function()>();
 
   /// Gets the protocol version of the server after a connection is established (or attempted), zero otherwise.
-  int sync_protocol_version_server(
-    ffi.Pointer<OBX_sync> sync1,
-  ) {
-    return _sync_protocol_version_server(
-      sync1,
-    );
+  int sync_protocol_version_server(ffi.Pointer<OBX_sync> sync1) {
+    return _sync_protocol_version_server(sync1);
   }
 
   late final _sync_protocol_version_serverPtr =
       _lookup<ffi.NativeFunction<ffi.Uint32 Function(ffi.Pointer<OBX_sync>)>>(
-          'obx_sync_protocol_version_server');
+        'obx_sync_protocol_version_server',
+      );
   late final _sync_protocol_version_server = _sync_protocol_version_serverPtr
       .asFunction<int Function(ffi.Pointer<OBX_sync>)>();
 
@@ -8863,21 +9539,25 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> topic,
     int topic_size,
   ) {
-    return _sync_msg_objects_builder(
-      topic,
-      topic_size,
-    );
+    return _sync_msg_objects_builder(topic, topic_size);
   }
 
-  late final _sync_msg_objects_builderPtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_msg_objects_builderPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_sync_msg_objects_builder> Function(
-              ffi.Pointer<ffi.Uint8>,
-              ffi.Size)>>('obx_sync_msg_objects_builder');
-  late final _sync_msg_objects_builder =
-      _sync_msg_objects_builderPtr.asFunction<
-          ffi.Pointer<OBX_sync_msg_objects_builder> Function(
-              ffi.Pointer<ffi.Uint8>, int)>();
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_sync_msg_objects_builder');
+  late final _sync_msg_objects_builder = _sync_msg_objects_builderPtr
+      .asFunction<
+        ffi.Pointer<OBX_sync_msg_objects_builder> Function(
+          ffi.Pointer<ffi.Uint8>,
+          int,
+        )
+      >();
 
   /// Adds an object to the given message (builder). There must be at least one message before sending.
   /// @param id an optional (pass 0 if you don't need it) value that the application can use identify the object
@@ -8888,44 +9568,50 @@ class ObjectBoxC {
     int size,
     int id,
   ) {
-    return _sync_msg_objects_builder_add(
-      message,
-      type,
-      data,
-      size,
-      id,
-    );
+    return _sync_msg_objects_builder_add(message, type, data, size, id);
   }
 
-  late final _sync_msg_objects_builder_addPtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_msg_objects_builder_addPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_sync_msg_objects_builder>,
-              ffi.Int32,
-              ffi.Pointer<ffi.Uint8>,
-              ffi.Size,
-              ffi.Uint64)>>('obx_sync_msg_objects_builder_add');
-  late final _sync_msg_objects_builder_add =
-      _sync_msg_objects_builder_addPtr.asFunction<
-          int Function(ffi.Pointer<OBX_sync_msg_objects_builder>, int,
-              ffi.Pointer<ffi.Uint8>, int, int)>();
+            ffi.Pointer<OBX_sync_msg_objects_builder>,
+            ffi.Int32,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+            ffi.Uint64,
+          )
+        >
+      >('obx_sync_msg_objects_builder_add');
+  late final _sync_msg_objects_builder_add = _sync_msg_objects_builder_addPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_sync_msg_objects_builder>,
+          int,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+          int,
+        )
+      >();
 
   /// Free the given message if you end up not sending it. Sending frees it already so never call this after obx_*_send().
   int sync_msg_objects_builder_discard(
     ffi.Pointer<OBX_sync_msg_objects_builder> message,
   ) {
-    return _sync_msg_objects_builder_discard(
-      message,
-    );
+    return _sync_msg_objects_builder_discard(message);
   }
 
-  late final _sync_msg_objects_builder_discardPtr = _lookup<
-          ffi.NativeFunction<
-              obx_err Function(ffi.Pointer<OBX_sync_msg_objects_builder>)>>(
-      'obx_sync_msg_objects_builder_discard');
+  late final _sync_msg_objects_builder_discardPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_sync_msg_objects_builder>)
+        >
+      >('obx_sync_msg_objects_builder_discard');
   late final _sync_msg_objects_builder_discard =
-      _sync_msg_objects_builder_discardPtr.asFunction<
-          int Function(ffi.Pointer<OBX_sync_msg_objects_builder>)>();
+      _sync_msg_objects_builder_discardPtr
+          .asFunction<
+            int Function(ffi.Pointer<OBX_sync_msg_objects_builder>)
+          >();
 
   /// Sends the given 'objects message' from the client to the currently connected server.
   /// @param message the prepared outgoing message; it will be freed along with any associated resources during this call
@@ -8937,20 +9623,25 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync> sync1,
     ffi.Pointer<OBX_sync_msg_objects_builder> message,
   ) {
-    return _sync_send_msg_objects(
-      sync1,
-      message,
-    );
+    return _sync_send_msg_objects(sync1, message);
   }
 
-  late final _sync_send_msg_objectsPtr = _lookup<
-          ffi.NativeFunction<
-              obx_err Function(ffi.Pointer<OBX_sync>,
-                  ffi.Pointer<OBX_sync_msg_objects_builder>)>>(
-      'obx_sync_send_msg_objects');
-  late final _sync_send_msg_objects = _sync_send_msg_objectsPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_sync>, ffi.Pointer<OBX_sync_msg_objects_builder>)>();
+  late final _sync_send_msg_objectsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_sync>,
+            ffi.Pointer<OBX_sync_msg_objects_builder>,
+          )
+        >
+      >('obx_sync_send_msg_objects');
+  late final _sync_send_msg_objects = _sync_send_msg_objectsPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_sync>,
+          ffi.Pointer<OBX_sync_msg_objects_builder>,
+        )
+      >();
 
   /// Set or overwrite a previously set 'connect' listener.
   /// @param listener set NULL to reset
@@ -8960,22 +9651,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_listener_connect> listener,
     ffi.Pointer<ffi.Void> listener_arg,
   ) {
-    return _sync_listener_connect(
-      sync1,
-      listener,
-      listener_arg,
-    );
+    return _sync_listener_connect(sync1, listener, listener_arg);
   }
 
-  late final _sync_listener_connectPtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_listener_connectPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Void Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Pointer<OBX_sync_listener_connect>,
-              ffi.Pointer<ffi.Void>)>>('obx_sync_listener_connect');
-  late final _sync_listener_connect = _sync_listener_connectPtr.asFunction<
-      void Function(ffi.Pointer<OBX_sync>,
-          ffi.Pointer<OBX_sync_listener_connect>, ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Pointer<OBX_sync_listener_connect>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_sync_listener_connect');
+  late final _sync_listener_connect = _sync_listener_connectPtr
+      .asFunction<
+        void Function(
+          ffi.Pointer<OBX_sync>,
+          ffi.Pointer<OBX_sync_listener_connect>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Set or overwrite a previously set 'disconnect' listener.
   /// @param listener set NULL to reset
@@ -8985,25 +9681,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_listener_disconnect> listener,
     ffi.Pointer<ffi.Void> listener_arg,
   ) {
-    return _sync_listener_disconnect(
-      sync1,
-      listener,
-      listener_arg,
-    );
+    return _sync_listener_disconnect(sync1, listener, listener_arg);
   }
 
-  late final _sync_listener_disconnectPtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_listener_disconnectPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Void Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Pointer<OBX_sync_listener_disconnect>,
-              ffi.Pointer<ffi.Void>)>>('obx_sync_listener_disconnect');
-  late final _sync_listener_disconnect =
-      _sync_listener_disconnectPtr.asFunction<
-          void Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Pointer<OBX_sync_listener_disconnect>,
-              ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Pointer<OBX_sync_listener_disconnect>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_sync_listener_disconnect');
+  late final _sync_listener_disconnect = _sync_listener_disconnectPtr
+      .asFunction<
+        void Function(
+          ffi.Pointer<OBX_sync>,
+          ffi.Pointer<OBX_sync_listener_disconnect>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Set or overwrite a previously set 'login' listener.
   /// @param listener set NULL to reset
@@ -9013,22 +9711,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_listener_login> listener,
     ffi.Pointer<ffi.Void> listener_arg,
   ) {
-    return _sync_listener_login(
-      sync1,
-      listener,
-      listener_arg,
-    );
+    return _sync_listener_login(sync1, listener, listener_arg);
   }
 
-  late final _sync_listener_loginPtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_listener_loginPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Void Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Pointer<OBX_sync_listener_login>,
-              ffi.Pointer<ffi.Void>)>>('obx_sync_listener_login');
-  late final _sync_listener_login = _sync_listener_loginPtr.asFunction<
-      void Function(ffi.Pointer<OBX_sync>, ffi.Pointer<OBX_sync_listener_login>,
-          ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Pointer<OBX_sync_listener_login>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_sync_listener_login');
+  late final _sync_listener_login = _sync_listener_loginPtr
+      .asFunction<
+        void Function(
+          ffi.Pointer<OBX_sync>,
+          ffi.Pointer<OBX_sync_listener_login>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Set or overwrite a previously set 'login failure' listener.
   /// @param listener set NULL to reset
@@ -9038,25 +9741,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_listener_login_failure> listener,
     ffi.Pointer<ffi.Void> listener_arg,
   ) {
-    return _sync_listener_login_failure(
-      sync1,
-      listener,
-      listener_arg,
-    );
+    return _sync_listener_login_failure(sync1, listener, listener_arg);
   }
 
-  late final _sync_listener_login_failurePtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_listener_login_failurePtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Void Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Pointer<OBX_sync_listener_login_failure>,
-              ffi.Pointer<ffi.Void>)>>('obx_sync_listener_login_failure');
-  late final _sync_listener_login_failure =
-      _sync_listener_login_failurePtr.asFunction<
-          void Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Pointer<OBX_sync_listener_login_failure>,
-              ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Pointer<OBX_sync_listener_login_failure>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_sync_listener_login_failure');
+  late final _sync_listener_login_failure = _sync_listener_login_failurePtr
+      .asFunction<
+        void Function(
+          ffi.Pointer<OBX_sync>,
+          ffi.Pointer<OBX_sync_listener_login_failure>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Set or overwrite a previously set 'complete' listener - notifies when the latest sync has finished.
   /// @param listener set NULL to reset
@@ -9066,22 +9771,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_listener_complete> listener,
     ffi.Pointer<ffi.Void> listener_arg,
   ) {
-    return _sync_listener_complete(
-      sync1,
-      listener,
-      listener_arg,
-    );
+    return _sync_listener_complete(sync1, listener, listener_arg);
   }
 
-  late final _sync_listener_completePtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_listener_completePtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Void Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Pointer<OBX_sync_listener_complete>,
-              ffi.Pointer<ffi.Void>)>>('obx_sync_listener_complete');
-  late final _sync_listener_complete = _sync_listener_completePtr.asFunction<
-      void Function(ffi.Pointer<OBX_sync>,
-          ffi.Pointer<OBX_sync_listener_complete>, ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Pointer<OBX_sync_listener_complete>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_sync_listener_complete');
+  late final _sync_listener_complete = _sync_listener_completePtr
+      .asFunction<
+        void Function(
+          ffi.Pointer<OBX_sync>,
+          ffi.Pointer<OBX_sync_listener_complete>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Set or overwrite a previously set 'change' listener - provides information about incoming changes.
   /// @param listener set NULL to reset
@@ -9091,22 +9801,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_listener_change> listener,
     ffi.Pointer<ffi.Void> listener_arg,
   ) {
-    return _sync_listener_change(
-      sync1,
-      listener,
-      listener_arg,
-    );
+    return _sync_listener_change(sync1, listener, listener_arg);
   }
 
-  late final _sync_listener_changePtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_listener_changePtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Void Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Pointer<OBX_sync_listener_change>,
-              ffi.Pointer<ffi.Void>)>>('obx_sync_listener_change');
-  late final _sync_listener_change = _sync_listener_changePtr.asFunction<
-      void Function(ffi.Pointer<OBX_sync>,
-          ffi.Pointer<OBX_sync_listener_change>, ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Pointer<OBX_sync_listener_change>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_sync_listener_change');
+  late final _sync_listener_change = _sync_listener_changePtr
+      .asFunction<
+        void Function(
+          ffi.Pointer<OBX_sync>,
+          ffi.Pointer<OBX_sync_listener_change>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Set or overwrite a previously set 'serverTime' listener - provides current time updates from the sync-server.
   /// @param listener set NULL to reset
@@ -9116,25 +9831,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_listener_server_time> listener,
     ffi.Pointer<ffi.Void> listener_arg,
   ) {
-    return _sync_listener_server_time(
-      sync1,
-      listener,
-      listener_arg,
-    );
+    return _sync_listener_server_time(sync1, listener, listener_arg);
   }
 
-  late final _sync_listener_server_timePtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_listener_server_timePtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Void Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Pointer<OBX_sync_listener_server_time>,
-              ffi.Pointer<ffi.Void>)>>('obx_sync_listener_server_time');
-  late final _sync_listener_server_time =
-      _sync_listener_server_timePtr.asFunction<
-          void Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Pointer<OBX_sync_listener_server_time>,
-              ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Pointer<OBX_sync_listener_server_time>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_sync_listener_server_time');
+  late final _sync_listener_server_time = _sync_listener_server_timePtr
+      .asFunction<
+        void Function(
+          ffi.Pointer<OBX_sync>,
+          ffi.Pointer<OBX_sync_listener_server_time>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Set or overwrite a previously set 'objects message' listener to receive application specific data objects.
   /// @param listener set NULL to reset
@@ -9144,25 +9861,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_listener_msg_objects> listener,
     ffi.Pointer<ffi.Void> listener_arg,
   ) {
-    return _sync_listener_msg_objects(
-      sync1,
-      listener,
-      listener_arg,
-    );
+    return _sync_listener_msg_objects(sync1, listener, listener_arg);
   }
 
-  late final _sync_listener_msg_objectsPtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_listener_msg_objectsPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Void Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Pointer<OBX_sync_listener_msg_objects>,
-              ffi.Pointer<ffi.Void>)>>('obx_sync_listener_msg_objects');
-  late final _sync_listener_msg_objects =
-      _sync_listener_msg_objectsPtr.asFunction<
-          void Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Pointer<OBX_sync_listener_msg_objects>,
-              ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Pointer<OBX_sync_listener_msg_objects>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_sync_listener_msg_objects');
+  late final _sync_listener_msg_objects = _sync_listener_msg_objectsPtr
+      .asFunction<
+        void Function(
+          ffi.Pointer<OBX_sync>,
+          ffi.Pointer<OBX_sync_listener_msg_objects>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Set or overwrite a previously set 'error' listener - provides information about occurred sync-level errors.
   /// @param listener The callback to receive sync errors. Set to NULL to reset.
@@ -9172,22 +9891,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_listener_error> listener,
     ffi.Pointer<ffi.Void> listener_arg,
   ) {
-    return _sync_listener_error(
-      sync1,
-      listener,
-      listener_arg,
-    );
+    return _sync_listener_error(sync1, listener, listener_arg);
   }
 
-  late final _sync_listener_errorPtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_listener_errorPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Void Function(
-              ffi.Pointer<OBX_sync>,
-              ffi.Pointer<OBX_sync_listener_error>,
-              ffi.Pointer<ffi.Void>)>>('obx_sync_listener_error');
-  late final _sync_listener_error = _sync_listener_errorPtr.asFunction<
-      void Function(ffi.Pointer<OBX_sync>, ffi.Pointer<OBX_sync_listener_error>,
-          ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Pointer<OBX_sync_listener_error>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_sync_listener_error');
+  late final _sync_listener_error = _sync_listener_errorPtr
+      .asFunction<
+        void Function(
+          ffi.Pointer<OBX_sync>,
+          ffi.Pointer<OBX_sync_listener_error>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Get u64 value for sync statistics.
   /// @param counter_type the counter value to be read.
@@ -9199,19 +9923,23 @@ class ObjectBoxC {
     int counter_type,
     ffi.Pointer<ffi.Uint64> out_count,
   ) {
-    return _sync_stats_u64(
-      sync1,
-      counter_type,
-      out_count,
-    );
+    return _sync_stats_u64(sync1, counter_type, out_count);
   }
 
-  late final _sync_stats_u64Ptr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_sync>, ffi.Int32,
-              ffi.Pointer<ffi.Uint64>)>>('obx_sync_stats_u64');
-  late final _sync_stats_u64 = _sync_stats_u64Ptr.asFunction<
-      int Function(ffi.Pointer<OBX_sync>, int, ffi.Pointer<ffi.Uint64>)>();
+  late final _sync_stats_u64Ptr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_sync>,
+            ffi.Int32,
+            ffi.Pointer<ffi.Uint64>,
+          )
+        >
+      >('obx_sync_stats_u64');
+  late final _sync_stats_u64 = _sync_stats_u64Ptr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_sync>, int, ffi.Pointer<ffi.Uint64>)
+      >();
 
   /// Prepares an ObjectBox Sync Server to run within your application (embedded server) at the given URI.
   /// Note that you need a special sync edition, which includes the server components. Check https://objectbox.io/sync/.
@@ -9239,19 +9967,25 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store_options> store_options,
     ffi.Pointer<ffi.Char> url,
   ) {
-    return _sync_server(
-      store_options,
-      url,
-    );
+    return _sync_server(store_options, url);
   }
 
-  late final _sync_serverPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_sync_server> Function(ffi.Pointer<OBX_store_options>,
-              ffi.Pointer<ffi.Char>)>>('obx_sync_server');
-  late final _sync_server = _sync_serverPtr.asFunction<
-      ffi.Pointer<OBX_sync_server> Function(
-          ffi.Pointer<OBX_store_options>, ffi.Pointer<ffi.Char>)>();
+  late final _sync_serverPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_sync_server> Function(
+            ffi.Pointer<OBX_store_options>,
+            ffi.Pointer<ffi.Char>,
+          )
+        >
+      >('obx_sync_server');
+  late final _sync_server = _sync_serverPtr
+      .asFunction<
+        ffi.Pointer<OBX_sync_server> Function(
+          ffi.Pointer<OBX_store_options>,
+          ffi.Pointer<ffi.Char>,
+        )
+      >();
 
   /// Like obx_sync_server(), but retrieves its options for the Sync Server from the given FlatBuffers options.
   /// @param flat_options FlatBuffers serialized options for the server (start of the bytes buffer, not the "table").
@@ -9268,30 +10002,35 @@ class ObjectBoxC {
     );
   }
 
-  late final _sync_server_from_flat_optionsPtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_server_from_flat_optionsPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_sync_server> Function(
-              ffi.Pointer<OBX_store_options>,
-              ffi.Pointer<ffi.Uint8>,
-              ffi.Size)>>('obx_sync_server_from_flat_options');
-  late final _sync_server_from_flat_options =
-      _sync_server_from_flat_optionsPtr.asFunction<
-          ffi.Pointer<OBX_sync_server> Function(
-              ffi.Pointer<OBX_store_options>, ffi.Pointer<ffi.Uint8>, int)>();
+            ffi.Pointer<OBX_store_options>,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_sync_server_from_flat_options');
+  late final _sync_server_from_flat_options = _sync_server_from_flat_optionsPtr
+      .asFunction<
+        ffi.Pointer<OBX_sync_server> Function(
+          ffi.Pointer<OBX_store_options>,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+        )
+      >();
 
   /// Stops and closes (deletes) the sync server, freeing its resources.
   /// This includes the store associated with the server; it gets closed and must not be used anymore after this call.
-  int sync_server_close(
-    ffi.Pointer<OBX_sync_server> server,
-  ) {
-    return _sync_server_close(
-      server,
-    );
+  int sync_server_close(ffi.Pointer<OBX_sync_server> server) {
+    return _sync_server_close(server);
   }
 
-  late final _sync_server_closePtr = _lookup<
-          ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync_server>)>>(
-      'obx_sync_server_close');
+  late final _sync_server_closePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync_server>)>
+      >('obx_sync_server_close');
   late final _sync_server_close = _sync_server_closePtr
       .asFunction<int Function(ffi.Pointer<OBX_sync_server>)>();
 
@@ -9299,36 +10038,38 @@ class ObjectBoxC {
   ffi.Pointer<OBX_store> sync_server_store(
     ffi.Pointer<OBX_sync_server> server,
   ) {
-    return _sync_server_store(
-      server,
-    );
+    return _sync_server_store(server);
   }
 
-  late final _sync_server_storePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_store> Function(
-              ffi.Pointer<OBX_sync_server>)>>('obx_sync_server_store');
-  late final _sync_server_store = _sync_server_storePtr.asFunction<
-      ffi.Pointer<OBX_store> Function(ffi.Pointer<OBX_sync_server>)>();
+  late final _sync_server_storePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_store> Function(ffi.Pointer<OBX_sync_server>)
+        >
+      >('obx_sync_server_store');
+  late final _sync_server_store = _sync_server_storePtr
+      .asFunction<
+        ffi.Pointer<OBX_store> Function(ffi.Pointer<OBX_sync_server>)
+      >();
 
   /// Sets SSL certificate for the server to use. Use before obx_sync_server_start().
   int sync_server_certificate_path(
     ffi.Pointer<OBX_sync_server> server,
     ffi.Pointer<ffi.Char> certificate_path,
   ) {
-    return _sync_server_certificate_path(
-      server,
-      certificate_path,
-    );
+    return _sync_server_certificate_path(server, certificate_path);
   }
 
-  late final _sync_server_certificate_pathPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_sync_server>,
-              ffi.Pointer<ffi.Char>)>>('obx_sync_server_certificate_path');
-  late final _sync_server_certificate_path =
-      _sync_server_certificate_pathPtr.asFunction<
-          int Function(ffi.Pointer<OBX_sync_server>, ffi.Pointer<ffi.Char>)>();
+  late final _sync_server_certificate_pathPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_sync_server>, ffi.Pointer<ffi.Char>)
+        >
+      >('obx_sync_server_certificate_path');
+  late final _sync_server_certificate_path = _sync_server_certificate_pathPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_sync_server>, ffi.Pointer<ffi.Char>)
+      >();
 
   /// Sets credentials for the server to accept. Use before obx_sync_server_start().
   /// @param data may be NULL in combination with OBXSyncCredentialsType_NONE
@@ -9338,43 +10079,44 @@ class ObjectBoxC {
     ffi.Pointer<ffi.Uint8> data,
     int size,
   ) {
-    return _sync_server_credentials(
-      server,
-      type,
-      data,
-      size,
-    );
+    return _sync_server_credentials(server, type, data, size);
   }
 
-  late final _sync_server_credentialsPtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_server_credentialsPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_sync_server>,
-              ffi.Int32,
-              ffi.Pointer<ffi.Uint8>,
-              ffi.Size)>>('obx_sync_server_credentials');
-  late final _sync_server_credentials = _sync_server_credentialsPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_sync_server>, int, ffi.Pointer<ffi.Uint8>, int)>();
+            ffi.Pointer<OBX_sync_server>,
+            ffi.Int32,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_sync_server_credentials');
+  late final _sync_server_credentials = _sync_server_credentialsPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_sync_server>,
+          int,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+        )
+      >();
 
   /// Enables authenticator for server. Can be called multiple times. Use before obx_sync_server_start().
   /// Use obx_sync_server_credentials() for authenticators which requires additional credentials data (i.e. Google Auth
   /// and shared secrets authenticators).
   /// @param type should be one of the available authentications, it should not be OBXSyncCredentialsType_USER_PASSWORD.
-  int sync_server_enable_auth(
-    ffi.Pointer<OBX_sync_server> server,
-    int type,
-  ) {
-    return _sync_server_enable_auth(
-      server,
-      type,
-    );
+  int sync_server_enable_auth(ffi.Pointer<OBX_sync_server> server, int type) {
+    return _sync_server_enable_auth(server, type);
   }
 
-  late final _sync_server_enable_authPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_sync_server>,
-              ffi.Int32)>>('obx_sync_server_enable_auth');
+  late final _sync_server_enable_authPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_sync_server>, ffi.Int32)
+        >
+      >('obx_sync_server_enable_auth');
   late final _sync_server_enable_auth = _sync_server_enable_authPtr
       .asFunction<int Function(ffi.Pointer<OBX_sync_server>, int)>();
 
@@ -9384,16 +10126,15 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_server> server,
     int thread_count,
   ) {
-    return _sync_server_worker_threads(
-      server,
-      thread_count,
-    );
+    return _sync_server_worker_threads(server, thread_count);
   }
 
-  late final _sync_server_worker_threadsPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_sync_server>,
-              ffi.Int)>>('obx_sync_server_worker_threads');
+  late final _sync_server_worker_threadsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_sync_server>, ffi.Int)
+        >
+      >('obx_sync_server_worker_threads');
   late final _sync_server_worker_threads = _sync_server_worker_threadsPtr
       .asFunction<int Function(ffi.Pointer<OBX_sync_server>, int)>();
 
@@ -9409,17 +10150,15 @@ class ObjectBoxC {
     int max_in_kb,
     int target_in_kb,
   ) {
-    return _sync_server_history_max_size_in_kb(
-      server,
-      max_in_kb,
-      target_in_kb,
-    );
+    return _sync_server_history_max_size_in_kb(server, max_in_kb, target_in_kb);
   }
 
-  late final _sync_server_history_max_size_in_kbPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_sync_server>, ffi.Uint64,
-              ffi.Uint64)>>('obx_sync_server_history_max_size_in_kb');
+  late final _sync_server_history_max_size_in_kbPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_sync_server>, ffi.Uint64, ffi.Uint64)
+        >
+      >('obx_sync_server_history_max_size_in_kb');
   late final _sync_server_history_max_size_in_kb =
       _sync_server_history_max_size_in_kbPtr
           .asFunction<int Function(ffi.Pointer<OBX_sync_server>, int, int)>();
@@ -9430,18 +10169,19 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_server> server,
     ffi.Pointer<ffi.Char> id,
   ) {
-    return _sync_server_cluster_id(
-      server,
-      id,
-    );
+    return _sync_server_cluster_id(server, id);
   }
 
-  late final _sync_server_cluster_idPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_sync_server>,
-              ffi.Pointer<ffi.Char>)>>('obx_sync_server_cluster_id');
-  late final _sync_server_cluster_id = _sync_server_cluster_idPtr.asFunction<
-      int Function(ffi.Pointer<OBX_sync_server>, ffi.Pointer<ffi.Char>)>();
+  late final _sync_server_cluster_idPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_sync_server>, ffi.Pointer<ffi.Char>)
+        >
+      >('obx_sync_server_cluster_id');
+  late final _sync_server_cluster_id = _sync_server_cluster_idPtr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_sync_server>, ffi.Pointer<ffi.Char>)
+      >();
 
   /// Adds a remote cluster peer that can be connected to using the given URL and credentials.
   /// Call this method multiple times to add multiple peers (at least 2 times for a cluster of 3).
@@ -9467,19 +10207,30 @@ class ObjectBoxC {
     );
   }
 
-  late final _sync_server_add_cluster_peerPtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_server_add_cluster_peerPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_sync_server>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Int32,
-              ffi.Pointer<ffi.Uint8>,
-              ffi.Size,
-              ffi.Uint32)>>('obx_sync_server_add_cluster_peer');
-  late final _sync_server_add_cluster_peer =
-      _sync_server_add_cluster_peerPtr.asFunction<
-          int Function(ffi.Pointer<OBX_sync_server>, ffi.Pointer<ffi.Char>, int,
-              ffi.Pointer<ffi.Uint8>, int, int)>();
+            ffi.Pointer<OBX_sync_server>,
+            ffi.Pointer<ffi.Char>,
+            ffi.Int32,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+            ffi.Uint32,
+          )
+        >
+      >('obx_sync_server_add_cluster_peer');
+  late final _sync_server_add_cluster_peer = _sync_server_add_cluster_peerPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_sync_server>,
+          ffi.Pointer<ffi.Char>,
+          int,
+          ffi.Pointer<ffi.Uint8>,
+          int,
+          int,
+        )
+      >();
 
   /// Set or overwrite a previously set 'change' listener - provides information about incoming changes.
   /// @param listener set NULL to reset
@@ -9489,23 +10240,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_listener_change> listener,
     ffi.Pointer<ffi.Void> listener_arg,
   ) {
-    return _sync_server_listener_change(
-      server,
-      listener,
-      listener_arg,
-    );
+    return _sync_server_listener_change(server, listener, listener_arg);
   }
 
-  late final _sync_server_listener_changePtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_server_listener_changePtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_sync_server>,
-              ffi.Pointer<OBX_sync_listener_change>,
-              ffi.Pointer<ffi.Void>)>>('obx_sync_server_listener_change');
-  late final _sync_server_listener_change =
-      _sync_server_listener_changePtr.asFunction<
-          int Function(ffi.Pointer<OBX_sync_server>,
-              ffi.Pointer<OBX_sync_listener_change>, ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<OBX_sync_server>,
+            ffi.Pointer<OBX_sync_listener_change>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_sync_server_listener_change');
+  late final _sync_server_listener_change = _sync_server_listener_changePtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_sync_server>,
+          ffi.Pointer<OBX_sync_listener_change>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Set or overwrite a previously set 'objects message' listener to receive application specific data objects.
   /// @param listener set NULL to reset
@@ -9515,119 +10270,105 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_listener_msg_objects> listener,
     ffi.Pointer<ffi.Void> listener_arg,
   ) {
-    return _sync_server_listener_msg_objects(
-      server,
-      listener,
-      listener_arg,
-    );
+    return _sync_server_listener_msg_objects(server, listener, listener_arg);
   }
 
-  late final _sync_server_listener_msg_objectsPtr = _lookup<
-      ffi.NativeFunction<
+  late final _sync_server_listener_msg_objectsPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<OBX_sync_server>,
-              ffi.Pointer<OBX_sync_listener_msg_objects>,
-              ffi.Pointer<ffi.Void>)>>('obx_sync_server_listener_msg_objects');
+            ffi.Pointer<OBX_sync_server>,
+            ffi.Pointer<OBX_sync_listener_msg_objects>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_sync_server_listener_msg_objects');
   late final _sync_server_listener_msg_objects =
-      _sync_server_listener_msg_objectsPtr.asFunction<
-          int Function(
+      _sync_server_listener_msg_objectsPtr
+          .asFunction<
+            int Function(
               ffi.Pointer<OBX_sync_server>,
               ffi.Pointer<OBX_sync_listener_msg_objects>,
-              ffi.Pointer<ffi.Void>)>();
+              ffi.Pointer<ffi.Void>,
+            )
+          >();
 
   /// After the sync server is fully configured (e.g. credentials), this will actually start the server.
   /// Once this call returns, the server is ready to accept client connections. Also, port and URL will be available.
-  int sync_server_start(
-    ffi.Pointer<OBX_sync_server> server,
-  ) {
-    return _sync_server_start(
-      server,
-    );
+  int sync_server_start(ffi.Pointer<OBX_sync_server> server) {
+    return _sync_server_start(server);
   }
 
-  late final _sync_server_startPtr = _lookup<
-          ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync_server>)>>(
-      'obx_sync_server_start');
+  late final _sync_server_startPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync_server>)>
+      >('obx_sync_server_start');
   late final _sync_server_start = _sync_server_startPtr
       .asFunction<int Function(ffi.Pointer<OBX_sync_server>)>();
 
   /// Stops this sync server. Does nothing if it is already stopped.
-  int sync_server_stop(
-    ffi.Pointer<OBX_sync_server> server,
-  ) {
-    return _sync_server_stop(
-      server,
-    );
+  int sync_server_stop(ffi.Pointer<OBX_sync_server> server) {
+    return _sync_server_stop(server);
   }
 
-  late final _sync_server_stopPtr = _lookup<
-          ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync_server>)>>(
-      'obx_sync_server_stop');
+  late final _sync_server_stopPtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_sync_server>)>
+      >('obx_sync_server_stop');
   late final _sync_server_stop = _sync_server_stopPtr
       .asFunction<int Function(ffi.Pointer<OBX_sync_server>)>();
 
   /// Whether the server is up and running.
-  bool sync_server_running(
-    ffi.Pointer<OBX_sync_server> server,
-  ) {
-    return _sync_server_running(
-      server,
-    );
+  bool sync_server_running(ffi.Pointer<OBX_sync_server> server) {
+    return _sync_server_running(server);
   }
 
-  late final _sync_server_runningPtr = _lookup<
-          ffi.NativeFunction<ffi.Bool Function(ffi.Pointer<OBX_sync_server>)>>(
-      'obx_sync_server_running');
+  late final _sync_server_runningPtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Bool Function(ffi.Pointer<OBX_sync_server>)>
+      >('obx_sync_server_running');
   late final _sync_server_running = _sync_server_runningPtr
       .asFunction<bool Function(ffi.Pointer<OBX_sync_server>)>();
 
   /// Returns a URL this server is listening on, including the bound port (see obx_sync_server_port().
   /// The returned char* is valid until another call to obx_sync_server_url() or the server is closed.
-  ffi.Pointer<ffi.Char> sync_server_url(
-    ffi.Pointer<OBX_sync_server> server,
-  ) {
-    return _sync_server_url(
-      server,
-    );
+  ffi.Pointer<ffi.Char> sync_server_url(ffi.Pointer<OBX_sync_server> server) {
+    return _sync_server_url(server);
   }
 
-  late final _sync_server_urlPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<ffi.Char> Function(
-              ffi.Pointer<OBX_sync_server>)>>('obx_sync_server_url');
-  late final _sync_server_url = _sync_server_urlPtr.asFunction<
-      ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_sync_server>)>();
+  late final _sync_server_urlPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_sync_server>)
+        >
+      >('obx_sync_server_url');
+  late final _sync_server_url = _sync_server_urlPtr
+      .asFunction<
+        ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_sync_server>)
+      >();
 
   /// Returns a port this server listens on. This is especially useful if the port was assigned arbitrarily
   /// (a "0" port was used in the URL given to obx_sync_server()).
-  int sync_server_port(
-    ffi.Pointer<OBX_sync_server> server,
-  ) {
-    return _sync_server_port(
-      server,
-    );
+  int sync_server_port(ffi.Pointer<OBX_sync_server> server) {
+    return _sync_server_port(server);
   }
 
-  late final _sync_server_portPtr = _lookup<
-          ffi
-          .NativeFunction<ffi.Uint16 Function(ffi.Pointer<OBX_sync_server>)>>(
-      'obx_sync_server_port');
+  late final _sync_server_portPtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Uint16 Function(ffi.Pointer<OBX_sync_server>)>
+      >('obx_sync_server_port');
   late final _sync_server_port = _sync_server_portPtr
       .asFunction<int Function(ffi.Pointer<OBX_sync_server>)>();
 
   /// Returns the number of clients connected to this server.
-  int sync_server_connections(
-    ffi.Pointer<OBX_sync_server> server,
-  ) {
-    return _sync_server_connections(
-      server,
-    );
+  int sync_server_connections(ffi.Pointer<OBX_sync_server> server) {
+    return _sync_server_connections(server);
   }
 
-  late final _sync_server_connectionsPtr = _lookup<
-          ffi
-          .NativeFunction<ffi.Uint64 Function(ffi.Pointer<OBX_sync_server>)>>(
-      'obx_sync_server_connections');
+  late final _sync_server_connectionsPtr =
+      _lookup<
+        ffi.NativeFunction<ffi.Uint64 Function(ffi.Pointer<OBX_sync_server>)>
+      >('obx_sync_server_connections');
   late final _sync_server_connections = _sync_server_connectionsPtr
       .asFunction<int Function(ffi.Pointer<OBX_sync_server>)>();
 
@@ -9642,20 +10383,23 @@ class ObjectBoxC {
     int counter_type,
     ffi.Pointer<ffi.Uint64> out_value,
   ) {
-    return _sync_server_stats_u64(
-      server,
-      counter_type,
-      out_value,
-    );
+    return _sync_server_stats_u64(server, counter_type, out_value);
   }
 
-  late final _sync_server_stats_u64Ptr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_sync_server>, ffi.Int32,
-              ffi.Pointer<ffi.Uint64>)>>('obx_sync_server_stats_u64');
-  late final _sync_server_stats_u64 = _sync_server_stats_u64Ptr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_sync_server>, int, ffi.Pointer<ffi.Uint64>)>();
+  late final _sync_server_stats_u64Ptr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_sync_server>,
+            ffi.Int32,
+            ffi.Pointer<ffi.Uint64>,
+          )
+        >
+      >('obx_sync_server_stats_u64');
+  late final _sync_server_stats_u64 = _sync_server_stats_u64Ptr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_sync_server>, int, ffi.Pointer<ffi.Uint64>)
+      >();
 
   /// Get double value for sync server statistics.
   /// @param counter_type the counter value to be read (make sure to use a double (f64) metric value type).
@@ -9668,20 +10412,23 @@ class ObjectBoxC {
     int counter_type,
     ffi.Pointer<ffi.Double> out_value,
   ) {
-    return _sync_server_stats_f64(
-      server,
-      counter_type,
-      out_value,
-    );
+    return _sync_server_stats_f64(server, counter_type, out_value);
   }
 
-  late final _sync_server_stats_f64Ptr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_sync_server>, ffi.Int32,
-              ffi.Pointer<ffi.Double>)>>('obx_sync_server_stats_f64');
-  late final _sync_server_stats_f64 = _sync_server_stats_f64Ptr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_sync_server>, int, ffi.Pointer<ffi.Double>)>();
+  late final _sync_server_stats_f64Ptr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_sync_server>,
+            ffi.Int32,
+            ffi.Pointer<ffi.Double>,
+          )
+        >
+      >('obx_sync_server_stats_f64');
+  late final _sync_server_stats_f64 = _sync_server_stats_f64Ptr
+      .asFunction<
+        int Function(ffi.Pointer<OBX_sync_server>, int, ffi.Pointer<ffi.Double>)
+      >();
 
   /// Get server runtime statistics.
   /// The returned char* is valid until another call to obx_sync_server_stats_string() or the server is closed.
@@ -9689,19 +10436,19 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_server> server,
     bool include_zero_values,
   ) {
-    return _sync_server_stats_string(
-      server,
-      include_zero_values,
-    );
+    return _sync_server_stats_string(server, include_zero_values);
   }
 
-  late final _sync_server_stats_stringPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_sync_server>,
-              ffi.Bool)>>('obx_sync_server_stats_string');
-  late final _sync_server_stats_string =
-      _sync_server_stats_stringPtr.asFunction<
-          ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_sync_server>, bool)>();
+  late final _sync_server_stats_stringPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_sync_server>, ffi.Bool)
+        >
+      >('obx_sync_server_stats_string');
+  late final _sync_server_stats_string = _sync_server_stats_stringPtr
+      .asFunction<
+        ffi.Pointer<ffi.Char> Function(ffi.Pointer<OBX_sync_server>, bool)
+      >();
 
   /// Broadcast the given 'objects message' from the server to all currently connected (and logged-in) clients.
   /// @param message the prepared outgoing message; it will be freed along with any associated resources during this call
@@ -9713,21 +10460,25 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_server> server,
     ffi.Pointer<OBX_sync_msg_objects_builder> message,
   ) {
-    return _sync_server_send_msg_objects(
-      server,
-      message,
-    );
+    return _sync_server_send_msg_objects(server, message);
   }
 
-  late final _sync_server_send_msg_objectsPtr = _lookup<
-          ffi.NativeFunction<
-              obx_err Function(ffi.Pointer<OBX_sync_server>,
-                  ffi.Pointer<OBX_sync_msg_objects_builder>)>>(
-      'obx_sync_server_send_msg_objects');
-  late final _sync_server_send_msg_objects =
-      _sync_server_send_msg_objectsPtr.asFunction<
-          int Function(ffi.Pointer<OBX_sync_server>,
-              ffi.Pointer<OBX_sync_msg_objects_builder>)>();
+  late final _sync_server_send_msg_objectsPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Pointer<OBX_sync_server>,
+            ffi.Pointer<OBX_sync_msg_objects_builder>,
+          )
+        >
+      >('obx_sync_server_send_msg_objects');
+  late final _sync_server_send_msg_objects = _sync_server_send_msg_objectsPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_sync_server>,
+          ffi.Pointer<OBX_sync_msg_objects_builder>,
+        )
+      >();
 
   /// Configure admin with a sync server, attaching the store and enabling custom sync-server functionality in the UI.
   /// This is a replacement for obx_admin_opt_store() and obx_admin_opt_store_path() - don't set them for the server.
@@ -9738,19 +10489,25 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync_server> server,
     ffi.Pointer<OBX_admin_options> options,
   ) {
-    return _sync_server_admin(
-      server,
-      options,
-    );
+    return _sync_server_admin(server, options);
   }
 
-  late final _sync_server_adminPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_admin> Function(ffi.Pointer<OBX_sync_server>,
-              ffi.Pointer<OBX_admin_options>)>>('obx_sync_server_admin');
-  late final _sync_server_admin = _sync_server_adminPtr.asFunction<
-      ffi.Pointer<OBX_admin> Function(
-          ffi.Pointer<OBX_sync_server>, ffi.Pointer<OBX_admin_options>)>();
+  late final _sync_server_adminPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_admin> Function(
+            ffi.Pointer<OBX_sync_server>,
+            ffi.Pointer<OBX_admin_options>,
+          )
+        >
+      >('obx_sync_server_admin');
+  late final _sync_server_admin = _sync_server_adminPtr
+      .asFunction<
+        ffi.Pointer<OBX_admin> Function(
+          ffi.Pointer<OBX_sync_server>,
+          ffi.Pointer<OBX_admin_options>,
+        )
+      >();
 
   /// Must be called to register a protocol for a custom messaging server. Call before starting a server.
   /// @param protocol the communication protocol to use, e.g. "tcp"
@@ -9763,25 +10520,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_custom_msg_server_functions> functions,
     ffi.Pointer<ffi.Void> config_user_data,
   ) {
-    return _custom_msg_server_register(
-      protocol,
-      functions,
-      config_user_data,
-    );
+    return _custom_msg_server_register(protocol, functions, config_user_data);
   }
 
-  late final _custom_msg_server_registerPtr = _lookup<
-      ffi.NativeFunction<
+  late final _custom_msg_server_registerPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<OBX_custom_msg_server_functions>,
-              ffi.Pointer<ffi.Void>)>>('obx_custom_msg_server_register');
-  late final _custom_msg_server_register =
-      _custom_msg_server_registerPtr.asFunction<
-          int Function(
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<OBX_custom_msg_server_functions>,
-              ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<OBX_custom_msg_server_functions>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_custom_msg_server_register');
+  late final _custom_msg_server_register = _custom_msg_server_registerPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<OBX_custom_msg_server_functions>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// Must be called from the custom server when a new client connection becomes available.
   /// @param server_id the ID that was assigned to the custom server instance
@@ -9792,16 +10551,15 @@ class ObjectBoxC {
     int server_id,
     ffi.Pointer<ffi.Void> user_data,
   ) {
-    return _custom_msg_server_add_client_connection(
-      server_id,
-      user_data,
-    );
+    return _custom_msg_server_add_client_connection(server_id, user_data);
   }
 
-  late final _custom_msg_server_add_client_connectionPtr = _lookup<
-          ffi.NativeFunction<
-              ffi.Uint64 Function(ffi.Uint64, ffi.Pointer<ffi.Void>)>>(
-      'obx_custom_msg_server_add_client_connection');
+  late final _custom_msg_server_add_client_connectionPtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Uint64 Function(ffi.Uint64, ffi.Pointer<ffi.Void>)
+        >
+      >('obx_custom_msg_server_add_client_connection');
   late final _custom_msg_server_add_client_connection =
       _custom_msg_server_add_client_connectionPtr
           .asFunction<int Function(int, ffi.Pointer<ffi.Void>)>();
@@ -9824,7 +10582,8 @@ class ObjectBoxC {
 
   late final _custom_msg_server_remove_client_connectionPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Uint64, ffi.Uint64)>>(
-          'obx_custom_msg_server_remove_client_connection');
+        'obx_custom_msg_server_remove_client_connection',
+      );
   late final _custom_msg_server_remove_client_connection =
       _custom_msg_server_remove_client_connectionPtr
           .asFunction<int Function(int, int)>();
@@ -9850,10 +10609,17 @@ class ObjectBoxC {
     );
   }
 
-  late final _custom_msg_server_receive_message_from_clientPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Uint64, ffi.Uint64, ffi.Pointer<ffi.Uint8>,
-              ffi.Size)>>('obx_custom_msg_server_receive_message_from_client');
+  late final _custom_msg_server_receive_message_from_clientPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(
+            ffi.Uint64,
+            ffi.Uint64,
+            ffi.Pointer<ffi.Uint8>,
+            ffi.Size,
+          )
+        >
+      >('obx_custom_msg_server_receive_message_from_client');
   late final _custom_msg_server_receive_message_from_client =
       _custom_msg_server_receive_message_from_clientPtr
           .asFunction<int Function(int, int, ffi.Pointer<ffi.Uint8>, int)>();
@@ -9867,25 +10633,27 @@ class ObjectBoxC {
     ffi.Pointer<OBX_custom_msg_client_functions> functions,
     ffi.Pointer<ffi.Void> config_user_data,
   ) {
-    return _custom_msg_client_register(
-      protocol,
-      functions,
-      config_user_data,
-    );
+    return _custom_msg_client_register(protocol, functions, config_user_data);
   }
 
-  late final _custom_msg_client_registerPtr = _lookup<
-      ffi.NativeFunction<
+  late final _custom_msg_client_registerPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_err Function(
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<OBX_custom_msg_client_functions>,
-              ffi.Pointer<ffi.Void>)>>('obx_custom_msg_client_register');
-  late final _custom_msg_client_register =
-      _custom_msg_client_registerPtr.asFunction<
-          int Function(
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<OBX_custom_msg_client_functions>,
-              ffi.Pointer<ffi.Void>)>();
+            ffi.Pointer<ffi.Char>,
+            ffi.Pointer<OBX_custom_msg_client_functions>,
+            ffi.Pointer<ffi.Void>,
+          )
+        >
+      >('obx_custom_msg_client_register');
+  late final _custom_msg_client_register = _custom_msg_client_registerPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<ffi.Char>,
+          ffi.Pointer<OBX_custom_msg_client_functions>,
+          ffi.Pointer<ffi.Void>,
+        )
+      >();
 
   /// The custom msg client must call this whenever a message is received from the server.
   /// @param client_id the ID that was assigned to the client instance
@@ -9905,10 +10673,12 @@ class ObjectBoxC {
     );
   }
 
-  late final _custom_msg_client_receive_message_from_serverPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Uint64, ffi.Pointer<ffi.Uint8>,
-              ffi.Size)>>('obx_custom_msg_client_receive_message_from_server');
+  late final _custom_msg_client_receive_message_from_serverPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Uint64, ffi.Pointer<ffi.Uint8>, ffi.Size)
+        >
+      >('obx_custom_msg_client_receive_message_from_server');
   late final _custom_msg_client_receive_message_from_server =
       _custom_msg_client_receive_message_from_serverPtr
           .asFunction<int Function(int, ffi.Pointer<ffi.Uint8>, int)>();
@@ -9921,21 +10691,16 @@ class ObjectBoxC {
   /// @returns OBX_NO_SUCCESS if no state transition was possible from the current to the given state (e.g. an internal
   /// "closed" state was reached).
   /// @returns OBX_ERROR_* in case the operation encountered an exceptional issue
-  int custom_msg_client_set_state(
-    int client_id,
-    int state,
-  ) {
-    return _custom_msg_client_set_state(
-      client_id,
-      state,
-    );
+  int custom_msg_client_set_state(int client_id, int state) {
+    return _custom_msg_client_set_state(client_id, state);
   }
 
   late final _custom_msg_client_set_statePtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Uint64, ffi.Int32)>>(
-          'obx_custom_msg_client_set_state');
-  late final _custom_msg_client_set_state =
-      _custom_msg_client_set_statePtr.asFunction<int Function(int, int)>();
+        'obx_custom_msg_client_set_state',
+      );
+  late final _custom_msg_client_set_state = _custom_msg_client_set_statePtr
+      .asFunction<int Function(int, int)>();
 
   /// The custom msg client may call this if it has knowledge when a reconnection attempt makes sense,
   /// for example, when the network becomes available.
@@ -9943,34 +10708,28 @@ class ObjectBoxC {
   /// @returns OBX_SUCCESS if a reconnect was actually triggered.
   /// @returns OBX_NO_SUCCESS if no reconnect was triggered.
   /// @returns OBX_ERROR_* in case the operation encountered an exceptional issue
-  int custom_msg_client_trigger_reconnect(
-    int client_id,
-  ) {
-    return _custom_msg_client_trigger_reconnect(
-      client_id,
-    );
+  int custom_msg_client_trigger_reconnect(int client_id) {
+    return _custom_msg_client_trigger_reconnect(client_id);
   }
 
   late final _custom_msg_client_trigger_reconnectPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Uint64)>>(
-          'obx_custom_msg_client_trigger_reconnect');
+        'obx_custom_msg_client_trigger_reconnect',
+      );
   late final _custom_msg_client_trigger_reconnect =
       _custom_msg_client_trigger_reconnectPtr.asFunction<int Function(int)>();
 
   /// Initializes Dart API - call before any other obx_dart_* functions.
-  int dartc_init_api(
-    ffi.Pointer<ffi.Void> data,
-  ) {
-    return _dartc_init_api(
-      data,
-    );
+  int dartc_init_api(ffi.Pointer<ffi.Void> data) {
+    return _dartc_init_api(data);
   }
 
   late final _dartc_init_apiPtr =
       _lookup<ffi.NativeFunction<obx_err Function(ffi.Pointer<ffi.Void>)>>(
-          'obx_dart_init_api');
-  late final _dartc_init_api =
-      _dartc_init_apiPtr.asFunction<int Function(ffi.Pointer<ffi.Void>)>();
+        'obx_dart_init_api',
+      );
+  late final _dartc_init_api = _dartc_init_apiPtr
+      .asFunction<int Function(ffi.Pointer<ffi.Void>)>();
 
   /// @see obx_observe()
   /// Note: use obx_observer_close() to free unassign the observer and free resources after you're done with it
@@ -9978,53 +10737,54 @@ class ObjectBoxC {
     ffi.Pointer<OBX_store> store,
     int native_port,
   ) {
-    return _dartc_observe(
-      store,
-      native_port,
-    );
+    return _dartc_observe(store, native_port);
   }
 
-  late final _dartc_observePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_observer> Function(
-              ffi.Pointer<OBX_store>, ffi.Int64)>>('obx_dart_observe');
-  late final _dartc_observe = _dartc_observePtr.asFunction<
-      ffi.Pointer<OBX_observer> Function(ffi.Pointer<OBX_store>, int)>();
+  late final _dartc_observePtr =
+      _lookup<
+        ffi.NativeFunction<
+          ffi.Pointer<OBX_observer> Function(ffi.Pointer<OBX_store>, ffi.Int64)
+        >
+      >('obx_dart_observe');
+  late final _dartc_observe = _dartc_observePtr
+      .asFunction<
+        ffi.Pointer<OBX_observer> Function(ffi.Pointer<OBX_store>, int)
+      >();
 
   ffi.Pointer<OBX_observer> dartc_observe_single_type(
     ffi.Pointer<OBX_store> store,
     int type_id,
     int native_port,
   ) {
-    return _dartc_observe_single_type(
-      store,
-      type_id,
-      native_port,
-    );
+    return _dartc_observe_single_type(store, type_id, native_port);
   }
 
-  late final _dartc_observe_single_typePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_observer> Function(ffi.Pointer<OBX_store>,
-              obx_schema_id, ffi.Int64)>>('obx_dart_observe_single_type');
-  late final _dartc_observe_single_type =
-      _dartc_observe_single_typePtr.asFunction<
+  late final _dartc_observe_single_typePtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_observer> Function(
-              ffi.Pointer<OBX_store>, int, int)>();
+            ffi.Pointer<OBX_store>,
+            obx_schema_id,
+            ffi.Int64,
+          )
+        >
+      >('obx_dart_observe_single_type');
+  late final _dartc_observe_single_type = _dartc_observe_single_typePtr
+      .asFunction<
+        ffi.Pointer<OBX_observer> Function(ffi.Pointer<OBX_store>, int, int)
+      >();
 
   /// @param listener may be NULL
-  int dartc_sync_listener_close(
-    ffi.Pointer<OBX_dart_sync_listener> listener,
-  ) {
-    return _dartc_sync_listener_close(
-      listener,
-    );
+  int dartc_sync_listener_close(ffi.Pointer<OBX_dart_sync_listener> listener) {
+    return _dartc_sync_listener_close(listener);
   }
 
-  late final _dartc_sync_listener_closePtr = _lookup<
-          ffi.NativeFunction<
-              obx_err Function(ffi.Pointer<OBX_dart_sync_listener>)>>(
-      'obx_dart_sync_listener_close');
+  late final _dartc_sync_listener_closePtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_dart_sync_listener>)
+        >
+      >('obx_dart_sync_listener_close');
   late final _dartc_sync_listener_close = _dartc_sync_listener_closePtr
       .asFunction<int Function(ffi.Pointer<OBX_dart_sync_listener>)>();
 
@@ -10032,140 +10792,166 @@ class ObjectBoxC {
     ffi.Pointer<OBX_sync> sync1,
     int native_port,
   ) {
-    return _dartc_sync_listener_connect(
-      sync1,
-      native_port,
-    );
+    return _dartc_sync_listener_connect(sync1, native_port);
   }
 
-  late final _dartc_sync_listener_connectPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_dart_sync_listener> Function(ffi.Pointer<OBX_sync>,
-              ffi.Int64)>>('obx_dart_sync_listener_connect');
-  late final _dartc_sync_listener_connect =
-      _dartc_sync_listener_connectPtr.asFunction<
+  late final _dartc_sync_listener_connectPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_dart_sync_listener> Function(
-              ffi.Pointer<OBX_sync>, int)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Int64,
+          )
+        >
+      >('obx_dart_sync_listener_connect');
+  late final _dartc_sync_listener_connect = _dartc_sync_listener_connectPtr
+      .asFunction<
+        ffi.Pointer<OBX_dart_sync_listener> Function(ffi.Pointer<OBX_sync>, int)
+      >();
 
   /// @see obx_sync_listener_disconnect()
   ffi.Pointer<OBX_dart_sync_listener> dartc_sync_listener_disconnect(
     ffi.Pointer<OBX_sync> sync1,
     int native_port,
   ) {
-    return _dartc_sync_listener_disconnect(
-      sync1,
-      native_port,
-    );
+    return _dartc_sync_listener_disconnect(sync1, native_port);
   }
 
-  late final _dartc_sync_listener_disconnectPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_dart_sync_listener> Function(ffi.Pointer<OBX_sync>,
-              ffi.Int64)>>('obx_dart_sync_listener_disconnect');
-  late final _dartc_sync_listener_disconnect =
-      _dartc_sync_listener_disconnectPtr.asFunction<
+  late final _dartc_sync_listener_disconnectPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_dart_sync_listener> Function(
-              ffi.Pointer<OBX_sync>, int)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Int64,
+          )
+        >
+      >('obx_dart_sync_listener_disconnect');
+  late final _dartc_sync_listener_disconnect =
+      _dartc_sync_listener_disconnectPtr
+          .asFunction<
+            ffi.Pointer<OBX_dart_sync_listener> Function(
+              ffi.Pointer<OBX_sync>,
+              int,
+            )
+          >();
 
   /// @see obx_sync_listener_login()
   ffi.Pointer<OBX_dart_sync_listener> dartc_sync_listener_login(
     ffi.Pointer<OBX_sync> sync1,
     int native_port,
   ) {
-    return _dartc_sync_listener_login(
-      sync1,
-      native_port,
-    );
+    return _dartc_sync_listener_login(sync1, native_port);
   }
 
-  late final _dartc_sync_listener_loginPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_dart_sync_listener> Function(ffi.Pointer<OBX_sync>,
-              ffi.Int64)>>('obx_dart_sync_listener_login');
-  late final _dartc_sync_listener_login =
-      _dartc_sync_listener_loginPtr.asFunction<
+  late final _dartc_sync_listener_loginPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_dart_sync_listener> Function(
-              ffi.Pointer<OBX_sync>, int)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Int64,
+          )
+        >
+      >('obx_dart_sync_listener_login');
+  late final _dartc_sync_listener_login = _dartc_sync_listener_loginPtr
+      .asFunction<
+        ffi.Pointer<OBX_dart_sync_listener> Function(ffi.Pointer<OBX_sync>, int)
+      >();
 
   /// @see obx_sync_listener_login_failure()
   ffi.Pointer<OBX_dart_sync_listener> dartc_sync_listener_login_failure(
     ffi.Pointer<OBX_sync> sync1,
     int native_port,
   ) {
-    return _dartc_sync_listener_login_failure(
-      sync1,
-      native_port,
-    );
+    return _dartc_sync_listener_login_failure(sync1, native_port);
   }
 
-  late final _dartc_sync_listener_login_failurePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_dart_sync_listener> Function(ffi.Pointer<OBX_sync>,
-              ffi.Int64)>>('obx_dart_sync_listener_login_failure');
-  late final _dartc_sync_listener_login_failure =
-      _dartc_sync_listener_login_failurePtr.asFunction<
+  late final _dartc_sync_listener_login_failurePtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_dart_sync_listener> Function(
-              ffi.Pointer<OBX_sync>, int)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Int64,
+          )
+        >
+      >('obx_dart_sync_listener_login_failure');
+  late final _dartc_sync_listener_login_failure =
+      _dartc_sync_listener_login_failurePtr
+          .asFunction<
+            ffi.Pointer<OBX_dart_sync_listener> Function(
+              ffi.Pointer<OBX_sync>,
+              int,
+            )
+          >();
 
   /// @see obx_sync_listener_complete()
   ffi.Pointer<OBX_dart_sync_listener> dartc_sync_listener_complete(
     ffi.Pointer<OBX_sync> sync1,
     int native_port,
   ) {
-    return _dartc_sync_listener_complete(
-      sync1,
-      native_port,
-    );
+    return _dartc_sync_listener_complete(sync1, native_port);
   }
 
-  late final _dartc_sync_listener_completePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_dart_sync_listener> Function(ffi.Pointer<OBX_sync>,
-              ffi.Int64)>>('obx_dart_sync_listener_complete');
-  late final _dartc_sync_listener_complete =
-      _dartc_sync_listener_completePtr.asFunction<
+  late final _dartc_sync_listener_completePtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_dart_sync_listener> Function(
-              ffi.Pointer<OBX_sync>, int)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Int64,
+          )
+        >
+      >('obx_dart_sync_listener_complete');
+  late final _dartc_sync_listener_complete = _dartc_sync_listener_completePtr
+      .asFunction<
+        ffi.Pointer<OBX_dart_sync_listener> Function(ffi.Pointer<OBX_sync>, int)
+      >();
 
   /// @see obx_sync_listener_change()
   ffi.Pointer<OBX_dart_sync_listener> dartc_sync_listener_change(
     ffi.Pointer<OBX_sync> sync1,
     int native_port,
   ) {
-    return _dartc_sync_listener_change(
-      sync1,
-      native_port,
-    );
+    return _dartc_sync_listener_change(sync1, native_port);
   }
 
-  late final _dartc_sync_listener_changePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_dart_sync_listener> Function(ffi.Pointer<OBX_sync>,
-              ffi.Int64)>>('obx_dart_sync_listener_change');
-  late final _dartc_sync_listener_change =
-      _dartc_sync_listener_changePtr.asFunction<
+  late final _dartc_sync_listener_changePtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_dart_sync_listener> Function(
-              ffi.Pointer<OBX_sync>, int)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Int64,
+          )
+        >
+      >('obx_dart_sync_listener_change');
+  late final _dartc_sync_listener_change = _dartc_sync_listener_changePtr
+      .asFunction<
+        ffi.Pointer<OBX_dart_sync_listener> Function(ffi.Pointer<OBX_sync>, int)
+      >();
 
   /// @see obx_sync_listener_server_time()
   ffi.Pointer<OBX_dart_sync_listener> dartc_sync_listener_server_time(
     ffi.Pointer<OBX_sync> sync1,
     int native_port,
   ) {
-    return _dartc_sync_listener_server_time(
-      sync1,
-      native_port,
-    );
+    return _dartc_sync_listener_server_time(sync1, native_port);
   }
 
-  late final _dartc_sync_listener_server_timePtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Pointer<OBX_dart_sync_listener> Function(ffi.Pointer<OBX_sync>,
-              ffi.Int64)>>('obx_dart_sync_listener_server_time');
-  late final _dartc_sync_listener_server_time =
-      _dartc_sync_listener_server_timePtr.asFunction<
+  late final _dartc_sync_listener_server_timePtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_dart_sync_listener> Function(
-              ffi.Pointer<OBX_sync>, int)>();
+            ffi.Pointer<OBX_sync>,
+            ffi.Int64,
+          )
+        >
+      >('obx_dart_sync_listener_server_time');
+  late final _dartc_sync_listener_server_time =
+      _dartc_sync_listener_server_timePtr
+          .asFunction<
+            ffi.Pointer<OBX_dart_sync_listener> Function(
+              ffi.Pointer<OBX_sync>,
+              int,
+            )
+          >();
 
   /// @see obx_async_put_object()
   int dartc_async_put_object(
@@ -10175,38 +10961,40 @@ class ObjectBoxC {
     int size,
     int mode,
   ) {
-    return _dartc_async_put_object(
-      async1,
-      native_port,
-      data,
-      size,
-      mode,
-    );
+    return _dartc_async_put_object(async1, native_port, data, size, mode);
   }
 
-  late final _dartc_async_put_objectPtr = _lookup<
-      ffi.NativeFunction<
+  late final _dartc_async_put_objectPtr =
+      _lookup<
+        ffi.NativeFunction<
           obx_id Function(
-              ffi.Pointer<OBX_async>,
-              ffi.Int64,
-              ffi.Pointer<ffi.Void>,
-              ffi.Size,
-              ffi.Int32)>>('obx_dart_async_put_object');
-  late final _dartc_async_put_object = _dartc_async_put_objectPtr.asFunction<
-      int Function(
-          ffi.Pointer<OBX_async>, int, ffi.Pointer<ffi.Void>, int, int)>();
+            ffi.Pointer<OBX_async>,
+            ffi.Int64,
+            ffi.Pointer<ffi.Void>,
+            ffi.Size,
+            ffi.Int32,
+          )
+        >
+      >('obx_dart_async_put_object');
+  late final _dartc_async_put_object = _dartc_async_put_objectPtr
+      .asFunction<
+        int Function(
+          ffi.Pointer<OBX_async>,
+          int,
+          ffi.Pointer<ffi.Void>,
+          int,
+          int,
+        )
+      >();
 
-  int dartc_stream_close(
-    ffi.Pointer<OBX_dart_stream> stream,
-  ) {
-    return _dartc_stream_close(
-      stream,
-    );
+  int dartc_stream_close(ffi.Pointer<OBX_dart_stream> stream) {
+    return _dartc_stream_close(stream);
   }
 
-  late final _dartc_stream_closePtr = _lookup<
-          ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_dart_stream>)>>(
-      'obx_dart_stream_close');
+  late final _dartc_stream_closePtr =
+      _lookup<
+        ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_dart_stream>)>
+      >('obx_dart_stream_close');
   late final _dartc_stream_close = _dartc_stream_closePtr
       .asFunction<int Function(ffi.Pointer<OBX_dart_stream>)>();
 
@@ -10215,35 +11003,43 @@ class ObjectBoxC {
     ffi.Pointer<OBX_query> query,
     int native_port,
   ) {
-    return _dartc_query_find(
-      query,
-      native_port,
-    );
+    return _dartc_query_find(query, native_port);
   }
 
-  late final _dartc_query_findPtr = _lookup<
-      ffi.NativeFunction<
+  late final _dartc_query_findPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_dart_stream> Function(
-              ffi.Pointer<OBX_query>, ffi.Int64)>>('obx_dart_query_find');
-  late final _dartc_query_find = _dartc_query_findPtr.asFunction<
-      ffi.Pointer<OBX_dart_stream> Function(ffi.Pointer<OBX_query>, int)>();
+            ffi.Pointer<OBX_query>,
+            ffi.Int64,
+          )
+        >
+      >('obx_dart_query_find');
+  late final _dartc_query_find = _dartc_query_findPtr
+      .asFunction<
+        ffi.Pointer<OBX_dart_stream> Function(ffi.Pointer<OBX_query>, int)
+      >();
 
   ffi.Pointer<OBX_dart_stream> dartc_query_find_ptr(
     ffi.Pointer<OBX_query> query,
     int native_port,
   ) {
-    return _dartc_query_find_ptr(
-      query,
-      native_port,
-    );
+    return _dartc_query_find_ptr(query, native_port);
   }
 
-  late final _dartc_query_find_ptrPtr = _lookup<
-      ffi.NativeFunction<
+  late final _dartc_query_find_ptrPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_dart_stream> Function(
-              ffi.Pointer<OBX_query>, ffi.Int64)>>('obx_dart_query_find_ptr');
-  late final _dartc_query_find_ptr = _dartc_query_find_ptrPtr.asFunction<
-      ffi.Pointer<OBX_dart_stream> Function(ffi.Pointer<OBX_query>, int)>();
+            ffi.Pointer<OBX_query>,
+            ffi.Int64,
+          )
+        >
+      >('obx_dart_query_find_ptr');
+  late final _dartc_query_find_ptr = _dartc_query_find_ptrPtr
+      .asFunction<
+        ffi.Pointer<OBX_dart_stream> Function(ffi.Pointer<OBX_query>, int)
+      >();
 
   /// Attaches a finalizer (destructor) to be called when the given object is garbage-collected.
   /// @param dart_object marks the object owning the native pointer
@@ -10266,32 +11062,41 @@ class ObjectBoxC {
     );
   }
 
-  late final _dartc_attach_finalizerPtr = _lookup<
-      ffi.NativeFunction<
+  late final _dartc_attach_finalizerPtr =
+      _lookup<
+        ffi.NativeFunction<
           ffi.Pointer<OBX_dart_finalizer> Function(
-              ffi.Handle,
-              ffi.Pointer<obx_dart_closer>,
-              ffi.Pointer<ffi.Void>,
-              ffi.Size)>>('obx_dart_attach_finalizer');
-  late final _dartc_attach_finalizer = _dartc_attach_finalizerPtr.asFunction<
-      ffi.Pointer<OBX_dart_finalizer> Function(
-          Object, ffi.Pointer<obx_dart_closer>, ffi.Pointer<ffi.Void>, int)>();
+            ffi.Handle,
+            ffi.Pointer<obx_dart_closer>,
+            ffi.Pointer<ffi.Void>,
+            ffi.Size,
+          )
+        >
+      >('obx_dart_attach_finalizer');
+  late final _dartc_attach_finalizer = _dartc_attach_finalizerPtr
+      .asFunction<
+        ffi.Pointer<OBX_dart_finalizer> Function(
+          Object,
+          ffi.Pointer<obx_dart_closer>,
+          ffi.Pointer<ffi.Void>,
+          int,
+        )
+      >();
 
   /// Detach the finalizer preliminarily, without executing its "closer"
   int dartc_detach_finalizer(
     ffi.Pointer<OBX_dart_finalizer> finalizer,
     Object dart_object,
   ) {
-    return _dartc_detach_finalizer(
-      finalizer,
-      dart_object,
-    );
+    return _dartc_detach_finalizer(finalizer, dart_object);
   }
 
-  late final _dartc_detach_finalizerPtr = _lookup<
-      ffi.NativeFunction<
-          obx_err Function(ffi.Pointer<OBX_dart_finalizer>,
-              ffi.Handle)>>('obx_dart_detach_finalizer');
+  late final _dartc_detach_finalizerPtr =
+      _lookup<
+        ffi.NativeFunction<
+          obx_err Function(ffi.Pointer<OBX_dart_finalizer>, ffi.Handle)
+        >
+      >('obx_dart_detach_finalizer');
   late final _dartc_detach_finalizer = _dartc_detach_finalizerPtr
       .asFunction<int Function(ffi.Pointer<OBX_dart_finalizer>, Object)>();
 
@@ -10302,13 +11107,13 @@ class _SymbolAddresses {
   final ObjectBoxC _library;
   _SymbolAddresses(this._library);
   ffi.Pointer<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_store>)>>
-      get store_close => _library._store_closePtr;
+  get store_close => _library._store_closePtr;
   ffi.Pointer<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_query>)>>
-      get query_close => _library._query_closePtr;
+  get query_close => _library._query_closePtr;
   ffi.Pointer<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_query_prop>)>>
-      get query_prop_close => _library._query_prop_closePtr;
+  get query_prop_close => _library._query_prop_closePtr;
   ffi.Pointer<ffi.NativeFunction<obx_err Function(ffi.Pointer<OBX_admin>)>>
-      get admin_close => _library._admin_closePtr;
+  get admin_close => _library._admin_closePtr;
 }
 
 /// Object ID with its associated query score, which is used for special query results.
@@ -10915,9 +11720,15 @@ sealed class OBX_float_array extends ffi.Struct {
 }
 
 /// Callback for logging, which can be provided to store creation via options.
-typedef obx_log_callback = ffi.NativeFunction<
-    ffi.Void Function(ffi.Int32 log_level, ffi.Pointer<ffi.Char> message,
-        ffi.Size message_size, ffi.Pointer<ffi.Void> user_data)>;
+typedef obx_log_callback =
+    ffi.NativeFunction<
+      ffi.Void Function(
+        ffi.Int32 log_level,
+        ffi.Pointer<ffi.Char> message,
+        ffi.Size message_size,
+        ffi.Pointer<ffi.Void> user_data,
+      )
+    >;
 
 /// Backup restore flags control how backups are restored to the database.
 abstract class OBXBackupRestoreFlags {
@@ -10959,15 +11770,22 @@ sealed class OBX_box extends ffi.Opaque {}
 /// @param size specifies the length of the read data
 /// @param user_data is a pass-through argument passed to the called API
 /// @return The visitor returns true to keep going or false to cancel.
-typedef obx_data_visitor = ffi.NativeFunction<
-    ffi.Bool Function(ffi.Pointer<ffi.Uint8> data, ffi.Size size,
-        ffi.Pointer<ffi.Void> user_data)>;
+typedef obx_data_visitor =
+    ffi.NativeFunction<
+      ffi.Bool Function(
+        ffi.Pointer<ffi.Uint8> data,
+        ffi.Size size,
+        ffi.Pointer<ffi.Void> user_data,
+      )
+    >;
 
 /// Callback for simple async functions that only deliver a obx_err status.
 /// @param status The result status of the async operation
 /// @param user_data The data initially passed to the async function call is passed back.
-typedef obx_status_callback = ffi.NativeFunction<
-    ffi.Void Function(obx_err status, ffi.Pointer<ffi.Void> user_data)>;
+typedef obx_status_callback =
+    ffi.NativeFunction<
+      ffi.Void Function(obx_err status, ffi.Pointer<ffi.Void> user_data)
+    >;
 
 sealed class OBX_async extends ffi.Opaque {}
 
@@ -11004,9 +11822,13 @@ sealed class OBX_query extends ffi.Opaque {}
 /// @param data contains the current data with score element
 /// @param user_data is a pass-through argument passed to the called API
 /// @return The visitor returns true to keep going or false to cancel.
-typedef obx_data_score_visitor = ffi.NativeFunction<
-    ffi.Bool Function(
-        ffi.Pointer<OBX_bytes_score> data, ffi.Pointer<ffi.Void> user_data)>;
+typedef obx_data_score_visitor =
+    ffi.NativeFunction<
+      ffi.Bool Function(
+        ffi.Pointer<OBX_bytes_score> data,
+        ffi.Pointer<ffi.Void> user_data,
+      )
+    >;
 
 sealed class OBX_query_prop extends ffi.Opaque {}
 
@@ -11016,13 +11838,18 @@ sealed class OBX_observer extends ffi.Opaque {}
 /// @param user_data user data given to obx_observe()
 /// @param type_ids array of object type IDs that had changes
 /// @param type_ids_count number of IDs of type_ids
-typedef obx_observer = ffi.NativeFunction<
-    ffi.Void Function(ffi.Pointer<obx_schema_id> type_ids,
-        ffi.Size type_ids_count, ffi.Pointer<ffi.Void> user_data)>;
+typedef obx_observer =
+    ffi.NativeFunction<
+      ffi.Void Function(
+        ffi.Pointer<obx_schema_id> type_ids,
+        ffi.Size type_ids_count,
+        ffi.Pointer<ffi.Void> user_data,
+      )
+    >;
 
 /// Callback for obx_observe_single_type()
-typedef obx_observer_single_type
-    = ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> user_data)>;
+typedef obx_observer_single_type =
+    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> user_data)>;
 
 abstract class OBXTreeOptionFlags {
   /// If true, debug logs are always disabled for this tree regardless of the store's debug flags.
@@ -11070,8 +11897,9 @@ sealed class OBX_tree_leaves_info extends ffi.Opaque {}
 /// @param leaf_metadata The leafs metadata flatbuffer pointer.
 /// @param leaf_metadata_size The leafs meatdata flatbuffer size.
 /// @param user_data The data initially passed to the async function call is passed back.
-typedef obx_tree_async_get_callback = ffi.NativeFunction<
-    ffi.Void Function(
+typedef obx_tree_async_get_callback =
+    ffi.NativeFunction<
+      ffi.Void Function(
         obx_err status,
         obx_id id,
         ffi.Pointer<ffi.Char> path,
@@ -11079,7 +11907,9 @@ typedef obx_tree_async_get_callback = ffi.NativeFunction<
         ffi.Size leaf_data_size,
         ffi.Pointer<ffi.Uint8> leaf_metadata,
         ffi.Size leaf_metadata_size,
-        ffi.Pointer<ffi.Void> user_data)>;
+        ffi.Pointer<ffi.Void> user_data,
+      )
+    >;
 
 /// Callback for obx_tree_async_put_raw().
 /// \note If the given status is an error, you can use functions like obx_last_error_message() to gather more info
@@ -11087,9 +11917,14 @@ typedef obx_tree_async_get_callback = ffi.NativeFunction<
 /// @param status The result status of the async operation
 /// @param id If the operation was successful, the ID of the leaf, which was put (otherwise zero).
 /// @param user_data The data initially passed to the async function call is passed back.
-typedef obx_tree_async_put_callback = ffi.NativeFunction<
-    ffi.Void Function(
-        obx_err status, obx_id id, ffi.Pointer<ffi.Void> user_data)>;
+typedef obx_tree_async_put_callback =
+    ffi.NativeFunction<
+      ffi.Void Function(
+        obx_err status,
+        obx_id id,
+        ffi.Pointer<ffi.Void> user_data,
+      )
+    >;
 
 sealed class OBX_weak_store extends ffi.Opaque {}
 
@@ -11234,50 +12069,64 @@ sealed class OBX_sync_msg_objects_builder extends ffi.Opaque {}
 
 /// Called when connection is established
 /// @param arg is a pass-through argument passed to the called API
-typedef OBX_sync_listener_connect
-    = ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> arg)>;
+typedef OBX_sync_listener_connect =
+    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> arg)>;
 
 /// Called when connection is closed/lost
 /// @param arg is a pass-through argument passed to the called API
-typedef OBX_sync_listener_disconnect
-    = ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> arg)>;
+typedef OBX_sync_listener_disconnect =
+    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> arg)>;
 
 /// Called on successful login
 /// @param arg is a pass-through argument passed to the called API
-typedef OBX_sync_listener_login
-    = ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> arg)>;
+typedef OBX_sync_listener_login =
+    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> arg)>;
 
 /// Called on a login failure
 /// @param arg is a pass-through argument passed to the called API
 /// @param code error code indicating why the login failed
-typedef OBX_sync_listener_login_failure = ffi.NativeFunction<
-    ffi.Void Function(ffi.Pointer<ffi.Void> arg, ffi.Int32 code)>;
+typedef OBX_sync_listener_login_failure =
+    ffi.NativeFunction<
+      ffi.Void Function(ffi.Pointer<ffi.Void> arg, ffi.Int32 code)
+    >;
 
 /// Called when synchronization is complete
 /// @param arg is a pass-through argument passed to the called API
-typedef OBX_sync_listener_complete
-    = ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> arg)>;
+typedef OBX_sync_listener_complete =
+    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> arg)>;
 
 /// Called with fine grained sync changes (IDs of put and removed entities)
 /// @param arg is a pass-through argument passed to the called API
-typedef OBX_sync_listener_change = ffi.NativeFunction<
-    ffi.Void Function(
-        ffi.Pointer<ffi.Void> arg, ffi.Pointer<OBX_sync_change_array> changes)>;
+typedef OBX_sync_listener_change =
+    ffi.NativeFunction<
+      ffi.Void Function(
+        ffi.Pointer<ffi.Void> arg,
+        ffi.Pointer<OBX_sync_change_array> changes,
+      )
+    >;
 
 /// Called when a server time information is received on the client.
 /// @param arg is a pass-through argument passed to the called API
 /// @param timestamp_ns is timestamp in nanoseconds since Unix epoch
-typedef OBX_sync_listener_server_time = ffi.NativeFunction<
-    ffi.Void Function(ffi.Pointer<ffi.Void> arg, ffi.Int64 timestamp_ns)>;
-typedef OBX_sync_listener_msg_objects = ffi.NativeFunction<
-    ffi.Void Function(ffi.Pointer<ffi.Void> arg,
-        ffi.Pointer<OBX_sync_msg_objects> msg_objects)>;
+typedef OBX_sync_listener_server_time =
+    ffi.NativeFunction<
+      ffi.Void Function(ffi.Pointer<ffi.Void> arg, ffi.Int64 timestamp_ns)
+    >;
+typedef OBX_sync_listener_msg_objects =
+    ffi.NativeFunction<
+      ffi.Void Function(
+        ffi.Pointer<ffi.Void> arg,
+        ffi.Pointer<OBX_sync_msg_objects> msg_objects,
+      )
+    >;
 
 /// Callend when sync-level errors occur
 /// @param arg is a pass-through argument passed to the called API
 /// @param error error code indicating sync-level error events
-typedef OBX_sync_listener_error = ffi.NativeFunction<
-    ffi.Void Function(ffi.Pointer<ffi.Void> arg, ffi.Int32 error)>;
+typedef OBX_sync_listener_error =
+    ffi.NativeFunction<
+      ffi.Void Function(ffi.Pointer<ffi.Void> arg, ffi.Int32 error)
+    >;
 
 /// Stats counter type IDs as passed to obx_sync_stats_u64().
 abstract class OBXSyncStats {
@@ -11489,13 +12338,13 @@ sealed class OBX_custom_msg_server_functions extends ffi.Struct {
   external ffi.Pointer<OBX_custom_msg_server_func_shutdown> func_shutdown;
 
   external ffi.Pointer<OBX_custom_msg_server_func_client_connection_send_async>
-      func_conn_send_async;
+  func_conn_send_async;
 
   external ffi.Pointer<OBX_custom_msg_server_func_client_connection_close>
-      func_conn_close;
+  func_conn_close;
 
   external ffi.Pointer<OBX_custom_msg_server_func_client_connection_shutdown>
-      func_conn_shutdown;
+  func_conn_shutdown;
 }
 
 /// Callback to create a custom messaging server.
@@ -11504,12 +12353,15 @@ sealed class OBX_custom_msg_server_functions extends ffi.Struct {
 /// @param config_user_data user provided data set at registration of the server
 /// @returns server user data, which will be passed on to the subsequent callbacks (OBX_custom_msg_server_func_*)
 /// @returns null to indicate an error that the server could not be created
-typedef OBX_custom_msg_server_func_create = ffi.NativeFunction<
-    ffi.Pointer<ffi.Void> Function(
+typedef OBX_custom_msg_server_func_create =
+    ffi.NativeFunction<
+      ffi.Pointer<ffi.Void> Function(
         ffi.Uint64 server_id,
         ffi.Pointer<ffi.Char> url,
         ffi.Pointer<ffi.Char> cert_path,
-        ffi.Pointer<ffi.Void> config_user_data)>;
+        ffi.Pointer<ffi.Void> config_user_data,
+      )
+    >;
 
 /// Callback to start a custom server.
 /// Must be provided to implement a custom server. See notes on OBX_custom_msg_server_functions for more details.
@@ -11518,48 +12370,63 @@ typedef OBX_custom_msg_server_func_create = ffi.NativeFunction<
 /// The port value is arbitrary and, for now, is only used for debug logs.
 /// @returns OBX_SUCCESS if the server was successfully started
 /// @returns Any other fitting error code (OBX_ERROR_*) if the server could be started
-typedef OBX_custom_msg_server_func_start = ffi.NativeFunction<
-    obx_err Function(ffi.Pointer<ffi.Void> server_user_data,
-        ffi.Pointer<ffi.Uint64> out_port)>;
+typedef OBX_custom_msg_server_func_start =
+    ffi.NativeFunction<
+      obx_err Function(
+        ffi.Pointer<ffi.Void> server_user_data,
+        ffi.Pointer<ffi.Uint64> out_port,
+      )
+    >;
 
 /// Callback to stop and close the custom server (e.g. further messages delivery will be rejected).
 /// Must be provided to implement a custom server. See notes on OBX_custom_msg_server_functions for more details.
 /// This includes the store associated with the server; it gets closed and must not be used anymore after this call.
 /// @param server_user_data User supplied data returned by the function that created the server
-typedef OBX_custom_msg_server_func_stop = ffi
-    .NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> server_user_data)>;
+typedef OBX_custom_msg_server_func_stop =
+    ffi.NativeFunction<
+      ffi.Void Function(ffi.Pointer<ffi.Void> server_user_data)
+    >;
 
 /// Callback to shut the custom server down, freeing its resources (the custom server is not used after this point).
 /// Must be provided to implement a custom server. See notes on OBX_custom_msg_server_functions for more details.
 /// @param server_user_data User supplied data returned by the function that created the server
-typedef OBX_custom_msg_server_func_shutdown = ffi
-    .NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> server_user_data)>;
+typedef OBX_custom_msg_server_func_shutdown =
+    ffi.NativeFunction<
+      ffi.Void Function(ffi.Pointer<ffi.Void> server_user_data)
+    >;
 
 /// Callback to enqueue a message for sending.
 /// Must be provided to implement a custom server. See notes on OBX_custom_msg_server_functions for more details.
 /// @param bytes lazy bytes storing the message
 /// @param server_user_data User supplied data returned by the function that created the server
-typedef OBX_custom_msg_server_func_client_connection_send_async
-    = ffi.NativeFunction<
-        ffi.Bool Function(
-            ffi.Pointer<OBX_bytes_lazy> bytes,
-            ffi.Pointer<ffi.Void> server_user_data,
-            ffi.Pointer<ffi.Void> connection_user_data)>;
+typedef OBX_custom_msg_server_func_client_connection_send_async =
+    ffi.NativeFunction<
+      ffi.Bool Function(
+        ffi.Pointer<OBX_bytes_lazy> bytes,
+        ffi.Pointer<ffi.Void> server_user_data,
+        ffi.Pointer<ffi.Void> connection_user_data,
+      )
+    >;
 
 /// Callback to close the sync client connection to the custom server.
 /// Must be provided to implement a custom server. See notes on OBX_custom_msg_server_functions for more details.
 /// @param server_user_data User supplied data returned by the function that created the server
-typedef OBX_custom_msg_server_func_client_connection_close = ffi.NativeFunction<
-    ffi.Void Function(ffi.Pointer<ffi.Void> server_user_data,
-        ffi.Pointer<ffi.Void> connection_user_data)>;
+typedef OBX_custom_msg_server_func_client_connection_close =
+    ffi.NativeFunction<
+      ffi.Void Function(
+        ffi.Pointer<ffi.Void> server_user_data,
+        ffi.Pointer<ffi.Void> connection_user_data,
+      )
+    >;
 
 /// Callback to shutdown and free all resources associated with the sync client connection to the custom server.
 /// Note that the custom server may already have been shutdown at this point (e.g. no server user data is supplied).
 /// Must be provided to implement a custom server. See notes on OBX_custom_msg_server_functions for more details.
 /// @param connection_user_data User supplied data returned by the function that created the server
-typedef OBX_custom_msg_server_func_client_connection_shutdown
-    = ffi.NativeFunction<
-        ffi.Void Function(ffi.Pointer<ffi.Void> connection_user_data)>;
+typedef OBX_custom_msg_server_func_client_connection_shutdown =
+    ffi.NativeFunction<
+      ffi.Void Function(ffi.Pointer<ffi.Void> connection_user_data)
+    >;
 
 /// Struct of the custom client function callbacks. In order to implement the custom client, you must provide
 /// custom methods for each of the members of this struct. This is then passed to obx_custom_msg_client_register()
@@ -11587,7 +12454,7 @@ sealed class OBX_custom_msg_client_functions extends ffi.Struct {
   external ffi.Pointer<OBX_custom_msg_client_func_send_async> func_send_async;
 
   external ffi.Pointer<OBX_custom_msg_client_func_clear_outgoing_messages>
-      func_clear_outgoing_messages;
+  func_clear_outgoing_messages;
 }
 
 /// Callback to create a custom messaging client.
@@ -11596,65 +12463,88 @@ sealed class OBX_custom_msg_client_functions extends ffi.Struct {
 /// @param config_user_data user provided data set at registration of the client
 /// @returns client user data, which will be passed on to the subsequent callbacks (OBX_custom_msg_client_func_*)
 /// @returns null to indicate an error that the client could not be created
-typedef OBX_custom_msg_client_func_create = ffi.NativeFunction<
-    ffi.Pointer<ffi.Void> Function(
+typedef OBX_custom_msg_client_func_create =
+    ffi.NativeFunction<
+      ffi.Pointer<ffi.Void> Function(
         ffi.Uint64 client_id,
         ffi.Pointer<ffi.Char> url,
         ffi.Pointer<ffi.Char> cert_path,
-        ffi.Pointer<ffi.Void> config_user_data)>;
+        ffi.Pointer<ffi.Void> config_user_data,
+      )
+    >;
 
 /// Callback to start the client.
 /// Must be provided to implement a custom client. See notes on OBX_custom_msg_client_functions for more details.
 /// @param client_user_data user supplied data returned by the function that created the client
 /// @returns OBX_SUCCESS if the client was successfully started
 /// @returns Any other fitting error code (OBX_ERROR_*) if the client could be started
-typedef OBX_custom_msg_client_func_start = ffi
-    .NativeFunction<obx_err Function(ffi.Pointer<ffi.Void> client_user_data)>;
+typedef OBX_custom_msg_client_func_start =
+    ffi.NativeFunction<
+      obx_err Function(ffi.Pointer<ffi.Void> client_user_data)
+    >;
 
 /// Callback that tells the client it shall start trying to connect.
 /// Must be provided to implement a custom client. See notes on OBX_custom_msg_client_functions for more details.
 /// @param client_user_data user supplied data returned by the function that created the client
-typedef OBX_custom_msg_client_func_connect = ffi
-    .NativeFunction<ffi.Bool Function(ffi.Pointer<ffi.Void> client_user_data)>;
+typedef OBX_custom_msg_client_func_connect =
+    ffi.NativeFunction<
+      ffi.Bool Function(ffi.Pointer<ffi.Void> client_user_data)
+    >;
 
 /// Callback that tells the client it shall disconnect.
 /// Must be provided to implement a custom client. See notes on OBX_custom_msg_client_functions for more details.
 /// @param client_user_data user supplied data returned by the function that created the client
-typedef OBX_custom_msg_client_func_disconnect = ffi.NativeFunction<
-    ffi.Void Function(ffi.Bool clear_outgoing_messages,
-        ffi.Pointer<ffi.Void> client_user_data)>;
+typedef OBX_custom_msg_client_func_disconnect =
+    ffi.NativeFunction<
+      ffi.Void Function(
+        ffi.Bool clear_outgoing_messages,
+        ffi.Pointer<ffi.Void> client_user_data,
+      )
+    >;
 
 /// Callback to stop and close the client (e.g. further messages delivery will be rejected).
 /// Must be provided to implement a custom client. See notes on OBX_custom_msg_client_functions for more details.
 /// @param client_user_data user supplied data returned by the function that created the client
-typedef OBX_custom_msg_client_func_stop = ffi
-    .NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> client_user_data)>;
+typedef OBX_custom_msg_client_func_stop =
+    ffi.NativeFunction<
+      ffi.Void Function(ffi.Pointer<ffi.Void> client_user_data)
+    >;
 
 /// Must be provided to implement a custom client. See notes on OBX_custom_msg_client_functions for more details.
 /// @param client_user_data user supplied data returned by the function that created the client
-typedef OBX_custom_msg_client_func_join = ffi
-    .NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> client_user_data)>;
+typedef OBX_custom_msg_client_func_join =
+    ffi.NativeFunction<
+      ffi.Void Function(ffi.Pointer<ffi.Void> client_user_data)
+    >;
 
 /// Callback to shut the custom client down, freeing its resources.
 /// The custom client is not used after this point.
 /// Must be provided to implement a custom client. See notes on OBX_custom_msg_client_functions for more details.
 /// @param client_user_data user supplied data returned by the function that created the client
-typedef OBX_custom_msg_client_func_shutdown = ffi
-    .NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> client_user_data)>;
+typedef OBX_custom_msg_client_func_shutdown =
+    ffi.NativeFunction<
+      ffi.Void Function(ffi.Pointer<ffi.Void> client_user_data)
+    >;
 
 /// Callback to enqueue a message for sending.
 /// Must be provided to implement a custom client. See notes on OBX_custom_msg_client_functions for more details.
 /// @param bytes lazy bytes storing the message
 /// @param client_user_data user supplied data returned by the function that created the client
-typedef OBX_custom_msg_client_func_send_async = ffi.NativeFunction<
-    ffi.Bool Function(ffi.Pointer<OBX_bytes_lazy> bytes,
-        ffi.Pointer<ffi.Void> client_user_data)>;
+typedef OBX_custom_msg_client_func_send_async =
+    ffi.NativeFunction<
+      ffi.Bool Function(
+        ffi.Pointer<OBX_bytes_lazy> bytes,
+        ffi.Pointer<ffi.Void> client_user_data,
+      )
+    >;
 
 /// Callback to clear all outgoing messages.
 /// Must be provided to implement a custom client. See notes on OBX_custom_msg_client_functions for more details.
 /// @param client_user_data user supplied data returned by the function that created the client
-typedef OBX_custom_msg_client_func_clear_outgoing_messages = ffi
-    .NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> client_user_data)>;
+typedef OBX_custom_msg_client_func_clear_outgoing_messages =
+    ffi.NativeFunction<
+      ffi.Void Function(ffi.Pointer<ffi.Void> client_user_data)
+    >;
 
 /// States of custom msg client that must be forwarded to obx_custom_msg_client_set_state().
 abstract class OBXCustomMsgClientState {
@@ -11671,8 +12561,8 @@ sealed class OBX_dart_finalizer extends ffi.Opaque {}
 
 /// A function to clean up native resources. Must be a c-function (non-throwing). The returned error is ignored.
 /// e.g. obx_query_close(), obx_store_close(), ...
-typedef obx_dart_closer
-    = ffi.NativeFunction<obx_err Function(ffi.Pointer<ffi.Void> native_object)>;
+typedef obx_dart_closer =
+    ffi.NativeFunction<obx_err Function(ffi.Pointer<ffi.Void> native_object)>;
 
 const int OBX_VERSION_MAJOR = 4;
 

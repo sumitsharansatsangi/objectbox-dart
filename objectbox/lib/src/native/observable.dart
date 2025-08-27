@@ -24,7 +24,9 @@ class _Observer<StreamValueType> {
   void init(void Function() start, {bool broadcast = false}) {
     controller = broadcast
         ? StreamController<StreamValueType>.broadcast(
-            onListen: start, onCancel: stop)
+            onListen: start,
+            onCancel: stop,
+          )
         : StreamController<StreamValueType>(
             onListen: start,
             onPause: stop,
@@ -32,7 +34,8 @@ class _Observer<StreamValueType> {
             onCancel: () {
               stop();
               close();
-            });
+            },
+          );
   }
 
   // stop() is called when the stream subscription is paused or canceled
@@ -82,8 +85,11 @@ extension ObservableStore on Store {
     observer.receivePort.listen((dynamic _) => observer.controller.add(null));
 
     observer.init(() {
-      observer.cObserver =
-          C.dartc_observe_single_type(_ptr, entityId, observer.nativePort);
+      observer.cObserver = C.dartc_observe_single_type(
+        _ptr,
+        entityId,
+        observer.nativePort,
+      );
     });
 
     return observer.stream;
@@ -103,8 +109,11 @@ extension ObservableStore on Store {
     // and we must map it to a dart type (class) corresponding to that entity.
     observer.receivePort.listen((dynamic entityIds) {
       if (entityIds is! Uint32List) {
-        observer.controller.addError(ObjectBoxException(
-            'Received invalid data format from the core notification: (${entityIds.runtimeType}) $entityIds'));
+        observer.controller.addError(
+          ObjectBoxException(
+            'Received invalid data format from the core notification: (${entityIds.runtimeType}) $entityIds',
+          ),
+        );
         return;
       }
 
@@ -113,8 +122,11 @@ extension ObservableStore on Store {
         final entityId = entityIds[i];
         final entityType = entityTypesById[entityId];
         if (entityType == null) {
-          observer.controller.addError(ObjectBoxException(
-              'Received data change notification for an unknown entity ID $entityId'));
+          observer.controller.addError(
+            ObjectBoxException(
+              'Received data change notification for an unknown entity ID $entityId',
+            ),
+          );
         } else {
           entities[i] = entityType;
         }

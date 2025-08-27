@@ -54,11 +54,13 @@ class Box<T> {
   factory Box(Store store) => store.box();
 
   Box._(this._store, this._entity)
-      : _hasToOneRelations = _entity.model.properties
-            .any((ModelProperty prop) => prop.isRelation),
-        _hasToManyRelations = _entity.model.relations.isNotEmpty ||
-            _entity.model.backlinks.isNotEmpty,
-        _cBox = C.box(InternalStoreAccess.ptr(_store), _entity.model.id.id) {
+    : _hasToOneRelations = _entity.model.properties.any(
+        (ModelProperty prop) => prop.isRelation,
+      ),
+      _hasToManyRelations =
+          _entity.model.relations.isNotEmpty ||
+          _entity.model.backlinks.isNotEmpty,
+      _cBox = C.box(InternalStoreAccess.ptr(_store), _entity.model.id.id) {
     checkObxPtr(_cBox, 'failed to create box');
   }
 
@@ -102,7 +104,10 @@ class Box<T> {
   int put(T object, {PutMode mode = PutMode.put}) {
     if (_hasRelations) {
       return InternalStoreAccess.runInTransaction(
-          _store, TxMode.write, (Transaction tx) => _put(object, mode, tx));
+        _store,
+        TxMode.write,
+        (Transaction tx) => _put(object, mode, tx),
+      );
     } else {
       return _put(object, mode, null);
     }
@@ -148,7 +153,9 @@ class Box<T> {
   /// in parallel.
   Future<T> putAndGetAsync(T object, {PutMode mode = PutMode.put}) async =>
       await _store.runAsync(
-          _putAndGetAsyncCallback<T>, _PutAsyncArgs(object, mode));
+        _putAndGetAsyncCallback<T>,
+        _PutAsyncArgs(object, mode),
+      );
 
   /// Like [putQueued], but waits on the put to complete.
   ///
@@ -173,17 +180,21 @@ class Box<T> {
   /// See also [putQueued] which doesn't return a [Future] but a pre-allocated
   /// ID immediately, even though the actual database put operation may fail.
   @Deprecated(
-      "Use putAsync which supports relations, or for a large number of parallel calls putQueued.")
-  Future<int> putQueuedAwaitResult(T object,
-          {PutMode mode = PutMode.put}) async =>
+    "Use putAsync which supports relations, or for a large number of parallel calls putQueued.",
+  )
+  Future<int> putQueuedAwaitResult(
+    T object, {
+    PutMode mode = PutMode.put,
+  }) async =>
       // Wrap with [Future.sync] to avoid mixing sync and async errors.
       // Note: doesn't seem to decrease performance at all.
       // https://dart.dev/guides/libraries/futures-error-handling#potential-problem-accidentally-mixing-synchronous-and-asynchronous-errors
       Future.sync(() async {
         if (_hasRelations) {
           throw UnsupportedError(
-              'putAsync() is currently not supported on entity '
-              '${T.toString()} because it has relations.');
+            'putAsync() is currently not supported on entity '
+            '${T.toString()} because it has relations.',
+          );
         }
         _async ??= _AsyncBoxHelper(this);
 
@@ -225,15 +236,21 @@ class Box<T> {
   /// only completes after a put was successful.
   int putQueued(T object, {PutMode mode = PutMode.put}) {
     if (_hasRelations) {
-      throw UnsupportedError('putQueued() is currently not supported on entity '
-          '${T.toString()} because it has relations.');
+      throw UnsupportedError(
+        'putQueued() is currently not supported on entity '
+        '${T.toString()} because it has relations.',
+      );
     }
     _async ??= _AsyncBoxHelper(this);
 
     _builder.fbb.reset();
     var id = _entity.objectToFB(object, _builder.fbb);
-    final newId = C.async_put_object4(_async!._cAsync, _builder.bufPtr,
-        _builder.fbb.size(), _getOBXPutMode(mode));
+    final newId = C.async_put_object4(
+      _async!._cAsync,
+      _builder.bufPtr,
+      _builder.fbb.size(),
+      _getOBXPutMode(mode),
+    );
     id = _handlePutObjectResult(object, id, newId);
     _builder.resetIfLarge();
     return newId;
@@ -243,7 +260,8 @@ class Box<T> {
     if (_hasRelations) {
       if (tx == null) {
         throw StateError(
-            'Invalid state: can only use _put() on an entity with relations when executing from inside a write transaction.');
+          'Invalid state: can only use _put() on an entity with relations when executing from inside a write transaction.',
+        );
       }
       if (_hasToOneRelations) {
         // In this case, there may be relation cycles so get the ID first.
@@ -258,7 +276,11 @@ class Box<T> {
     _builder.fbb.reset();
     var id = _entity.objectToFB(object, _builder.fbb);
     final newId = C.box_put_object4(
-        _ptr, _builder.bufPtr, _builder.fbb.size(), _getOBXPutMode(mode));
+      _ptr,
+      _builder.bufPtr,
+      _builder.fbb.size(),
+      _getOBXPutMode(mode),
+    );
     id = _handlePutObjectResult(object, id, newId);
     if (_hasToManyRelations) _putToManyRelFields(object, mode, tx!);
     _builder.resetIfLarge();
@@ -277,8 +299,9 @@ class Box<T> {
 
     final putIds = List<int>.filled(objects.length, 0);
 
-    InternalStoreAccess.runInTransaction(_store, TxMode.write,
-        (Transaction tx) {
+    InternalStoreAccess.runInTransaction(_store, TxMode.write, (
+      Transaction tx,
+    ) {
       if (_hasToOneRelations) {
         for (var object in objects) {
           _putToOneRelFields(object, mode, tx);
@@ -292,7 +315,11 @@ class Box<T> {
         _builder.fbb.reset();
         final id = _entity.objectToFB(object, _builder.fbb);
         final newId = C.cursor_put_object4(
-            cursor.ptr, _builder.bufPtr, _builder.fbb.size(), cMode);
+          cursor.ptr,
+          _builder.bufPtr,
+          _builder.fbb.size(),
+          cMode,
+        );
         putIds[i] = _handlePutObjectResult(object, id, newId);
       }
 
@@ -309,8 +336,9 @@ class Box<T> {
 
   // Static callback to avoid over-capturing due to [dart-lang/sdk#36983](https://github.com/dart-lang/sdk/issues/36983).
   static List<int> _putManyAsyncCallback<T>(
-          Store store, _PutManyAsyncArgs<T> args) =>
-      store.box<T>().putMany(args.objects, mode: args.mode);
+    Store store,
+    _PutManyAsyncArgs<T> args,
+  ) => store.box<T>().putMany(args.objects, mode: args.mode);
 
   /// Like [putMany], but runs in a worker isolate and does not modify the given
   /// [objects], e.g. to set an assigned ID.
@@ -322,14 +350,19 @@ class Box<T> {
   /// variant (e.g. [putMany]) and wrap the calls in [Store.runInTransactionAsync].
   /// This has typically better performance as only a single worker isolate has
   /// to be spawned.
-  Future<List<int>> putManyAsync(List<T> objects,
-          {PutMode mode = PutMode.put}) async =>
-      await _store.runAsync(
-          _putManyAsyncCallback<T>, _PutManyAsyncArgs(objects, mode));
+  Future<List<int>> putManyAsync(
+    List<T> objects, {
+    PutMode mode = PutMode.put,
+  }) async => await _store.runAsync(
+    _putManyAsyncCallback<T>,
+    _PutManyAsyncArgs(objects, mode),
+  );
 
   // Static callback to avoid over-capturing due to [dart-lang/sdk#36983](https://github.com/dart-lang/sdk/issues/36983).
   static List<T> _putAndGetManyAsyncCallback<T>(
-      Store store, _PutManyAsyncArgs<T> args) {
+    Store store,
+    _PutManyAsyncArgs<T> args,
+  ) {
     store.box<T>().putMany(args.objects, mode: args.mode);
     return args.objects;
   }
@@ -340,10 +373,13 @@ class Box<T> {
   /// If the objects are new (their [Id] property is 0 or null), returns a
   /// copy of them with the [Id] property set to the assigned ID. This also
   /// applies to new objects in their relations.
-  Future<List<T>> putAndGetManyAsync(List<T> objects,
-          {PutMode mode = PutMode.put}) async =>
-      await _store.runAsync(
-          _putAndGetManyAsyncCallback<T>, _PutManyAsyncArgs(objects, mode));
+  Future<List<T>> putAndGetManyAsync(
+    List<T> objects, {
+    PutMode mode = PutMode.put,
+  }) async => await _store.runAsync(
+    _putAndGetManyAsyncCallback<T>,
+    _PutManyAsyncArgs(objects, mode),
+  );
 
   // Checks if native obx_*_put_object() was successful (result is a valid ID).
   // Sets the given ID on the object if previous ID was zero (new object).
@@ -357,7 +393,10 @@ class Box<T> {
   /// Retrieves the stored object with the ID [id] from this box's database.
   /// Returns null if an object with the given ID doesn't exist.
   T? get(int id) => InternalStoreAccess.runInTransaction(
-      _store, TxMode.read, (Transaction tx) => tx.cursor(_entity).get(id));
+    _store,
+    TxMode.read,
+    (Transaction tx) => tx.cursor(_entity).get(id),
+  );
 
   // Static callback to avoid over-capturing due to [dart-lang/sdk#36983](https://github.com/dart-lang/sdk/issues/36983).
   static T? _getAsyncCallback<T>(Store store, int id) => store.box<T>().get(id);
@@ -379,8 +418,9 @@ class Box<T> {
   List<T?> getMany(List<int> ids, {bool growableResult = false}) {
     final result = List<T?>.filled(ids.length, null, growable: growableResult);
     if (ids.isEmpty) return result;
-    return InternalStoreAccess.runInTransaction(_store, TxMode.read,
-        (Transaction tx) {
+    return InternalStoreAccess.runInTransaction(_store, TxMode.read, (
+      Transaction tx,
+    ) {
       final cursor = tx.cursor(_entity);
       for (var i = 0; i < ids.length; i++) {
         final object = cursor.get(ids[i]);
@@ -392,8 +432,9 @@ class Box<T> {
 
   // Static callback to avoid over-capturing due to [dart-lang/sdk#36983](https://github.com/dart-lang/sdk/issues/36983).
   static List<T?> _getManyAsyncCallback<T>(
-          Store store, _GetManyAsyncArgs args) =>
-      store.box<T>().getMany(args.ids, growableResult: args.growableResult);
+    Store store,
+    _GetManyAsyncArgs args,
+  ) => store.box<T>().getMany(args.ids, growableResult: args.growableResult);
 
   /// Like [getMany], but runs the box operation asynchronously in a worker
   /// isolate.
@@ -404,11 +445,16 @@ class Box<T> {
   /// to be spawned.
   Future<List<T?>> getManyAsync(List<int> ids, {bool growableResult = false}) =>
       _store.runAsync(
-          _getManyAsyncCallback<T>, _GetManyAsyncArgs(ids, growableResult));
+        _getManyAsyncCallback<T>,
+        _GetManyAsyncArgs(ids, growableResult),
+      );
 
   /// Returns all stored objects in this Box.
   List<T> getAll() => InternalStoreAccess.runInTransaction(
-      _store, TxMode.read, (Transaction tx) => tx.cursor(_entity).getAll());
+    _store,
+    TxMode.read,
+    (Transaction tx) => tx.cursor(_entity).getAll(),
+  );
 
   // Static callback to avoid over-capturing due to [dart-lang/sdk#36983](https://github.com/dart-lang/sdk/issues/36983).
   static List<T> _getAllAsyncCallback<T>(Store store, void param) =>
@@ -617,8 +663,13 @@ class _AsyncBoxHelper {
   /// an empty message if successful, or an error string.
   Future<int> put(int id, BuilderWithCBuffer fbb, PutMode mode) async {
     final port = ReceivePort();
-    final newId = C.dartc_async_put_object(_cAsync, port.sendPort.nativePort,
-        fbb.bufPtr, fbb.fbb.size(), _getOBXPutMode(mode));
+    final newId = C.dartc_async_put_object(
+      _cAsync,
+      port.sendPort.nativePort,
+      fbb.bufPtr,
+      fbb.fbb.size(),
+      _getOBXPutMode(mode),
+    );
 
     final completer = Completer<int>();
 
@@ -638,12 +689,17 @@ class _AsyncBoxHelper {
         if (message == null) {
           completer.complete(newId);
         } else if (message is String) {
-          completer.completeError(message.startsWith('Unique constraint')
-              ? UniqueViolationException(message)
-              : ObjectBoxException(message));
+          completer.completeError(
+            message.startsWith('Unique constraint')
+                ? UniqueViolationException(message)
+                : ObjectBoxException(message),
+          );
         } else {
-          completer.completeError(ObjectBoxException(
-              'Unknown message type (${message.runtimeType}: $message'));
+          completer.completeError(
+            ObjectBoxException(
+              'Unknown message type (${message.runtimeType}: $message',
+            ),
+          );
         }
       }
       port.close();
@@ -665,27 +721,20 @@ class InternalBoxAccess {
   /// Put the object in a given transaction.
   @pragma('vm:prefer-inline')
   static int put<EntityT>(
-          Box<EntityT> box, EntityT object, PutMode mode, Transaction? tx) =>
-      box._put(object, mode, tx);
+    Box<EntityT> box,
+    EntityT object,
+    PutMode mode,
+    Transaction? tx,
+  ) => box._put(object, mode, tx);
 
   /// Put a standalone relation.
   @pragma('vm:prefer-inline')
-  static void relPut(
-    Box box,
-    int relationId,
-    int sourceId,
-    int targetId,
-  ) =>
+  static void relPut(Box box, int relationId, int sourceId, int targetId) =>
       checkObx(C.box_rel_put(box._ptr, relationId, sourceId, targetId));
 
   /// Remove a standalone relation entry between two objects.
   @pragma('vm:prefer-inline')
-  static void relRemove(
-    Box box,
-    int relationId,
-    int sourceId,
-    int targetId,
-  ) =>
+  static void relRemove(Box box, int relationId, int sourceId, int targetId) =>
       checkObx(C.box_rel_remove(box._ptr, relationId, sourceId, targetId));
 
   /// Read all objects in this Box related to the given object.
@@ -693,8 +742,9 @@ class InternalBoxAccess {
   /// in a single Transaction, ensuring consistency. And it's a little more
   /// efficient for not unpacking the id array to a dart list.
   static List<EntityT> getRelated<EntityT>(Box<EntityT> box, RelInfo rel) =>
-      InternalStoreAccess.runInTransaction(box._store, TxMode.read,
-          (Transaction tx) {
+      InternalStoreAccess.runInTransaction(box._store, TxMode.read, (
+        Transaction tx,
+      ) {
         Pointer<OBX_id_array> cIdsPtr;
         switch (rel.type) {
           case RelType.toMany:
@@ -704,8 +754,11 @@ class InternalBoxAccess {
             cIdsPtr = C.box_get_backlink_ids(box._ptr, rel.id, rel.objectId);
             break;
           case RelType.toManyBacklink:
-            cIdsPtr =
-                C.box_rel_get_backlink_ids(box._ptr, rel.id, rel.objectId);
+            cIdsPtr = C.box_rel_get_backlink_ids(
+              box._ptr,
+              rel.id,
+              rel.objectId,
+            );
             break;
         }
         checkObxPtr(cIdsPtr);

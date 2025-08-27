@@ -29,10 +29,10 @@ class BufferContext {
 
   /// Create from a FlatBuffer represented by a list of bytes (uint8).
   factory BufferContext.fromBytes(List<int> byteList) => BufferContext(
-        byteList is Uint8List
-            ? byteList.buffer.asByteData(byteList.offsetInBytes)
-            : ByteData.view(Uint8List.fromList(byteList).buffer),
-      );
+    byteList is Uint8List
+        ? byteList.buffer.asByteData(byteList.offsetInBytes)
+        : ByteData.view(Uint8List.fromList(byteList).buffer),
+  );
 
   /// Create from a FlatBuffer represented by ByteData.
   BufferContext(this._buffer);
@@ -185,9 +185,9 @@ class Builder {
     bool internStrings = false,
     Allocator allocator = const DefaultAllocator(),
     this.deduplicateTables = true,
-  })  : _allocator = allocator,
-        _buf = allocator.allocate(initialSize),
-        _vTables = deduplicateTables ? [] : const [] {
+  }) : _allocator = allocator,
+       _buf = allocator.allocate(initialSize),
+       _vTables = deduplicateTables ? [] : const [] {
     if (internStrings) {
       _strings = <String, int>{};
     }
@@ -420,9 +420,11 @@ class Builder {
     }
 
     // zero out the added padding
-    for (var i = sizeBeforePadding + 1;
-        i <= finishedSize - requiredBytes;
-        i++) {
+    for (
+      var i = sizeBeforePadding + 1;
+      i <= finishedSize - requiredBytes;
+      i++
+    ) {
       _setUint8AtTail(i, 0);
     }
     _finished = true;
@@ -1441,7 +1443,7 @@ class _FbGenericList<E> extends _FbList<E> {
   List<E?>? _items;
 
   _FbGenericList(this.elementReader, BufferContext bp, int offset)
-      : super(bp, offset);
+    : super(bp, offset);
 
   @override
   @pragma('vm:prefer-inline')
@@ -1625,18 +1627,18 @@ abstract class Allocator {
   ) {
     if (inUseBack != 0) {
       newData.buffer.asUint8List().setAll(
-            newData.lengthInBytes - inUseBack,
-            oldData.buffer.asUint8List().getRange(
-                  oldData.lengthInBytes - inUseBack,
-                  oldData.lengthInBytes,
-                ),
-          );
+        newData.lengthInBytes - inUseBack,
+        oldData.buffer.asUint8List().getRange(
+          oldData.lengthInBytes - inUseBack,
+          oldData.lengthInBytes,
+        ),
+      );
     }
     if (inUseFront != 0) {
       newData.buffer.asUint8List().setAll(
-            0,
-            oldData.buffer.asUint8List().getRange(0, inUseFront),
-          );
+        0,
+        oldData.buffer.asUint8List().getRange(0, inUseFront),
+      );
     }
   }
 }

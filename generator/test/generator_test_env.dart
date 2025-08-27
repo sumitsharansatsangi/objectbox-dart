@@ -18,9 +18,7 @@ class GeneratorTestEnv {
   final Config config;
   late final CodeBuilder codeBuilder;
 
-  GeneratorTestEnv()
-      : resolver = EntityResolver(),
-        config = Config() {
+  GeneratorTestEnv() : resolver = EntityResolver(), config = Config() {
     codeBuilder = CodeBuilder(config);
   }
 
@@ -78,51 +76,65 @@ class GeneratorTestEnv {
 
   /// Check that the model is specified and written to JSON correctly.
   /// Note: there are tests asserting the generated model code in integration-tests/common.dart
-  _commonModelTests(ModelInfo generatorModel, ModelInfo jsonModel) {
+  void _commonModelTests(ModelInfo generatorModel, ModelInfo jsonModel) {
     // collect UIDs on all entities and properties
     final allUIDs = generatorModel.entities
-        .map((entity) => <int>[]
-          ..add(entity.id.uid)
-          ..addAll(entity.properties.map((prop) => prop.id.uid))
-          ..addAll(entity.properties
-              .where((prop) => prop.hasIndexFlag())
-              .map((prop) => prop.indexId!.uid))
-          ..addAll(entity.relations.map((rel) => rel.id.uid)))
+        .map(
+          (entity) => <int>[
+            entity.id.uid,
+            ...entity.properties.map((prop) => prop.id.uid),
+            ...entity.properties
+                .where((prop) => prop.hasIndexFlag())
+                .map((prop) => prop.indexId!.uid),
+            ...entity.relations.map((rel) => rel.id.uid),
+          ],
+        )
         .reduce((List<int> a, List<int> b) => a + b);
 
-    expect(allUIDs.toSet().length, allUIDs.length,
-        reason: 'UIDs are not unique');
+    expect(
+      allUIDs.toSet().length,
+      allUIDs.length,
+      reason: 'UIDs are not unique',
+    );
 
     // lastPropertyId
     for (final entity in generatorModel.entities) {
-      _testLastId(entity.lastPropertyId, entity.properties.map((el) => el.id),
-          generatorModel.retiredPropertyUids);
+      _testLastId(
+        entity.lastPropertyId,
+        entity.properties.map((el) => el.id),
+        generatorModel.retiredPropertyUids,
+      );
     }
 
     // lastEntityId
     _testLastId(
-        generatorModel.lastEntityId,
-        generatorModel.entities.map((el) => el.id),
-        generatorModel.retiredEntityUids);
+      generatorModel.lastEntityId,
+      generatorModel.entities.map((el) => el.id),
+      generatorModel.retiredEntityUids,
+    );
 
     // lastIndexId
     _testLastId(
-        generatorModel.lastIndexId,
-        generatorModel.entities
-            .map((ModelEntity e) => e.properties
+      generatorModel.lastIndexId,
+      generatorModel.entities
+          .map(
+            (ModelEntity e) => e.properties
                 .where((p) => p.hasIndexFlag())
                 .map((p) => p.indexId!)
-                .toList())
-            .reduce((List<IdUid> a, List<IdUid> b) => a + b),
-        generatorModel.retiredIndexUids);
+                .toList(),
+          )
+          .reduce((List<IdUid> a, List<IdUid> b) => a + b),
+      generatorModel.retiredIndexUids,
+    );
 
     // lastRelationId
     _testLastId(
-        generatorModel.lastRelationId,
-        generatorModel.entities
-            .map((ModelEntity e) => e.relations.map((r) => r.id).toList())
-            .reduce((List<IdUid> a, List<IdUid> b) => a + b),
-        generatorModel.retiredRelationUids);
+      generatorModel.lastRelationId,
+      generatorModel.entities
+          .map((ModelEntity e) => e.relations.map((r) => r.id).toList())
+          .reduce((List<IdUid> a, List<IdUid> b) => a + b),
+      generatorModel.retiredRelationUids,
+    );
 
     // Written JSON model same as generator model
     // This basically tests that toMap and fromMap do what they should
@@ -136,16 +148,18 @@ class GeneratorTestEnv {
     expect(jsonModel.retiredPropertyUids, generatorModel.retiredPropertyUids);
     expect(jsonModel.retiredRelationUids, generatorModel.retiredRelationUids);
     expect(jsonModel.modelVersion, generatorModel.modelVersion);
-    expect(jsonModel.modelVersionParserMinimum,
-        generatorModel.modelVersionParserMinimum);
+    expect(
+      jsonModel.modelVersionParserMinimum,
+      generatorModel.modelVersionParserMinimum,
+    );
     expect(jsonModel.version, generatorModel.version);
   }
 
-  _expectIdUid(IdUid actual, IdUid expected) {
+  void _expectIdUid(IdUid actual, IdUid expected) {
     expect(actual.toString(), expected.toString());
   }
 
-  _testLastId(IdUid last, Iterable<IdUid> all, Iterable<int> retired) {
+  void _testLastId(IdUid last, Iterable<IdUid> all, Iterable<int> retired) {
     if (last.isEmpty) return;
 
     // If among used IDs, UID should match; ID and UID not re-used elsewhere

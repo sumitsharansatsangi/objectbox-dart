@@ -16,6 +16,10 @@ class StoreConfiguration {
   final bool queriesCaseSensitiveDefault;
 
   /// Create a new [StoreConfiguration].
-  StoreConfiguration._(this.id, this.modelDefinition, this.directoryPath,
-      this.queriesCaseSensitiveDefault);
+  StoreConfiguration._(
+    this.id,
+    this.modelDefinition,
+    this.directoryPath,
+    this.queriesCaseSensitiveDefault,
+  );
 }

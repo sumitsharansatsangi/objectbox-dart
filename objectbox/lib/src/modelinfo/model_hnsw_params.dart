@@ -25,19 +25,24 @@ class ModelHnswParams {
   final int? vectorCacheHintSizeKB;
 
   /// Create an instance. For use from generated code.
-  ModelHnswParams(
-      {required this.dimensions,
-      this.neighborsPerNode,
-      this.indexingSearchCount,
-      this.flags,
-      this.distanceType,
-      this.reparationBacklinkProbability,
-      this.vectorCacheHintSizeKB});
+  ModelHnswParams({
+    required this.dimensions,
+    this.neighborsPerNode,
+    this.indexingSearchCount,
+    this.flags,
+    this.distanceType,
+    this.reparationBacklinkProbability,
+    this.vectorCacheHintSizeKB,
+  });
 
   /// If [expression] does not evaluate to `true` throws an [ArgumentError]
   /// using the given [argument], [name] and [message].
   static void checkArgument(
-      Object argument, bool expression, String name, String message) {
+    Object argument,
+    bool expression,
+    String name,
+    String message,
+  ) {
     if (!expression) {
       throw ArgumentError.value(argument, name, message);
     }
@@ -49,42 +54,60 @@ class ModelHnswParams {
     // otherwise would error at runtime (which might not be easily attributable,
     // see model.dart).
     // See allowed ranges in objectbox-c/src/model.cpp
-    checkArgument(hnsw.dimensions, hnsw.dimensions > 0, "dimensions",
-        "must be 1 or greater");
+    checkArgument(
+      hnsw.dimensions,
+      hnsw.dimensions > 0,
+      "dimensions",
+      "must be 1 or greater",
+    );
     final neighborsPerNode = hnsw.neighborsPerNode;
     if (neighborsPerNode != null) {
-      checkArgument(neighborsPerNode, neighborsPerNode > 0, "neighborsPerNode",
-          "must be 1 or greater");
+      checkArgument(
+        neighborsPerNode,
+        neighborsPerNode > 0,
+        "neighborsPerNode",
+        "must be 1 or greater",
+      );
     }
     final indexingSearchCount = hnsw.indexingSearchCount;
     if (indexingSearchCount != null) {
-      checkArgument(indexingSearchCount, indexingSearchCount > 0,
-          "indexingSearchCount", "must be 1 or greater");
+      checkArgument(
+        indexingSearchCount,
+        indexingSearchCount > 0,
+        "indexingSearchCount",
+        "must be 1 or greater",
+      );
     }
     final reparationBacklinkProbability = hnsw.reparationBacklinkProbability;
     if (reparationBacklinkProbability != null) {
       // The C API allows values bigger than 1.0, but internally everything
       // above 0.999 is just mapped to "always": so restrict to max 1.0.
       checkArgument(
-          reparationBacklinkProbability,
-          reparationBacklinkProbability >= 0.0 &&
-              reparationBacklinkProbability <= 1.0,
-          "reparationBacklinkProbability",
-          "must be between 0.0 or 1.0");
+        reparationBacklinkProbability,
+        reparationBacklinkProbability >= 0.0 &&
+            reparationBacklinkProbability <= 1.0,
+        "reparationBacklinkProbability",
+        "must be between 0.0 or 1.0",
+      );
     }
     final vectorCacheHintSizeKB = hnsw.vectorCacheHintSizeKB;
     if (vectorCacheHintSizeKB != null) {
-      checkArgument(vectorCacheHintSizeKB, vectorCacheHintSizeKB > 0,
-          "vectorCacheHintSizeKB", "must be 1 or greater");
+      checkArgument(
+        vectorCacheHintSizeKB,
+        vectorCacheHintSizeKB > 0,
+        "vectorCacheHintSizeKB",
+        "must be 1 or greater",
+      );
     }
     return ModelHnswParams(
-        dimensions: hnsw.dimensions,
-        neighborsPerNode: neighborsPerNode,
-        indexingSearchCount: indexingSearchCount,
-        flags: hnsw.flags?.toFlags(),
-        distanceType: hnsw.distanceType?.toConstant(),
-        reparationBacklinkProbability: reparationBacklinkProbability,
-        vectorCacheHintSizeKB: vectorCacheHintSizeKB);
+      dimensions: hnsw.dimensions,
+      neighborsPerNode: neighborsPerNode,
+      indexingSearchCount: indexingSearchCount,
+      flags: hnsw.flags?.toFlags(),
+      distanceType: hnsw.distanceType?.toConstant(),
+      reparationBacklinkProbability: reparationBacklinkProbability,
+      vectorCacheHintSizeKB: vectorCacheHintSizeKB,
+    );
   }
 
   /// Create from a string map created by [toMap].
@@ -146,7 +169,8 @@ class ModelHnswParams {
     }
     if (reparationBacklinkProbability != null) {
       code.write(
-          "reparationBacklinkProbability: $reparationBacklinkProbability, ");
+        "reparationBacklinkProbability: $reparationBacklinkProbability, ",
+      );
     }
     if (vectorCacheHintSizeKB != null) {
       code.write("vectorCacheHintSizeKB: $vectorCacheHintSizeKB, ");

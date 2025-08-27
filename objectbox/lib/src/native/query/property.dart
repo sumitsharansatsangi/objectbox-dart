@@ -11,8 +11,9 @@ class PropertyQuery<T> implements Finalizable {
   ///
   /// Keeps the finalizer itself reachable (static), otherwise it might be
   /// disposed of before the finalizer callback gets a chance to run.
-  static final _finalizer =
-      NativeFinalizer(C.addresses.query_prop_close.cast());
+  static final _finalizer = NativeFinalizer(
+    C.addresses.query_prop_close.cast(),
+  );
 
   bool _closed = false;
   final int _type;
@@ -29,7 +30,8 @@ class PropertyQuery<T> implements Finalizable {
     _query._checkOpen();
     if (_closed) {
       throw StateError(
-          'Property query already closed, cannot execute any actions');
+        'Property query already closed, cannot execute any actions',
+      );
     }
     return _cProp;
   }
@@ -54,14 +56,17 @@ class PropertyQuery<T> implements Finalizable {
   }
 
   List<R> _find<R, StructT extends NativeType, ValT extends NativeType>(
-      Pointer<StructT> Function(Pointer<OBX_query_prop>, Pointer<ValT>) findFn,
-      Pointer<ValT>? cDefault,
-      List<R> Function(Pointer<StructT>) listReadFn,
-      void Function(Pointer<StructT>) listFreeFn) {
+    Pointer<StructT> Function(Pointer<OBX_query_prop>, Pointer<ValT>) findFn,
+    Pointer<ValT>? cDefault,
+    List<R> Function(Pointer<StructT>) listReadFn,
+    void Function(Pointer<StructT>) listFreeFn,
+  ) {
     Pointer<StructT> cItems = nullptr;
     try {
       cItems = checkObxPtr(
-          findFn(_ptr, cDefault ?? nullptr), 'Property query failed');
+        findFn(_ptr, cDefault ?? nullptr),
+        'Property query failed',
+      );
       return listReadFn(cItems);
     } finally {
       if (cDefault != null) malloc.free(cDefault);
@@ -83,8 +88,8 @@ class PropertyQuery<T> implements Finalizable {
 /// "Property query" for an integer field. Created by [Query.property()].
 extension IntegerPropertyQuery on PropertyQuery<int> {
   int _op(
-      int Function(Pointer<OBX_query_prop>, Pointer<Int64>, Pointer<Int64>)
-          fn) {
+    int Function(Pointer<OBX_query_prop>, Pointer<Int64>, Pointer<Int64>) fn,
+  ) {
     final ptr = malloc<Int64>();
     try {
       checkObx(fn(_ptr, ptr, nullptr));
@@ -133,45 +138,50 @@ extension IntegerPropertyQuery on PropertyQuery<int> {
             ? null
             : (malloc<Int8>()..value = replaceNullWith);
         return _find(
-            C.query_prop_find_int8s,
-            cDefault,
-            (Pointer<OBX_int8_array> cItems) =>
-                cItems.ref.items.asTypedList(cItems.ref.count).toList(),
-            C.int8_array_free);
+          C.query_prop_find_int8s,
+          cDefault,
+          (Pointer<OBX_int8_array> cItems) =>
+              cItems.ref.items.asTypedList(cItems.ref.count).toList(),
+          C.int8_array_free,
+        );
       case OBXPropertyType.Char:
       case OBXPropertyType.Short: // Int16
         final cDefault = replaceNullWith == null
             ? null
             : (malloc<Int16>()..value = replaceNullWith);
         return _find(
-            C.query_prop_find_int16s,
-            cDefault,
-            (Pointer<OBX_int16_array> cItems) =>
-                cItems.ref.items.asTypedList(cItems.ref.count).toList(),
-            C.int16_array_free);
+          C.query_prop_find_int16s,
+          cDefault,
+          (Pointer<OBX_int16_array> cItems) =>
+              cItems.ref.items.asTypedList(cItems.ref.count).toList(),
+          C.int16_array_free,
+        );
       case OBXPropertyType.Int: // Int32
         final cDefault = replaceNullWith == null
             ? null
             : (malloc<Int32>()..value = replaceNullWith);
         return _find(
-            C.query_prop_find_int32s,
-            cDefault,
-            (Pointer<OBX_int32_array> cItems) =>
-                cItems.ref.items.asTypedList(cItems.ref.count).toList(),
-            C.int32_array_free);
+          C.query_prop_find_int32s,
+          cDefault,
+          (Pointer<OBX_int32_array> cItems) =>
+              cItems.ref.items.asTypedList(cItems.ref.count).toList(),
+          C.int32_array_free,
+        );
       case OBXPropertyType.Long: // Int64
         final cDefault = replaceNullWith == null
             ? null
             : (malloc<Int64>()..value = replaceNullWith);
         return _find(
-            C.query_prop_find_int64s,
-            cDefault,
-            (Pointer<OBX_int64_array> cItems) =>
-                cItems.ref.items.asTypedList(cItems.ref.count).toList(),
-            C.int64_array_free);
+          C.query_prop_find_int64s,
+          cDefault,
+          (Pointer<OBX_int64_array> cItems) =>
+              cItems.ref.items.asTypedList(cItems.ref.count).toList(),
+          C.int64_array_free,
+        );
       default:
         throw UnsupportedError(
-            'Property query: unsupported type (OBXPropertyType: $_type)');
+          'Property query: unsupported type (OBXPropertyType: $_type)',
+        );
     }
   }
 }
@@ -179,8 +189,8 @@ extension IntegerPropertyQuery on PropertyQuery<int> {
 /// "Property query" for a double field. Created by [Query.property()].
 extension DoublePropertyQuery on PropertyQuery<double> {
   double _op(
-      int Function(Pointer<OBX_query_prop>, Pointer<Double>, Pointer<Int64>)
-          fn) {
+    int Function(Pointer<OBX_query_prop>, Pointer<Double>, Pointer<Int64>) fn,
+  ) {
     final ptr = malloc<Double>();
     try {
       checkObx(fn(_ptr, ptr, nullptr));
@@ -228,24 +238,27 @@ extension DoublePropertyQuery on PropertyQuery<double> {
             ? null
             : (malloc<Float>()..value = replaceNullWith);
         return _find(
-            C.query_prop_find_floats,
-            cDefault,
-            (Pointer<OBX_float_array> cItems) =>
-                cItems.ref.items.asTypedList(cItems.ref.count).toList(),
-            C.float_array_free);
+          C.query_prop_find_floats,
+          cDefault,
+          (Pointer<OBX_float_array> cItems) =>
+              cItems.ref.items.asTypedList(cItems.ref.count).toList(),
+          C.float_array_free,
+        );
       case OBXPropertyType.Double:
         final cDefault = replaceNullWith == null
             ? null
             : (malloc<Double>()..value = replaceNullWith);
         return _find(
-            C.query_prop_find_doubles,
-            cDefault,
-            (Pointer<OBX_double_array> cItems) =>
-                cItems.ref.items.asTypedList(cItems.ref.count).toList(),
-            C.double_array_free);
+          C.query_prop_find_doubles,
+          cDefault,
+          (Pointer<OBX_double_array> cItems) =>
+              cItems.ref.items.asTypedList(cItems.ref.count).toList(),
+          C.double_array_free,
+        );
       default:
         throw UnsupportedError(
-            'Property query: unsupported type (OBXPropertyType: $_type)');
+          'Property query: unsupported type (OBXPropertyType: $_type)',
+        );
     }
   }
 }
@@ -285,9 +298,10 @@ extension StringPropertyQuery on PropertyQuery<String> {
     final cDefault = replaceNullWith?.toNativeUtf8().cast<Char>();
 
     return _find(
-        C.query_prop_find_strings,
-        cDefault,
-        (Pointer<OBX_string_array> cItems) => cItems.toDartStrings(),
-        C.string_array_free);
+      C.query_prop_find_strings,
+      cDefault,
+      (Pointer<OBX_string_array> cItems) => cItems.toDartStrings(),
+      C.string_array_free,
+    );
   }
 }

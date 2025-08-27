@@ -48,8 +48,9 @@ class ModelEntity {
 
   ModelProperty get idProperty {
     _idProperty ??= _properties.singleWhere(
-        (ModelProperty prop) => prop.hasFlag(OBXPropertyFlags.ID),
-        orElse: (() => throw StateError('idProperty is null')));
+      (ModelProperty prop) => prop.hasFlag(OBXPropertyFlags.ID),
+      orElse: (() => throw StateError('idProperty is null')),
+    );
     return _idProperty!;
   }
 
@@ -63,40 +64,46 @@ class ModelEntity {
   List<ModelBacklink> get backlinks => _backlinks;
 
   // used in code generator
-  ModelEntity.create(this.id, this._name, this._model,
-      {this.uidRequest = false})
-      : _properties = [],
-        _relations = [],
-        _backlinks = [];
+  ModelEntity.create(
+    this.id,
+    this._name,
+    this._model, {
+    this.uidRequest = false,
+  }) : _properties = [],
+       _relations = [],
+       _backlinks = [];
 
   // used in generated code
-  ModelEntity(
-      {required this.id,
-      required this.lastPropertyId,
-      required String name,
-      this.externalName,
-      required int flags,
-      required List<ModelProperty> properties,
-      required List<ModelRelation> relations,
-      required List<ModelBacklink> backlinks})
-      : _name = name,
-        _flags = flags,
-        _properties = properties,
-        _relations = relations,
-        _backlinks = backlinks,
-        _model = null,
-        uidRequest = false;
+  ModelEntity({
+    required this.id,
+    required this.lastPropertyId,
+    required String name,
+    this.externalName,
+    required int flags,
+    required List<ModelProperty> properties,
+    required List<ModelRelation> relations,
+    required List<ModelBacklink> backlinks,
+  }) : _name = name,
+       _flags = flags,
+       _properties = properties,
+       _relations = relations,
+       _backlinks = backlinks,
+       _model = null,
+       uidRequest = false;
 
-  ModelEntity.fromMap(Map<String, dynamic> data,
-      {ModelInfo? model, bool check = true})
-      : _model = model,
-        id = IdUid.fromString(data[ModelEntityKey.id] as String?),
-        lastPropertyId =
-            IdUid.fromString(data[ModelEntityKey.lastPropertyId] as String?),
-        uidRequest = data[ModelEntityKey.uidRequest] as bool? ?? false,
-        _properties = [],
-        _relations = [],
-        _backlinks = [] {
+  ModelEntity.fromMap(
+    Map<String, dynamic> data, {
+    ModelInfo? model,
+    bool check = true,
+  }) : _model = model,
+       id = IdUid.fromString(data[ModelEntityKey.id] as String?),
+       lastPropertyId = IdUid.fromString(
+         data[ModelEntityKey.lastPropertyId] as String?,
+       ),
+       uidRequest = data[ModelEntityKey.uidRequest] as bool? ?? false,
+       _properties = [],
+       _relations = [],
+       _backlinks = [] {
     name = data[ModelEntityKey.name] as String?;
     externalName = data[ModelEntityKey.externalName] as String?;
     flags = data[ModelEntityKey.flags] as int? ?? 0;
@@ -129,32 +136,36 @@ class ModelEntity {
 
     if (check) validate();
 
-    _idProperty = this
-        .properties
-        .singleWhere((p) => (p.flags & OBXPropertyFlags.ID) != 0);
+    _idProperty = this.properties.singleWhere(
+      (p) => (p.flags & OBXPropertyFlags.ID) != 0,
+    );
   }
 
   void validate() {
     if (properties.isEmpty) {
       if (!lastPropertyId.isEmpty) {
         throw StateError(
-            'lastPropertyId is not empty although there are no properties');
+          'lastPropertyId is not empty although there are no properties',
+        );
       }
     } else {
       var lastPropertyIdFound = false;
       for (final p in properties) {
         if (p.entity != this) {
           throw StateError(
-              "property '${p.name}' with id ${p.id} has incorrect parent entity reference");
+            "property '${p.name}' with id ${p.id} has incorrect parent entity reference",
+          );
         }
         if (lastPropertyId.id < p.id.id) {
           throw StateError(
-              "lastPropertyId $lastPropertyId is lower than the one of property '${p.name}' with id ${p.id}");
+            "lastPropertyId $lastPropertyId is lower than the one of property '${p.name}' with id ${p.id}",
+          );
         }
         if (lastPropertyId.id == p.id.id) {
           if (lastPropertyId.uid != p.id.uid) {
             throw StateError(
-                "lastPropertyId $lastPropertyId does not match property '${p.name}' with id ${p.id}");
+              "lastPropertyId $lastPropertyId does not match property '${p.name}' with id ${p.id}",
+            );
           }
           lastPropertyIdFound = true;
         }
@@ -163,14 +174,16 @@ class ModelEntity {
       if (!lastPropertyIdFound &&
           !model.retiredPropertyUids.contains(lastPropertyId.uid)) {
         throw StateError(
-            'lastPropertyId $lastPropertyId does not match any property');
+          'lastPropertyId $lastPropertyId does not match any property',
+        );
       }
     }
 
     for (final r in relations) {
       if (r.targetId.isEmpty) {
         throw StateError(
-            "relation '${r.name}' with id ${r.id} has incorrect target entity reference");
+          "relation '${r.name}' with id ${r.id} has incorrect target entity reference",
+        );
       }
     }
   }
@@ -190,10 +203,12 @@ class ModelEntity {
     ret[ModelEntityKey.name] = name;
     if (externalName != null) ret[ModelEntityKey.externalName] = externalName;
     if (flags != 0) ret[ModelEntityKey.flags] = flags;
-    ret[ModelEntityKey.properties] =
-        properties.map((p) => p.toMap(forModelJson: forModelJson)).toList();
-    ret[ModelEntityKey.relations] =
-        relations.map((r) => r.toMap(forModelJson: forModelJson)).toList();
+    ret[ModelEntityKey.properties] = properties
+        .map((p) => p.toMap(forModelJson: forModelJson))
+        .toList();
+    ret[ModelEntityKey.relations] = relations
+        .map((r) => r.toMap(forModelJson: forModelJson))
+        .toList();
     if (!forModelJson) {
       ret[ModelEntityKey.backlinks] = backlinks.map((r) => r.toMap()).toList();
       ret[ModelEntityKey.constructorParams] = constructorParams;
@@ -214,7 +229,8 @@ class ModelEntity {
     if (found.isEmpty) return null;
     if (found.length >= 2) {
       throw StateError(
-          'ambiguous property name: $name; please specify a UID in its annotation');
+        'ambiguous property name: $name; please specify a UID in its annotation',
+      );
     }
     return found[0];
   }
@@ -230,8 +246,12 @@ class ModelEntity {
     }
     final uniqueUid = uid == 0 ? model.generateUid() : uid;
 
-    final property =
-        ModelProperty.create(IdUid(id, uniqueUid), name, 0, entity: this);
+    final property = ModelProperty.create(
+      IdUid(id, uniqueUid),
+      name,
+      0,
+      entity: this,
+    );
     properties.add(property);
     lastPropertyId = property.id;
 
@@ -242,7 +262,8 @@ class ModelEntity {
     final foundProp = findSameProperty(prop);
     if (foundProp == null) {
       throw StateError(
-          "cannot remove property '${prop.name}' with id ${prop.id}: not found");
+        "cannot remove property '${prop.name}' with id ${prop.id}: not found",
+      );
     }
     _properties.remove(foundProp);
     model.retiredPropertyUids.add(prop.id.uid);
@@ -264,7 +285,8 @@ class ModelEntity {
     if (found.isEmpty) return null;
     if (found.length >= 2) {
       throw StateError(
-          'ambiguous relation name: $name; please specify a UID in its annotation');
+        'ambiguous relation name: $name; please specify a UID in its annotation',
+      );
     }
     return found[0];
   }
@@ -291,7 +313,8 @@ class ModelEntity {
     final foundRel = findSameRelation(rel);
     if (foundRel == null) {
       throw StateError(
-          "cannot remove relation '${rel.name}' with id ${rel.id}: not found");
+        "cannot remove relation '${rel.name}' with id ${rel.id}: not found",
+      );
     }
     _relations.remove(foundRel);
     model.retiredRelationUids.add(rel.id.uid);

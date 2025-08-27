@@ -21,11 +21,12 @@ class BuilderWithCBuffer {
 
   @pragma('vm:prefer-inline')
   Pointer<Void> get bufPtr => Pointer<Void>.fromAddress(
-      _allocator.bufAddress + _allocator._capacity - _fbb.size());
+    _allocator.bufAddress + _allocator._capacity - _fbb.size(),
+  );
 
   BuilderWithCBuffer({int initialSize = 256, int resetIfLargerThan = 64 * 1024})
-      : _initialSize = initialSize,
-        _resetIfLargerThan = resetIfLargerThan {
+    : _initialSize = initialSize,
+      _resetIfLargerThan = resetIfLargerThan {
     _fbb = fb.Builder(
       initialSize: initialSize,
       allocator: _allocator,
@@ -76,14 +77,19 @@ class Allocator extends fb.Allocator {
 
   @override
   ByteData resize(
-      ByteData oldData, int newSize, int inUseBack, int inUseFront) {
+    ByteData oldData,
+    int newSize,
+    int inUseBack,
+    int inUseFront,
+  ) {
     final newPtr = malloc<Uint8>(newSize);
     final oldPtr = _ptr!;
     if (inUseBack != 0) {
       memcpy(
-          Pointer<Uint8>.fromAddress(newPtr.address + newSize - inUseBack),
-          Pointer<Uint8>.fromAddress(oldPtr.address + _capacity - inUseBack),
-          inUseBack);
+        Pointer<Uint8>.fromAddress(newPtr.address + newSize - inUseBack),
+        Pointer<Uint8>.fromAddress(oldPtr.address + _capacity - inUseBack),
+        inUseBack,
+      );
     }
     if (inUseFront != 0) {
       memcpy(newPtr, oldPtr, inUseFront);

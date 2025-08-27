@@ -27,9 +27,9 @@ class Transaction {
   HashMap<int, CursorHelper>? _cursors;
 
   Transaction(this._store, this.mode)
-      : _cTxn = mode == TxMode.write
-            ? C.txn_write(InternalStoreAccess.ptr(_store))
-            : C.txn_read(InternalStoreAccess.ptr(_store)) {
+    : _cTxn = mode == TxMode.write
+          ? C.txn_write(InternalStoreAccess.ptr(_store))
+          : C.txn_read(InternalStoreAccess.ptr(_store)) {
     checkObxPtr(_cTxn, 'failed to create transaction');
   }
 

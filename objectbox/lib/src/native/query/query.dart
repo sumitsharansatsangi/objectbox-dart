@@ -67,56 +67,85 @@ class QueryProperty<EntityT, DartType> {
 class QueryStringProperty<EntityT> extends QueryProperty<EntityT, String> {
   QueryStringProperty(super.model);
 
-  Condition<EntityT> _op(String p, _ConditionOp cop, String? alias,
-          {bool? caseSensitive}) =>
-      _StringCondition<EntityT, String>(cop, this, p, null, alias,
-          caseSensitive: caseSensitive);
+  Condition<EntityT> _op(
+    String p,
+    _ConditionOp cop,
+    String? alias, {
+    bool? caseSensitive,
+  }) => _StringCondition<EntityT, String>(
+    cop,
+    this,
+    p,
+    null,
+    alias,
+    caseSensitive: caseSensitive,
+  );
 
-  Condition<EntityT> _opList(List<String> list, _ConditionOp cop, String? alias,
-          {bool? caseSensitive}) =>
-      _StringListCondition<EntityT>(cop, this, list, alias,
-          caseSensitive: caseSensitive);
+  Condition<EntityT> _opList(
+    List<String> list,
+    _ConditionOp cop,
+    String? alias, {
+    bool? caseSensitive,
+  }) => _StringListCondition<EntityT>(
+    cop,
+    this,
+    list,
+    alias,
+    caseSensitive: caseSensitive,
+  );
 
   Condition<EntityT> equals(String p, {bool? caseSensitive, String? alias}) =>
       _op(p, _ConditionOp.eq, alias, caseSensitive: caseSensitive);
 
-  Condition<EntityT> notEquals(String p,
-          {bool? caseSensitive, String? alias}) =>
-      _op(p, _ConditionOp.notEq, alias, caseSensitive: caseSensitive);
+  Condition<EntityT> notEquals(
+    String p, {
+    bool? caseSensitive,
+    String? alias,
+  }) => _op(p, _ConditionOp.notEq, alias, caseSensitive: caseSensitive);
 
   Condition<EntityT> endsWith(String p, {bool? caseSensitive, String? alias}) =>
       _op(p, _ConditionOp.endsWith, alias, caseSensitive: caseSensitive);
 
-  Condition<EntityT> startsWith(String p,
-          {bool? caseSensitive, String? alias}) =>
-      _op(p, _ConditionOp.startsWith, alias, caseSensitive: caseSensitive);
+  Condition<EntityT> startsWith(
+    String p, {
+    bool? caseSensitive,
+    String? alias,
+  }) => _op(p, _ConditionOp.startsWith, alias, caseSensitive: caseSensitive);
 
   Condition<EntityT> contains(String p, {bool? caseSensitive, String? alias}) =>
       _op(p, _ConditionOp.contains, alias, caseSensitive: caseSensitive);
 
-  Condition<EntityT> oneOf(List<String> list,
-          {bool? caseSensitive, String? alias}) =>
-      _opList(list, _ConditionOp.oneOf, alias, caseSensitive: caseSensitive);
+  Condition<EntityT> oneOf(
+    List<String> list, {
+    bool? caseSensitive,
+    String? alias,
+  }) => _opList(list, _ConditionOp.oneOf, alias, caseSensitive: caseSensitive);
 
   // currently not supported by the C-API
   // Condition<EntityT> notOneOf(List<String> list, {bool? caseSensitive,
   //     String? alias}) => _opList(list, _ConditionOp.notOneOf, alias,
   //     caseSensitive: caseSensitive);
 
-  Condition<EntityT> greaterThan(String p,
-          {bool? caseSensitive, String? alias}) =>
-      _op(p, _ConditionOp.gt, alias, caseSensitive: caseSensitive);
+  Condition<EntityT> greaterThan(
+    String p, {
+    bool? caseSensitive,
+    String? alias,
+  }) => _op(p, _ConditionOp.gt, alias, caseSensitive: caseSensitive);
 
-  Condition<EntityT> greaterOrEqual(String p,
-          {bool? caseSensitive, String? alias}) =>
-      _op(p, _ConditionOp.greaterOrEq, alias, caseSensitive: caseSensitive);
+  Condition<EntityT> greaterOrEqual(
+    String p, {
+    bool? caseSensitive,
+    String? alias,
+  }) => _op(p, _ConditionOp.greaterOrEq, alias, caseSensitive: caseSensitive);
 
   Condition<EntityT> lessThan(String p, {bool? caseSensitive, String? alias}) =>
       _op(p, _ConditionOp.lt, alias, caseSensitive: caseSensitive);
 
-  Condition<EntityT> lessOrEqual(String p,
-          {bool? caseSensitive, String? alias}) =>
-      _op(p, _ConditionOp.lessOrEq, alias, caseSensitive: caseSensitive);
+  Condition<EntityT> lessOrEqual(
+    String p, {
+    bool? caseSensitive,
+    String? alias,
+  }) => _op(p, _ConditionOp.lessOrEq, alias, caseSensitive: caseSensitive);
 }
 
 class QueryByteVectorProperty<EntityT>
@@ -217,9 +246,11 @@ class QueryDateProperty<EntityT> extends QueryIntegerProperty<EntityT> {
       lessOrEqual(_convert(value), alias: alias);
 
   /// Like [between], but first converts to [DateTime.millisecondsSinceEpoch].
-  Condition<EntityT> betweenDate(DateTime value1, DateTime value2,
-          {String? alias}) =>
-      between(_convert(value1), _convert(value2), alias: alias);
+  Condition<EntityT> betweenDate(
+    DateTime value1,
+    DateTime value2, {
+    String? alias,
+  }) => between(_convert(value1), _convert(value2), alias: alias);
 
   /// Like [oneOf], but first converts to [DateTime.millisecondsSinceEpoch].
   Condition<EntityT> oneOfDate(List<DateTime> values, {String? alias}) =>
@@ -271,9 +302,11 @@ class QueryDateNanoProperty<EntityT> extends QueryIntegerProperty<EntityT> {
 
   /// Like [between], but first converts to nanoseconds
   /// ([DateTime.microsecondsSinceEpoch] `* 1000`).
-  Condition<EntityT> betweenDate(DateTime value1, DateTime value2,
-          {String? alias}) =>
-      between(_convert(value1), _convert(value2), alias: alias);
+  Condition<EntityT> betweenDate(
+    DateTime value1,
+    DateTime value2, {
+    String? alias,
+  }) => between(_convert(value1), _convert(value2), alias: alias);
 
   /// Like [oneOf], but first converts to nanoseconds
   /// ([DateTime.microsecondsSinceEpoch] `* 1000`).
@@ -318,8 +351,11 @@ class QueryDoubleProperty<EntityT> extends QueryProperty<EntityT, double> {
   QueryDoubleProperty(super.model);
 
   Condition<EntityT> _op(
-          _ConditionOp op, double p1, double? p2, String? alias) =>
-      _DoubleCondition<EntityT>(op, this, p1, p2, alias);
+    _ConditionOp op,
+    double p1,
+    double? p2,
+    String? alias,
+  ) => _DoubleCondition<EntityT>(op, this, p1, p2, alias);
 
   /// Finds objects with property value between and including the first and second value.
   Condition<EntityT> between(double p1, double p2, {String? alias}) =>
@@ -356,8 +392,11 @@ class QueryDoubleVectorProperty<EntityT>
   QueryDoubleVectorProperty(super.model);
 
   Condition<EntityT> _op(
-          _ConditionOp op, double p1, double? p2, String? alias) =>
-      _DoubleCondition<EntityT>(op, this, p1, p2, alias);
+    _ConditionOp op,
+    double p1,
+    double? p2,
+    String? alias,
+  ) => _DoubleCondition<EntityT>(op, this, p1, p2, alias);
 
   Condition<EntityT> greaterThan(double p, {String? alias}) =>
       _op(_ConditionOp.gt, p, 0, alias);
@@ -383,15 +422,23 @@ class _NearestNeighborsCondition<EntityT> extends Condition<EntityT> {
   final int maxResultCount;
 
   _NearestNeighborsCondition(
-      this.property, this.queryVector, this.maxResultCount, String? alias)
-      : super(alias);
+    this.property,
+    this.queryVector,
+    this.maxResultCount,
+    String? alias,
+  ) : super(alias);
 
   @override
   int _apply(_QueryBuilder<dynamic> builder, {required bool isRoot}) =>
       withNativeFloats<int>(
-          queryVector,
-          (ptr, size) => C.qb_nearest_neighbors_f32(
-              builder._cBuilder, property._model.id.id, ptr, maxResultCount));
+        queryVector,
+        (ptr, size) => C.qb_nearest_neighbors_f32(
+          builder._cBuilder,
+          property._model.id.id,
+          ptr,
+          maxResultCount,
+        ),
+      );
 }
 
 /// Provides extra conditions for float vector properties with an [HnswIndex].
@@ -410,9 +457,10 @@ class QueryHnswProperty<EntityT> extends QueryDoubleVectorProperty<EntityT> {
   /// For example, use maxResultCount of 100 with a [Query.limit] of 10 to have 10 results that are of potentially better quality
   /// than just passing in 10 for maxResultCount (quality/performance tradeoff).
   Condition<EntityT> nearestNeighborsF32(
-          List<double> queryVector, int maxResultCount,
-          {String? alias}) =>
-      _NearestNeighborsCondition(this, queryVector, maxResultCount, alias);
+    List<double> queryVector,
+    int maxResultCount, {
+    String? alias,
+  }) => _NearestNeighborsCondition(this, queryVector, maxResultCount, alias);
 }
 
 class QueryBooleanProperty<EntityT> extends QueryProperty<EntityT, bool> {
@@ -421,12 +469,22 @@ class QueryBooleanProperty<EntityT> extends QueryProperty<EntityT, bool> {
   // ignore: avoid_positional_boolean_parameters
   Condition<EntityT> equals(bool p, {String? alias}) =>
       _IntegerCondition<EntityT, bool>(
-          _ConditionOp.eq, this, (p ? 1 : 0), null, alias);
+        _ConditionOp.eq,
+        this,
+        (p ? 1 : 0),
+        null,
+        alias,
+      );
 
   // ignore: avoid_positional_boolean_parameters
   Condition<EntityT> notEquals(bool p, {String? alias}) =>
       _IntegerCondition<EntityT, bool>(
-          _ConditionOp.notEq, this, (p ? 1 : 0), null, alias);
+        _ConditionOp.notEq,
+        this,
+        (p ? 1 : 0),
+        null,
+        alias,
+      );
 }
 
 class QueryStringVectorProperty<EntityT>
@@ -434,16 +492,24 @@ class QueryStringVectorProperty<EntityT>
   QueryStringVectorProperty(super.model);
 
   @Deprecated(
-      'Use `containsElement` instead. Will be removed in a future release.')
+    'Use `containsElement` instead. Will be removed in a future release.',
+  )
   Condition<EntityT> contains(String p, {bool? caseSensitive, String? alias}) =>
       containsElement(p, caseSensitive: caseSensitive, alias: alias);
 
   /// Matches if at least one element of the list equals the given value.
-  Condition<EntityT> containsElement(String value,
-          {bool? caseSensitive, String? alias}) =>
-      _StringCondition<EntityT, List<String>>(
-          _ConditionOp.containsElement, this, value, null, alias,
-          caseSensitive: caseSensitive);
+  Condition<EntityT> containsElement(
+    String value, {
+    bool? caseSensitive,
+    String? alias,
+  }) => _StringCondition<EntityT, List<String>>(
+    _ConditionOp.containsElement,
+    this,
+    value,
+    null,
+    alias,
+    caseSensitive: caseSensitive,
+  );
 }
 
 class QueryRelationToOne<Source, Target> extends QueryIntegerProperty<Source> {
@@ -482,7 +548,10 @@ class QueryBacklinkToMany<Source, Target> {
   ///   built.
   Condition<Target> relationCount(int relationCount, {String? alias}) =>
       _RelationCountCondition<Source, Target>(
-          _relationPropertyId, relationCount, alias);
+        _relationPropertyId,
+        relationCount,
+        alias,
+      );
 }
 
 enum _ConditionOp {
@@ -515,10 +584,12 @@ abstract class Condition<EntityT> {
   Condition<EntityT> and(Condition<EntityT> rh) => andAll([rh]);
 
   Condition<EntityT> andAll(List<Condition<EntityT>> rh) =>
-      _ConditionGroupAll<EntityT>((this is _ConditionGroupAll)
-          // no need for brackets when merging same types
-          ? [...(this as _ConditionGroupAll<EntityT>)._conditions, ...rh]
-          : [this, ...rh]);
+      _ConditionGroupAll<EntityT>(
+        (this is _ConditionGroupAll)
+            // no need for brackets when merging same types
+            ? [...(this as _ConditionGroupAll<EntityT>)._conditions, ...rh]
+            : [this, ...rh],
+      );
 
   // using | because || is not overridable
   Condition<EntityT> operator |(Condition<EntityT> rh) => or(rh);
@@ -526,10 +597,12 @@ abstract class Condition<EntityT> {
   Condition<EntityT> or(Condition<EntityT> rh) => orAny([rh]);
 
   Condition<EntityT> orAny(List<Condition<EntityT>> rh) =>
-      _ConditionGroupAny<EntityT>((this is _ConditionGroupAny)
-          // no need for brackets when merging same types
-          ? [...(this as _ConditionGroupAny<EntityT>)._conditions, ...rh]
-          : [this, ...rh]);
+      _ConditionGroupAny<EntityT>(
+        (this is _ConditionGroupAny)
+            // no need for brackets when merging same types
+            ? [...(this as _ConditionGroupAny<EntityT>)._conditions, ...rh]
+            : [this, ...rh],
+      );
 
   int _apply(_QueryBuilder builder, {required bool isRoot});
 
@@ -537,8 +610,12 @@ abstract class Condition<EntityT> {
     final cid = _apply(builder, isRoot: isRoot);
     if (cid == 0) builder._throwExceptionIfNecessary();
     if (_alias != null) {
-      checkObx(withNativeString(_alias,
-          (Pointer<Char> cStr) => C.qb_param_alias(builder._cBuilder, cStr)));
+      checkObx(
+        withNativeString(
+          _alias,
+          (Pointer<Char> cStr) => C.qb_param_alias(builder._cBuilder, cStr),
+        ),
+      );
     }
     return cid;
   }
@@ -569,15 +646,22 @@ class _RelationCountCondition<Source, Target> extends Condition<Target> {
   final int _relationCount;
 
   _RelationCountCondition(
-      this._relationPropertyId, this._relationCount, String? alias)
-      : super(alias);
+    this._relationPropertyId,
+    this._relationCount,
+    String? alias,
+  ) : super(alias);
 
   @override
   int _apply(_QueryBuilder builder, {required bool isRoot}) {
-    int relationEntityId =
-        InternalStoreAccess.entityDef<Source>(builder._store).model.id.id;
-    return C.qb_relation_count_property(builder._cBuilder, relationEntityId,
-        _relationPropertyId, _relationCount);
+    int relationEntityId = InternalStoreAccess.entityDef<Source>(
+      builder._store,
+    ).model.id.id;
+    return C.qb_relation_count_property(
+      builder._cBuilder,
+      relationEntityId,
+      _relationPropertyId,
+      _relationCount,
+    );
   }
 }
 
@@ -590,23 +674,39 @@ abstract class _PropertyCondition<EntityT, PropertyDartType, ValueDartType>
   final _ConditionOp _op;
 
   _PropertyCondition(
-      this._op, this._property, this._value, this._value2, String? alias)
-      : super(alias);
+    this._op,
+    this._property,
+    this._value,
+    this._value2,
+    String? alias,
+  ) : super(alias);
 }
 
 class _StringCondition<EntityT, PropertyDartType>
     extends _PropertyCondition<EntityT, PropertyDartType, String> {
   bool? caseSensitive;
 
-  _StringCondition(super.op, super.prop, super.value, super.value2, super.alias,
-      {this.caseSensitive});
+  _StringCondition(
+    super.op,
+    super.prop,
+    super.value,
+    super.value2,
+    super.alias, {
+    this.caseSensitive,
+  });
 
-  int _op1(_QueryBuilder builder,
-      int Function(Pointer<OBX_query_builder>, int, Pointer<Char>, bool) func) {
+  int _op1(
+    _QueryBuilder builder,
+    int Function(Pointer<OBX_query_builder>, int, Pointer<Char>, bool) func,
+  ) {
     final cStr = _value.toNativeUtf8();
     try {
-      return func(builder._cBuilder, _property._model.id.id, cStr.cast(),
-          caseSensitive ?? InternalStoreAccess.queryCS(builder._store));
+      return func(
+        builder._cBuilder,
+        _property._model.id.id,
+        cStr.cast(),
+        caseSensitive ?? InternalStoreAccess.queryCS(builder._store),
+      );
     } finally {
       malloc.free(cStr);
     }
@@ -645,19 +745,24 @@ class _StringListCondition<EntityT>
     extends _PropertyCondition<EntityT, String, List<String>> {
   bool? caseSensitive;
 
-  _StringListCondition(_ConditionOp op, QueryProperty<EntityT, String> prop,
-      List<String> value, String? alias,
-      {this.caseSensitive})
-      : super(op, prop, value, null, alias);
+  _StringListCondition(
+    _ConditionOp op,
+    QueryProperty<EntityT, String> prop,
+    List<String> value,
+    String? alias, {
+    this.caseSensitive,
+  }) : super(op, prop, value, null, alias);
 
   int _oneOf(_QueryBuilder builder) => withNativeStrings(
-      _value,
-      (Pointer<Pointer<Char>> ptr, int size) => C.qb_in_strings(
-          builder._cBuilder,
-          _property._model.id.id,
-          ptr,
-          size,
-          caseSensitive ?? InternalStoreAccess.queryCS(builder._store)));
+    _value,
+    (Pointer<Pointer<Char>> ptr, int size) => C.qb_in_strings(
+      builder._cBuilder,
+      _property._model.id.id,
+      ptr,
+      size,
+      caseSensitive ?? InternalStoreAccess.queryCS(builder._store),
+    ),
+  );
 
   @override
   int _apply(_QueryBuilder builder, {required bool isRoot}) {
@@ -673,11 +778,17 @@ class _StringListCondition<EntityT>
 class _IntegerCondition<EntityT, PropertyDartType>
     extends _PropertyCondition<EntityT, PropertyDartType, int> {
   _IntegerCondition(
-      super.op, super.prop, super.value, super.value2, super.alias);
+    super.op,
+    super.prop,
+    super.value,
+    super.value2,
+    super.alias,
+  );
 
-  int _op1(_QueryBuilder builder,
-          int Function(Pointer<OBX_query_builder>, int, int) func) =>
-      func(builder._cBuilder, _property._model.id.id, _value);
+  int _op1(
+    _QueryBuilder builder,
+    int Function(Pointer<OBX_query_builder>, int, int) func,
+  ) => func(builder._cBuilder, _property._model.id.id, _value);
 
   @override
   int _apply(_QueryBuilder builder, {required bool isRoot}) {
@@ -696,7 +807,11 @@ class _IntegerCondition<EntityT, PropertyDartType>
         return _op1(builder, C.qb_less_or_equal_int);
       case _ConditionOp.between:
         return C.qb_between_2ints(
-            builder._cBuilder, _property._model.id.id, _value, _value2!);
+          builder._cBuilder,
+          _property._model.id.id,
+          _value,
+          _value2!,
+        );
       default:
         throw UnsupportedError('Unsupported operation ${_op.toString()}');
     }
@@ -705,15 +820,19 @@ class _IntegerCondition<EntityT, PropertyDartType>
 
 class _IntegerListCondition<EntityT>
     extends _PropertyCondition<EntityT, int, List<int>> {
-  _IntegerListCondition(_ConditionOp op, QueryProperty<EntityT, int> prop,
-      List<int> value, String? alias)
-      : super(op, prop, value, null, alias);
+  _IntegerListCondition(
+    _ConditionOp op,
+    QueryProperty<EntityT, int> prop,
+    List<int> value,
+    String? alias,
+  ) : super(op, prop, value, null, alias);
 
   int _opList<T extends NativeType>(
-      _QueryBuilder builder,
-      Pointer<T> listPtr,
-      int Function(Pointer<OBX_query_builder>, int, Pointer<T>, int) func,
-      void Function(Pointer<T>, int, int) setIndex) {
+    _QueryBuilder builder,
+    Pointer<T> listPtr,
+    int Function(Pointer<OBX_query_builder>, int, Pointer<T>, int) func,
+    void Function(Pointer<T>, int, int) setIndex,
+  ) {
     final length = _value.length;
     try {
       for (var i = 0; i < length; i++) {
@@ -739,30 +858,48 @@ class _IntegerListCondition<EntityT>
       case _ConditionOp.oneOf:
         switch (_property._model.type) {
           case OBXPropertyType.Int:
-            return _opList(builder, malloc<Int32>(_value.length),
-                C.qb_in_int32s, opListSetIndexInt32);
+            return _opList(
+              builder,
+              malloc<Int32>(_value.length),
+              C.qb_in_int32s,
+              opListSetIndexInt32,
+            );
           case OBXPropertyType.Long:
           case OBXPropertyType.Date:
           case OBXPropertyType.DateNano:
-            return _opList(builder, malloc<Int64>(_value.length),
-                C.qb_in_int64s, opListSetIndexInt64);
+            return _opList(
+              builder,
+              malloc<Int64>(_value.length),
+              C.qb_in_int64s,
+              opListSetIndexInt64,
+            );
           default:
             throw UnsupportedError(
-                'Unsupported type for IN: ${_property._model.type}');
+              'Unsupported type for IN: ${_property._model.type}',
+            );
         }
       case _ConditionOp.notOneOf:
         switch (_property._model.type) {
           case OBXPropertyType.Int:
-            return _opList(builder, malloc<Int32>(_value.length),
-                C.qb_not_in_int32s, opListSetIndexInt32);
+            return _opList(
+              builder,
+              malloc<Int32>(_value.length),
+              C.qb_not_in_int32s,
+              opListSetIndexInt32,
+            );
           case OBXPropertyType.Long:
           case OBXPropertyType.Date:
           case OBXPropertyType.DateNano:
-            return _opList(builder, malloc<Int64>(_value.length),
-                C.qb_not_in_int64s, opListSetIndexInt64);
+            return _opList(
+              builder,
+              malloc<Int64>(_value.length),
+              C.qb_not_in_int64s,
+              opListSetIndexInt64,
+            );
           default:
             throw UnsupportedError(
-                'Unsupported type for IN: ${_property._model.type}');
+              'Unsupported type for IN: ${_property._model.type}',
+            );
         }
       default:
         throw UnsupportedError('Unsupported operation ${_op.toString()}');
@@ -772,11 +909,17 @@ class _IntegerListCondition<EntityT>
 
 class _DoubleCondition<EntityT>
     extends _PropertyCondition<EntityT, double, double> {
-  _DoubleCondition(_ConditionOp op, QueryProperty<EntityT, double> prop,
-      double value, double? value2, String? alias)
-      : super(op, prop, value, value2, alias) {
-    assert(op != _ConditionOp.eq,
-        'Equality operator is not supported on floating point numbers - use between() instead.');
+  _DoubleCondition(
+    _ConditionOp op,
+    QueryProperty<EntityT, double> prop,
+    double value,
+    double? value2,
+    String? alias,
+  ) : super(op, prop, value, value2, alias) {
+    assert(
+      op != _ConditionOp.eq,
+      'Equality operator is not supported on floating point numbers - use between() instead.',
+    );
   }
 
   @override
@@ -784,19 +927,35 @@ class _DoubleCondition<EntityT>
     switch (_op) {
       case _ConditionOp.gt:
         return C.qb_greater_than_double(
-            builder._cBuilder, _property._model.id.id, _value);
+          builder._cBuilder,
+          _property._model.id.id,
+          _value,
+        );
       case _ConditionOp.greaterOrEq:
         return C.qb_greater_or_equal_double(
-            builder._cBuilder, _property._model.id.id, _value);
+          builder._cBuilder,
+          _property._model.id.id,
+          _value,
+        );
       case _ConditionOp.lt:
         return C.qb_less_than_double(
-            builder._cBuilder, _property._model.id.id, _value);
+          builder._cBuilder,
+          _property._model.id.id,
+          _value,
+        );
       case _ConditionOp.lessOrEq:
         return C.qb_less_or_equal_double(
-            builder._cBuilder, _property._model.id.id, _value);
+          builder._cBuilder,
+          _property._model.id.id,
+          _value,
+        );
       case _ConditionOp.between:
         return C.qb_between_2doubles(
-            builder._cBuilder, _property._model.id.id, _value, _value2!);
+          builder._cBuilder,
+          _property._model.id.id,
+          _value,
+          _value2!,
+        );
       default:
         throw UnsupportedError('Unsupported operation ${_op.toString()}');
     }
@@ -805,18 +964,21 @@ class _DoubleCondition<EntityT>
 
 class _ByteVectorCondition<EntityT>
     extends _PropertyCondition<EntityT, Uint8List, Uint8List> {
-  _ByteVectorCondition(_ConditionOp op, QueryProperty<EntityT, Uint8List> prop,
-      Uint8List value, String? alias)
-      : super(op, prop, value, null, alias);
+  _ByteVectorCondition(
+    _ConditionOp op,
+    QueryProperty<EntityT, Uint8List> prop,
+    Uint8List value,
+    String? alias,
+  ) : super(op, prop, value, null, alias);
 
   int _op1(
-          _QueryBuilder builder,
-          int Function(Pointer<OBX_query_builder>, int, Pointer<Uint8>, int)
-              func) =>
-      withNativeBytes(
-          _value,
-          (Pointer<Uint8> ptr, int size) =>
-              func(builder._cBuilder, _property._model.id.id, ptr, size));
+    _QueryBuilder builder,
+    int Function(Pointer<OBX_query_builder>, int, Pointer<Uint8>, int) func,
+  ) => withNativeBytes(
+    _value,
+    (Pointer<Uint8> ptr, int size) =>
+        func(builder._cBuilder, _property._model.id.id, ptr, size),
+  );
 
   @override
   int _apply(_QueryBuilder builder, {required bool isRoot}) {
@@ -879,12 +1041,12 @@ class _ConditionGroup<EntityT> extends Condition<EntityT> {
 
 class _ConditionGroupAny<EntityT> extends _ConditionGroup<EntityT> {
   _ConditionGroupAny(List<Condition<EntityT>> conditions)
-      : super(conditions, C.qb_any);
+    : super(conditions, C.qb_any);
 }
 
 class _ConditionGroupAll<EntityT> extends _ConditionGroup<EntityT> {
   _ConditionGroupAll(List<Condition<EntityT>> conditions)
-      : super(conditions, C.qb_all);
+    : super(conditions, C.qb_all);
 }
 
 /// A repeatable Query returning the latest matching Objects.
@@ -910,14 +1072,14 @@ class Query<T> implements Finalizable {
   int get entityId => _entity.model.id.id;
 
   Query._(this._store, Pointer<OBX_query_builder> cBuilder, this._entity)
-      : _cQuery = checkObxPtr(C.query(cBuilder), 'create query') {
+    : _cQuery = checkObxPtr(C.query(cBuilder), 'create query') {
     initializeDartAPI();
     _attachFinalizer();
   }
 
   Query._fromConfiguration(this._store, _QueryConfiguration<T> configuration)
-      : _cQuery = Pointer.fromAddress(configuration.queryAddress),
-        _entity = configuration.entity {
+    : _cQuery = Pointer.fromAddress(configuration.queryAddress),
+      _entity = configuration.entity {
     initializeDartAPI();
     _attachFinalizer();
   }
@@ -974,9 +1136,13 @@ class Query<T> implements Finalizable {
 
   // Static callback to avoid over-capturing due to [dart-lang/sdk#36983](https://github.com/dart-lang/sdk/issues/36983).
   static int _removeAsyncCallback<T>(
-          Store store, _QueryConfiguration<T> configuration) =>
-      _asyncCallbackImpl<T, int>(
-          store, configuration, (query) => query.remove());
+    Store store,
+    _QueryConfiguration<T> configuration,
+  ) => _asyncCallbackImpl<T, int>(
+    store,
+    configuration,
+    (query) => query.remove(),
+  );
 
   /// Like [remove], but runs in a worker isolate.
   Future<int> removeAsync() => _runAsyncImpl(_removeAsyncCallback<T>);
@@ -1029,9 +1195,13 @@ class Query<T> implements Finalizable {
 
   // Static callback to avoid over-capturing due to [dart-lang/sdk#36983](https://github.com/dart-lang/sdk/issues/36983).
   static T? _findFirstAsyncCallback<T>(
-          Store store, _QueryConfiguration<T> configuration) =>
-      _asyncCallbackImpl<T, T?>(
-          store, configuration, (query) => query.findFirst());
+    Store store,
+    _QueryConfiguration<T> configuration,
+  ) => _asyncCallbackImpl<T, T?>(
+    store,
+    configuration,
+    (query) => query.findFirst(),
+  );
 
   /// Like [findFirst], but runs the query operation asynchronously in a worker
   /// isolate.
@@ -1058,7 +1228,8 @@ class Query<T> implements Finalizable {
         }
       } else {
         errorWrapper.error = NonUniqueResultException(
-            'Query findUnique() matched more than one object');
+          'Query findUnique() matched more than one object',
+        );
         return false;
       }
     }
@@ -1070,9 +1241,13 @@ class Query<T> implements Finalizable {
 
   // Static callback to avoid over-capturing due to [dart-lang/sdk#36983](https://github.com/dart-lang/sdk/issues/36983).
   static T? _findUniqueAsyncCallback<T>(
-          Store store, _QueryConfiguration<T> configuration) =>
-      _asyncCallbackImpl<T, T?>(
-          store, configuration, (query) => query.findUnique());
+    Store store,
+    _QueryConfiguration<T> configuration,
+  ) => _asyncCallbackImpl<T, T?>(
+    store,
+    configuration,
+    (query) => query.findUnique(),
+  );
 
   /// Like [findUnique], but runs the query operation asynchronously in a worker
   /// isolate.
@@ -1098,9 +1273,13 @@ class Query<T> implements Finalizable {
 
   // Static callback to avoid over-capturing due to [dart-lang/sdk#36983](https://github.com/dart-lang/sdk/issues/36983).
   static List<int> _findIdsAsyncCallback<T>(
-          Store store, _QueryConfiguration<T> configuration) =>
-      _asyncCallbackImpl<T, List<int>>(
-          store, configuration, (query) => query.findIds());
+    Store store,
+    _QueryConfiguration<T> configuration,
+  ) => _asyncCallbackImpl<T, List<int>>(
+    store,
+    configuration,
+    (query) => query.findIds(),
+  );
 
   /// Like [findIds], but runs the query operation asynchronously in a worker
   /// isolate.
@@ -1132,9 +1311,13 @@ class Query<T> implements Finalizable {
 
   // Static callback to avoid over-capturing due to [dart-lang/sdk#36983](https://github.com/dart-lang/sdk/issues/36983).
   static List<T> _findAsyncCallback<T>(
-          Store store, _QueryConfiguration<T> configuration) =>
-      _asyncCallbackImpl<T, List<T>>(
-          store, configuration, (query) => query.find());
+    Store store,
+    _QueryConfiguration<T> configuration,
+  ) => _asyncCallbackImpl<T, List<T>>(
+    store,
+    configuration,
+    (query) => query.find(),
+  );
 
   /// Like [find], but runs the query operation asynchronously in a worker
   /// isolate.
@@ -1170,9 +1353,13 @@ class Query<T> implements Finalizable {
 
   // Static callback to avoid over-capturing due to [dart-lang/sdk#36983](https://github.com/dart-lang/sdk/issues/36983).
   static List<IdWithScore> _findIdsWithScoresAsyncCallback<T>(
-          Store store, _QueryConfiguration<T> configuration) =>
-      _asyncCallbackImpl<T, List<IdWithScore>>(
-          store, configuration, (query) => query.findIdsWithScores());
+    Store store,
+    _QueryConfiguration<T> configuration,
+  ) => _asyncCallbackImpl<T, List<IdWithScore>>(
+    store,
+    configuration,
+    (query) => query.findIdsWithScores(),
+  );
 
   /// Finds objects matching the query associated to their query score (e. g. distance in NN search).
   /// The resulting list is sorted by score in ascending order.
@@ -1209,16 +1396,23 @@ class Query<T> implements Finalizable {
 
   // Static callback to avoid over-capturing due to [dart-lang/sdk#36983](https://github.com/dart-lang/sdk/issues/36983).
   static List<ObjectWithScore<T>> _findWithScoresAsyncCallback<T>(
-          Store store, _QueryConfiguration<T> configuration) =>
-      _asyncCallbackImpl<T, List<ObjectWithScore<T>>>(
-          store, configuration, (query) => query.findWithScores());
+    Store store,
+    _QueryConfiguration<T> configuration,
+  ) => _asyncCallbackImpl<T, List<ObjectWithScore<T>>>(
+    store,
+    configuration,
+    (query) => query.findWithScores(),
+  );
 
   /// Base callback for [_runAsyncImpl] to run a query [action] in a worker
   /// isolate.
   ///
   /// Static callback to avoid over-capturing due to [dart-lang/sdk#36983](https://github.com/dart-lang/sdk/issues/36983).
-  static R _asyncCallbackImpl<T, R>(Store store,
-      _QueryConfiguration<T> configuration, R Function(Query<T>) action) {
+  static R _asyncCallbackImpl<T, R>(
+    Store store,
+    _QueryConfiguration<T> configuration,
+    R Function(Query<T>) action,
+  ) {
     final query = Query._fromConfiguration(store, configuration);
     try {
       return action(query);
@@ -1231,8 +1425,8 @@ class Query<T> implements Finalizable {
   /// clones the query to pass it to the worker isolate
   /// (see [_QueryConfiguration]).
   Future<R> _runAsyncImpl<R>(
-          R Function(Store, _QueryConfiguration<T>) callback) =>
-      _store.runAsync(callback, _QueryConfiguration(this));
+    R Function(Store, _QueryConfiguration<T>) callback,
+  ) => _store.runAsync(callback, _QueryConfiguration(this));
 
   /// Finds Objects matching the query, streaming them while the query executes.
   ///
@@ -1353,12 +1547,19 @@ class Query<T> implements Finalizable {
       // Current batch size determined through testing, performs well for smaller
       // objects. Might want to expose in the future for performance tuning by
       // users.
-      final isolateInit = _StreamIsolateInit(resultPort.sendPort,
-          storeClonePtr.address, queryClonePtr.address, 20);
+      final isolateInit = _StreamIsolateInit(
+        resultPort.sendPort,
+        storeClonePtr.address,
+        queryClonePtr.address,
+        20,
+      );
       // If spawn errors StreamController will propagate the error, no point in
       // using addError as no listener before this function completes.
-      await Isolate.spawn(_queryAndVisit, isolateInit,
-          onExit: exitPort.sendPort);
+      await Isolate.spawn(
+        _queryAndVisit,
+        isolateInit,
+        onExit: exitPort.sendPort,
+      );
     }
 
     SendPort? sendPort;
@@ -1381,7 +1582,9 @@ class Query<T> implements Finalizable {
     }
 
     final streamController = StreamController<T>(
-        onListen: spawnWorkerIsolate, onCancel: exitIsolate);
+      onListen: spawnWorkerIsolate,
+      onCancel: exitIsolate,
+    );
     resultPort.listen((dynamic message) async {
       // The first message from the spawned isolate is a SendPort. This port
       // is used to communicate with the spawned isolate.
@@ -1399,8 +1602,13 @@ class Query<T> implements Finalizable {
             final dataPtrAddress = message.dataPtrAddresses[i];
             final size = message.sizes[i];
             if (size == 0) break; // Reached last object.
-            streamController.add(_entity.objectFromData(
-                _store, Pointer.fromAddress(dataPtrAddress), size));
+            streamController.add(
+              _entity.objectFromData(
+                _store,
+                Pointer.fromAddress(dataPtrAddress),
+                size,
+              ),
+            );
           }
           return; // wait for next message.
         } catch (e) {
@@ -1412,8 +1620,11 @@ class Query<T> implements Finalizable {
         streamController.addError(message);
       } else if (message != null) {
         streamController.addError(
-            ObjectBoxException('Query stream received an invalid message type '
-                '(${message.runtimeType}): $message'));
+          ObjectBoxException(
+            'Query stream received an invalid message type '
+            '(${message.runtimeType}): $message',
+          ),
+        );
       }
       // Close the stream, this will call the onCancel function.
       // Do not call the onCancel function manually,
@@ -1427,8 +1638,9 @@ class Query<T> implements Finalizable {
   // Isolate entry point must be top-level or static.
   static Future<void> _queryAndVisit(_StreamIsolateInit isolateInit) async {
     // Init native resources asap so that they do not leak, e.g. on exceptions
-    final store =
-        InternalStoreAccess.createMinimal(isolateInit.storePtrAddress);
+    final store = InternalStoreAccess.createMinimal(
+      isolateInit.storePtrAddress,
+    );
 
     var resultPort = isolateInit.resultPort;
 
@@ -1439,8 +1651,9 @@ class Query<T> implements Finalizable {
     try {
       // Visit inside transaction and do not complete transaction to ensure
       // data pointers remain valid until main isolate has deserialized all data.
-      await InternalStoreAccess.runInTransaction(store, TxMode.read,
-          (Transaction tx) async {
+      await InternalStoreAccess.runInTransaction(store, TxMode.read, (
+        Transaction tx,
+      ) async {
         // Use fixed-length lists to avoid performance hit due to growing.
         final maxBatchSize = isolateInit.batchSize;
         var dataPtrBatch = List<int>.filled(maxBatchSize, 0);
@@ -1464,8 +1677,9 @@ class Query<T> implements Finalizable {
           return true;
         }
 
-        final queryPtr =
-            Pointer<OBX_query>.fromAddress(isolateInit.queryPtrAddress);
+        final queryPtr = Pointer<OBX_query>.fromAddress(
+          isolateInit.queryPtrAddress,
+        );
         try {
           visit(queryPtr, visitCallback);
         } catch (e) {
@@ -1515,7 +1729,10 @@ class Query<T> implements Finalizable {
   /// ```
   PropertyQuery<DartType> property<DartType>(QueryProperty<T, DartType> prop) {
     final result = PropertyQuery<DartType>._(
-        this, C.query_prop(_ptr, prop._model.id.id), prop._model.type);
+      this,
+      C.query_prop(_ptr, prop._model.id.id),
+      prop._model.type,
+    );
     if (prop._model.type == OBXPropertyType.String) {
       result._caseSensitive = InternalStoreAccess.queryCS(_store);
     }
@@ -1531,8 +1748,12 @@ class _StreamIsolateInit {
   final int queryPtrAddress;
   final int batchSize;
 
-  const _StreamIsolateInit(this.resultPort, this.storePtrAddress,
-      this.queryPtrAddress, this.batchSize);
+  const _StreamIsolateInit(
+    this.resultPort,
+    this.storePtrAddress,
+    this.queryPtrAddress,
+    this.batchSize,
+  );
 }
 
 /// Message sent to main isolate containing info about a batch of objects.
@@ -1550,6 +1771,6 @@ class _QueryConfiguration<T> {
 
   /// Creates a configuration to send to an isolate by cloning the native query.
   _QueryConfiguration(Query<T> query)
-      : queryAddress = query._clone().address,
-        entity = query._entity;
+    : queryAddress = query._clone().address,
+      entity = query._entity;
 }

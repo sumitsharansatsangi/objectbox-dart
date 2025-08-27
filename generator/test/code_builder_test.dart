@@ -210,7 +210,8 @@ void main() {
       final testEnv = GeneratorTestEnv();
 
       testUnsupportedIndex(String unsupportedField) async {
-        final source = '''
+        final source =
+            '''
         library example;     
         import 'package:objectbox/objectbox.dart';
         

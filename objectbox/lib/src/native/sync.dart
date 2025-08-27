@@ -25,12 +25,16 @@ class SyncCredentials {
   /// Shared secret authentication.
   static SyncCredentials sharedSecretUint8List(Uint8List data) =>
       SyncCredentialsSecret._(
-          OBXSyncCredentialsType.SHARED_SECRET_SIPPED, data);
+        OBXSyncCredentialsType.SHARED_SECRET_SIPPED,
+        data,
+      );
 
   /// Shared secret authentication.
   static SyncCredentials sharedSecretString(String data) =>
       SyncCredentialsSecret._encode(
-          OBXSyncCredentialsType.SHARED_SECRET_SIPPED, data);
+        OBXSyncCredentialsType.SHARED_SECRET_SIPPED,
+        data,
+      );
 
   /// Google authentication.
   static SyncCredentials googleAuthUint8List(Uint8List data) =>
@@ -43,7 +47,10 @@ class SyncCredentials {
   /// Username and password authentication.
   static SyncCredentials userAndPassword(String user, String password) =>
       _SyncCredentialsUserPassword._(
-          OBXSyncCredentialsType.USER_PASSWORD, user, password);
+        OBXSyncCredentialsType.USER_PASSWORD,
+        user,
+        password,
+      );
 
   /// JSON Web Token (JWT): an ID token that typically provides identity
   /// information about the authenticated user.
@@ -53,19 +60,25 @@ class SyncCredentials {
   /// JSON Web Token (JWT): an access token that is used to access resources.
   static SyncCredentials jwtAccessToken(String jwtAccessToken) =>
       SyncCredentialsSecret._encode(
-          OBXSyncCredentialsType.JWT_ACCESS, jwtAccessToken);
+        OBXSyncCredentialsType.JWT_ACCESS,
+        jwtAccessToken,
+      );
 
   /// JSON Web Token (JWT): a refresh token that is used to obtain a new
   /// access token.
   static SyncCredentials jwtRefreshToken(String jwtRefreshToken) =>
       SyncCredentialsSecret._encode(
-          OBXSyncCredentialsType.JWT_REFRESH, jwtRefreshToken);
+        OBXSyncCredentialsType.JWT_REFRESH,
+        jwtRefreshToken,
+      );
 
   /// JSON Web Token (JWT): a token that is neither an ID, access,
   /// nor refresh token.
   static SyncCredentials jwtCustomToken(String jwtCustomToken) =>
       SyncCredentialsSecret._encode(
-          OBXSyncCredentialsType.JWT_CUSTOM, jwtCustomToken);
+        OBXSyncCredentialsType.JWT_CUSTOM,
+        jwtCustomToken,
+      );
 }
 
 class _SyncCredentialsNone extends SyncCredentials {
@@ -82,8 +95,8 @@ class SyncCredentialsSecret extends SyncCredentials {
   SyncCredentialsSecret._(super.type, this.data) : super._();
 
   SyncCredentialsSecret._encode(super.type, String data)
-      : data = Uint8List.fromList(utf8.encode(data)),
-        super._();
+    : data = Uint8List.fromList(utf8.encode(data)),
+      super._();
 }
 
 class _SyncCredentialsUserPassword extends SyncCredentials {
@@ -91,7 +104,7 @@ class _SyncCredentialsUserPassword extends SyncCredentials {
   final String _password;
 
   _SyncCredentialsUserPassword._(super._type, this._user, this._password)
-      : super._();
+    : super._();
 }
 
 /// Current state of the [SyncClient].
@@ -118,7 +131,7 @@ enum SyncState {
   stopped,
 
   /// Invalid access to the client after it was closed.
-  dead
+  dead,
 }
 
 /// Configuration of how [SyncClient] fetches remote updates from the server.
@@ -133,7 +146,7 @@ enum SyncRequestUpdatesMode {
 
   /// Automatic update after connection, without subscribing for pushes from the
   /// server. Similar to calling [SyncClient.requestUpdates(false)].
-  autoNoPushes
+  autoNoPushes,
 }
 
 /// Connection state change event.
@@ -142,7 +155,7 @@ enum SyncConnectionEvent {
   connected,
 
   /// Connection to the server is lost.
-  disconnected
+  disconnected,
 }
 
 /// Login state change event.
@@ -155,7 +168,7 @@ enum SyncLoginEvent {
   credentialsRejected,
 
   /// An unknown error occured during authentication.
-  unknownError
+  unknownError,
 }
 
 /// Sync incoming data event.
@@ -191,23 +204,32 @@ class SyncClient {
   /// Creates a Sync client associated with the given store and options.
   /// This does not initiate any connection attempts yet: call start() to do so.
   SyncClient._(
-      this._store, List<String> serverUrls, List<SyncCredentials> credentials) {
+    this._store,
+    List<String> serverUrls,
+    List<SyncCredentials> credentials,
+  ) {
     if (serverUrls.isEmpty) {
       throw ArgumentError.value(
-          serverUrls, "serverUrls", "Provide at least one server URL");
+        serverUrls,
+        "serverUrls",
+        "Provide at least one server URL",
+      );
     }
 
     if (!Sync.isAvailable()) {
       throw UnsupportedError(
-          'Sync is not available in the loaded ObjectBox runtime library. '
-          'Please visit https://objectbox.io/sync/ for options.');
+        'Sync is not available in the loaded ObjectBox runtime library. '
+        'Please visit https://objectbox.io/sync/ for options.',
+      );
     }
 
     _cSync = withNativeStrings(
-        serverUrls,
-        (ptr, size) => checkObxPtr(
-            C.sync_urls(InternalStoreAccess.ptr(_store), ptr, size),
-            'failed to create Sync client'));
+      serverUrls,
+      (ptr, size) => checkObxPtr(
+        C.sync_urls(InternalStoreAccess.ptr(_store), ptr, size),
+        'failed to create Sync client',
+      ),
+    );
 
     if (credentials.length == 1) {
       setCredentials(credentials[0]);
@@ -264,16 +286,26 @@ class SyncClient {
       checkObx(C.sync_credentials(_ptr, creds._type, nullptr, 0));
     } else if (creds is _SyncCredentialsUserPassword) {
       withNativeString(
-          creds._user,
-          (userCStr) => withNativeString(
-              creds._password,
-              (passwordCStr) => checkObx(C.sync_credentials_user_password(
-                  _ptr, creds._type, userCStr, passwordCStr))));
+        creds._user,
+        (userCStr) => withNativeString(
+          creds._password,
+          (passwordCStr) => checkObx(
+            C.sync_credentials_user_password(
+              _ptr,
+              creds._type,
+              userCStr,
+              passwordCStr,
+            ),
+          ),
+        ),
+      );
     } else if (creds is SyncCredentialsSecret) {
       withNativeBytes(
-          creds.data,
-          (Pointer<Uint8> credsPtr, int credsSize) => checkObx(
-              C.sync_credentials(_ptr, creds._type, credsPtr, credsSize)));
+        creds.data,
+        (Pointer<Uint8> credsPtr, int credsSize) => checkObx(
+          C.sync_credentials(_ptr, creds._type, credsPtr, credsSize),
+        ),
+      );
     }
   }
 
@@ -283,7 +315,10 @@ class SyncClient {
   void setMultipleCredentials(List<SyncCredentials> credentials) {
     if (credentials.isEmpty) {
       throw ArgumentError.value(
-          credentials, "credentials", "Provide at least one credential");
+        credentials,
+        "credentials",
+        "Provide at least one credential",
+      );
     }
 
     var length = credentials.length;
@@ -292,25 +327,43 @@ class SyncClient {
       var credential = credentials[i];
 
       if (credential is _SyncCredentialsNone) {
-        throw ArgumentError.value(credentials, "credentials",
-            "SyncCredentials.none() is not supported, use setCredentials() instead");
+        throw ArgumentError.value(
+          credentials,
+          "credentials",
+          "SyncCredentials.none() is not supported, use setCredentials() instead",
+        );
       }
 
       try {
         if (credential is _SyncCredentialsUserPassword) {
           withNativeString(
-              credential._user,
-              (userCStr) => withNativeString(
-                  credential._password,
-                  (passwordCStr) => checkObx(
-                      C.sync_credentials_add_user_password(_ptr,
-                          credential._type, userCStr, passwordCStr, isLast))));
+            credential._user,
+            (userCStr) => withNativeString(
+              credential._password,
+              (passwordCStr) => checkObx(
+                C.sync_credentials_add_user_password(
+                  _ptr,
+                  credential._type,
+                  userCStr,
+                  passwordCStr,
+                  isLast,
+                ),
+              ),
+            ),
+          );
         } else if (credential is SyncCredentialsSecret) {
           withNativeBytes(
-              credential.data,
-              (Pointer<Uint8> credsPtr, int credsSize) => checkObx(
-                  C.sync_credentials_add(
-                      _ptr, credential._type, credsPtr, credsSize, isLast)));
+            credential.data,
+            (Pointer<Uint8> credsPtr, int credsSize) => checkObx(
+              C.sync_credentials_add(
+                _ptr,
+                credential._type,
+                credsPtr,
+                credsSize,
+                isLast,
+              ),
+            ),
+          );
         }
       } catch (e) {
         // To make exceptions related to a credential easier to attribute,
@@ -399,19 +452,26 @@ class SyncClient {
   Stream<SyncConnectionEvent> get connectionEvents {
     if (_connectionEvents == null) {
       // Combine events from two C listeners: connect & disconnect.
-      _connectionEvents =
-          _SyncListenerGroup<SyncConnectionEvent>('sync-connection');
+      _connectionEvents = _SyncListenerGroup<SyncConnectionEvent>(
+        'sync-connection',
+      );
 
-      _connectionEvents!.add(_SyncListenerConfig(
+      _connectionEvents!.add(
+        _SyncListenerConfig(
           (int nativePort) => C.dartc_sync_listener_connect(_ptr, nativePort),
           (dynamic _, controller) =>
-              controller.add(SyncConnectionEvent.connected)));
+              controller.add(SyncConnectionEvent.connected),
+        ),
+      );
 
-      _connectionEvents!.add(_SyncListenerConfig(
+      _connectionEvents!.add(
+        _SyncListenerConfig(
           (int nativePort) =>
               C.dartc_sync_listener_disconnect(_ptr, nativePort),
           (dynamic _, controller) =>
-              controller.add(SyncConnectionEvent.disconnected)));
+              controller.add(SyncConnectionEvent.disconnected),
+        ),
+      );
 
       _connectionEvents!.finish();
     }
@@ -428,22 +488,28 @@ class SyncClient {
       // Combine events from two C listeners: login & login-failure.
       _loginEvents = _SyncListenerGroup<SyncLoginEvent>('sync-login');
 
-      _loginEvents!.add(_SyncListenerConfig(
+      _loginEvents!.add(
+        _SyncListenerConfig(
           (int nativePort) => C.dartc_sync_listener_login(_ptr, nativePort),
-          (dynamic _, controller) => controller.add(SyncLoginEvent.loggedIn)));
+          (dynamic _, controller) => controller.add(SyncLoginEvent.loggedIn),
+        ),
+      );
 
-      _loginEvents!.add(_SyncListenerConfig(
+      _loginEvents!.add(
+        _SyncListenerConfig(
           (int nativePort) =>
               C.dartc_sync_listener_login_failure(_ptr, nativePort),
           (dynamic code, controller) {
-        // see OBXSyncCode - TODO should we match any other codes?
-        switch (code as int) {
-          case OBXSyncCode.CREDENTIALS_REJECTED:
-            return controller.add(SyncLoginEvent.credentialsRejected);
-          default:
-            return controller.add(SyncLoginEvent.unknownError);
-        }
-      }));
+            // see OBXSyncCode - TODO should we match any other codes?
+            switch (code as int) {
+              case OBXSyncCode.CREDENTIALS_REJECTED:
+                return controller.add(SyncLoginEvent.credentialsRejected);
+              default:
+                return controller.add(SyncLoginEvent.unknownError);
+            }
+          },
+        ),
+      );
 
       _loginEvents!.finish();
     }
@@ -460,9 +526,12 @@ class SyncClient {
     if (_completionEvents == null) {
       _completionEvents = _SyncListenerGroup<void>('sync-completion');
 
-      _completionEvents!.add(_SyncListenerConfig(
+      _completionEvents!.add(
+        _SyncListenerConfig(
           (int nativePort) => C.dartc_sync_listener_complete(_ptr, nativePort),
-          (dynamic _, controller) => controller.add(null)));
+          (dynamic _, controller) => controller.add(null),
+        ),
+      );
 
       _completionEvents!.finish();
     }
@@ -481,59 +550,77 @@ class SyncClient {
 
       final entityTypesById = InternalStoreAccess.entityTypeById(_store);
 
-      _changeEvents!.add(_SyncListenerConfig(
+      _changeEvents!.add(
+        _SyncListenerConfig(
           (int nativePort) => C.dartc_sync_listener_change(_ptr, nativePort),
           (dynamic msg, controller) {
-        if (msg is! List) {
-          controller.addError(ObjectBoxException(
-              'Received invalid data type from the core notification: (${msg.runtimeType}) $msg'));
-          return;
-        }
+            if (msg is! List) {
+              controller.addError(
+                ObjectBoxException(
+                  'Received invalid data type from the core notification: (${msg.runtimeType}) $msg',
+                ),
+              );
+              return;
+            }
 
-        final syncChanges = msg;
+            final syncChanges = msg;
 
-        // List<SyncChange> is flattened to List<dynamic>, with SyncChange object
-        // properties always coming in groups of three (entityId, puts, removals)
-        const numProperties = 3;
-        if (syncChanges.length % numProperties != 0) {
-          controller.addError(ObjectBoxException(
-              'Received invalid list length from the core notification: (${syncChanges.runtimeType}) $syncChanges'));
-          return;
-        }
+            // List<SyncChange> is flattened to List<dynamic>, with SyncChange object
+            // properties always coming in groups of three (entityId, puts, removals)
+            const numProperties = 3;
+            if (syncChanges.length % numProperties != 0) {
+              controller.addError(
+                ObjectBoxException(
+                  'Received invalid list length from the core notification: (${syncChanges.runtimeType}) $syncChanges',
+                ),
+              );
+              return;
+            }
 
-        final changes = <SyncChange>[];
-        for (var i = 0; i < syncChanges.length / numProperties; i++) {
-          final dynamic entityId = syncChanges[i * numProperties + 0];
-          final dynamic putsBytes = syncChanges[i * numProperties + 1];
-          final dynamic removalsBytes = syncChanges[i * numProperties + 2];
+            final changes = <SyncChange>[];
+            for (var i = 0; i < syncChanges.length / numProperties; i++) {
+              final dynamic entityId = syncChanges[i * numProperties + 0];
+              final dynamic putsBytes = syncChanges[i * numProperties + 1];
+              final dynamic removalsBytes = syncChanges[i * numProperties + 2];
 
-          final entityType = entityTypesById[entityId];
-          if (entityType == null) {
-            controller.addError(ObjectBoxException(
-                'Received sync change notification for an unknown entity ID $entityId'));
-            return;
-          }
+              final entityType = entityTypesById[entityId];
+              if (entityType == null) {
+                controller.addError(
+                  ObjectBoxException(
+                    'Received sync change notification for an unknown entity ID $entityId',
+                  ),
+                );
+                return;
+              }
 
-          if (entityId is! int ||
-              putsBytes is! Uint8List ||
-              removalsBytes is! Uint8List) {
-            controller.addError(ObjectBoxException(
-                'Received invalid list items format from the core notification at i=$i: '
-                'entityId = (${entityId.runtimeType}) $entityId; '
-                'putsBytes = (${putsBytes.runtimeType}) $putsBytes; '
-                'removalsBytes = (${removalsBytes.runtimeType}) $removalsBytes'));
-            return;
-          }
+              if (entityId is! int ||
+                  putsBytes is! Uint8List ||
+                  removalsBytes is! Uint8List) {
+                controller.addError(
+                  ObjectBoxException(
+                    'Received invalid list items format from the core notification at i=$i: '
+                    'entityId = (${entityId.runtimeType}) $entityId; '
+                    'putsBytes = (${putsBytes.runtimeType}) $putsBytes; '
+                    'removalsBytes = (${removalsBytes.runtimeType}) $removalsBytes',
+                  ),
+                );
+                return;
+              }
 
-          changes.add(SyncChange._(
-              entityId,
-              entityType,
-              Uint64List.view(putsBytes.buffer).toList(),
-              Uint64List.view(removalsBytes.buffer).toList()));
-        }
+              changes.add(
+                SyncChange._(
+                  entityId,
+                  entityType,
+                  Uint64List.view(putsBytes.buffer).toList(),
+                  Uint64List.view(removalsBytes.buffer).toList(),
+                ),
+              );
+            }
 
-        controller.add(changes);
-      }));
+            controller.add(changes);
+          },
+        ),
+      );
 
       _changeEvents!.finish();
     }
@@ -585,9 +672,10 @@ class _SyncListenerGroup<StreamValueType> {
   Stream<StreamValueType> finish() {
     assert(!finished, 'finish() may only be called once.');
     controller = StreamController<StreamValueType>.broadcast(
-        onListen: _start,
-        /* not for broadcast streams: onPause: _stop, onResume: _start,*/
-        onCancel: _stop);
+      onListen: _start,
+      /* not for broadcast streams: onPause: _stop, onResume: _start,*/
+      onCancel: _stop,
+    );
     finished = true;
     return controller.stream;
   }
@@ -620,7 +708,8 @@ class _SyncListenerGroup<StreamValueType> {
     if (hasError) {
       try {
         throwLatestNativeError(
-            context: 'Failed to initialize a sync native listener');
+          context: 'Failed to initialize a sync native listener',
+        );
       } finally {
         _stop();
       }
@@ -696,21 +785,27 @@ class Sync {
   /// Before [SyncClient.start()], you can still configure some aspects of the
   /// client, e.g. its [SyncRequestUpdatesMode] mode.
   static SyncClient client(
-          Store store, String serverUrl, SyncCredentials credentials) =>
-      clientMultiUrls(store, [serverUrl], credentials);
+    Store store,
+    String serverUrl,
+    SyncCredentials credentials,
+  ) => clientMultiUrls(store, [serverUrl], credentials);
 
   /// Like [client], but accepts a list of credentials.
   ///
   /// When passing multiple credentials, does **not** support
   /// [SyncCredentials.none()].
   static SyncClient clientMultiCredentials(
-          Store store, String serverUrl, List<SyncCredentials> credentials) =>
-      clientMultiCredentialsMultiUrls(store, [serverUrl], credentials);
+    Store store,
+    String serverUrl,
+    List<SyncCredentials> credentials,
+  ) => clientMultiCredentialsMultiUrls(store, [serverUrl], credentials);
 
   /// Like [client], but accepts a list of URLs to work with multiple servers.
   static SyncClient clientMultiUrls(
-          Store store, List<String> serverUrls, SyncCredentials credentials) =>
-      clientMultiCredentialsMultiUrls(store, serverUrls, [credentials]);
+    Store store,
+    List<String> serverUrls,
+    SyncCredentials credentials,
+  ) => clientMultiCredentialsMultiUrls(store, serverUrls, [credentials]);
 
   /// Like [client], but accepts a list of credentials and a list of URLs to
   /// work with multiple servers.
@@ -718,7 +813,10 @@ class Sync {
   /// When passing multiple credentials, does **not** support
   /// [SyncCredentials.none()].
   static SyncClient clientMultiCredentialsMultiUrls(
-      Store store, List<String> serverUrls, List<SyncCredentials> credentials) {
+    Store store,
+    List<String> serverUrls,
+    List<SyncCredentials> credentials,
+  ) {
     if (syncClientsStorage.containsKey(store)) {
       throw StateError('Only one sync client can be active for a store');
     }

@@ -25,8 +25,10 @@ bool checkObxSuccess(int code) {
 }
 
 @pragma('vm:prefer-inline')
-Pointer<T> checkObxPtr<T extends NativeType>(Pointer<T>? ptr,
-    [String? context]) {
+Pointer<T> checkObxPtr<T extends NativeType>(
+  Pointer<T>? ptr, [
+  String? context,
+]) {
   if (ptr == null || ptr.address == 0) {
     throwLatestNativeError(context: context);
   }
@@ -114,8 +116,10 @@ class CursorHelper<T> {
   bool _closed = false;
 
   CursorHelper(this._store, Pointer<OBX_txn> txn, this._entity)
-      : ptr = checkObxPtr(
-            C.cursor(txn, _entity.model.id.id), 'failed to create cursor');
+    : ptr = checkObxPtr(
+        C.cursor(txn, _entity.model.id.id),
+        'failed to create cursor',
+      );
 
   EntityDefinition<T> get entity => _entity;
 
@@ -126,7 +130,10 @@ class CursorHelper<T> {
   }
 
   T _deserializeObject(ReadPointers pointers) => _entity.objectFromData(
-      _store, pointers.dataPtrPtr.value, pointers.sizePtr.value);
+    _store,
+    pointers.dataPtrPtr.value,
+    pointers.sizePtr.value,
+  );
 
   @pragma('vm:prefer-inline')
   T? get(int id) {
@@ -151,7 +158,9 @@ class CursorHelper<T> {
 }
 
 T withNativeBytes<T>(
-    Uint8List data, T Function(Pointer<Uint8> ptr, int size) fn) {
+  Uint8List data,
+  T Function(Pointer<Uint8> ptr, int size) fn,
+) {
   final size = data.length;
   assert(size == data.lengthInBytes);
   final ptr = malloc<Uint8>(size);
@@ -173,7 +182,9 @@ T withNativeString<T>(String str, T Function(Pointer<Char> cStr) fn) {
 }
 
 T withNativeStrings<T>(
-    List<String> items, T Function(Pointer<Pointer<Char>> ptr, int size) fn) {
+  List<String> items,
+  T Function(Pointer<Pointer<Char>> ptr, int size) fn,
+) {
   final size = items.length;
   final ptr = malloc<Pointer<Char>>(size);
   try {
@@ -183,14 +194,16 @@ T withNativeStrings<T>(
     return fn(ptr, size);
   } finally {
     for (var i = 0; i < size; i++) {
-      malloc.free(ptr.elementAt(i).value);
+      malloc.free((ptr + 1).value);
     }
     malloc.free(ptr);
   }
 }
 
 T withNativeFloats<T>(
-    List<double> items, T Function(Pointer<Float> ptr, int size) fn) {
+  List<double> items,
+  T Function(Pointer<Float> ptr, int size) fn,
+) {
   final size = items.length;
   final ptr = malloc<Float>(size);
   try {

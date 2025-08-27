@@ -63,8 +63,9 @@ class ToOne<EntityT> {
       if (target != null) {
         // May be a user error... and we can't check if (target.id == targetId).
         throw ArgumentError(
-            'Provide at most one specification of a ToOne relation target: '
-            'either [target] or [targetId] argument');
+          'Provide at most one specification of a ToOne relation target: '
+          'either [target] or [targetId] argument',
+        );
       }
       this.targetId = targetId;
     } else if (target != null) {
@@ -78,8 +79,9 @@ class ToOne<EntityT> {
   EntityT? get target {
     if (_value._state == _ToOneState.lazy) {
       final configuration = _getStoreConfigOrThrow();
-      var store =
-          StoreInternal.attachByConfiguration(configuration.storeConfiguration);
+      var store = StoreInternal.attachByConfiguration(
+        configuration.storeConfiguration,
+      );
       final EntityT? object;
       try {
         object = configuration.box(store).get(_value._id);
@@ -164,19 +166,26 @@ class ToOne<EntityT> {
     if (configuration != null) {
       if (configuration.storeConfiguration.id != store.configuration().id) {
         throw ArgumentError.value(
-            store, 'store', 'Relation already attached to a different store');
+          store,
+          'store',
+          'Relation already attached to a different store',
+        );
       }
       return;
     }
     _storeConfiguration = _ToOneStoreConfiguration(
-        store.configuration(), InternalStoreAccess.entityDef<EntityT>(store));
+      store.configuration(),
+      InternalStoreAccess.entityDef<EntityT>(store),
+    );
   }
 
   _ToOneStoreConfiguration<EntityT> _getStoreConfigOrThrow() {
     final storeConfiguration = _storeConfiguration;
     if (storeConfiguration == null) {
-      throw StateError("ToOne relation field not initialized. "
-          "Make sure attach(store) is called before using this.");
+      throw StateError(
+        "ToOne relation field not initialized. "
+        "Make sure attach(store) is called before using this.",
+      );
     }
     return storeConfiguration;
   }
@@ -197,22 +206,22 @@ class _ToOneValue<EntityT> {
 
   /// Set by app developer, but not stored
   const _ToOneValue.unstored(EntityT object)
-      : this._(_ToOneState.unstored, 0, object);
+    : this._(_ToOneState.unstored, 0, object);
 
   /// Set by app developer before attach() was called - maybe new or existing
   const _ToOneValue.unknown(EntityT object)
-      : this._(_ToOneState.unknown, 0, object);
+    : this._(_ToOneState.unknown, 0, object);
 
   /// Initial state before attempting a lazy load
   const _ToOneValue.lazy(int id) : this._(_ToOneState.lazy, id, null);
 
   /// Known reference established in the database
   const _ToOneValue.stored(int id, EntityT object)
-      : this._(_ToOneState.stored, id, object);
+    : this._(_ToOneState.stored, id, object);
 
   /// ID set but not present in database
   const _ToOneValue.unresolvable(int id)
-      : this._(_ToOneState.unresolvable, id, null);
+    : this._(_ToOneState.unresolvable, id, null);
 
   const _ToOneValue._(this._state, this._id, this._object);
 }
@@ -232,7 +241,11 @@ extension ToOneInternal<EntityT> on ToOne<EntityT> {
       // use dynamic as EntityT. So get box via embedded config class that
       // definitely has a type for EntityT.
       targetId = InternalBoxAccess.put(
-          _getStoreConfigOrThrow().box(store), target, mode, tx);
+        _getStoreConfigOrThrow().box(store),
+        target,
+        mode,
+        tx,
+      );
     }
   }
 }

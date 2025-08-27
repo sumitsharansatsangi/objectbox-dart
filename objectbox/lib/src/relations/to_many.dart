@@ -173,8 +173,11 @@ class ToMany<EntityT> extends Object with ListMixin<EntityT> {
   ///
   /// Throws [StateError] if the object that contains this ToMany has no ID
   /// assigned (it must have been put before).
-  void applyToDb(
-      {Store? existingStore, PutMode mode = PutMode.put, Transaction? tx}) {
+  void applyToDb({
+    Store? existingStore,
+    PutMode mode = PutMode.put,
+    Transaction? tx,
+  }) {
     if (!_hasPendingDbChanges) return;
 
     final configuration = _getStoreConfigOrThrow();
@@ -183,12 +186,14 @@ class ToMany<EntityT> extends Object with ListMixin<EntityT> {
     if (relInfo.objectId == 0) {
       // The ID of the object owning this is required.
       throw StateError(
-          "Can't store relation info for the target object with zero ID");
+        "Can't store relation info for the target object with zero ID",
+      );
     }
 
     // Use given store, or obtain one via store configuration
     // (then store must be closed once done).
-    final Store store = existingStore ??
+    final Store store =
+        existingStore ??
         StoreInternal.attachByConfiguration(configuration.storeConfiguration);
 
     try {
@@ -205,14 +210,26 @@ class ToMany<EntityT> extends Object with ListMixin<EntityT> {
               if (add) {
                 if (id == 0) {
                   id = InternalBoxAccess.put(
-                      configuration.box(store), object, mode, tx);
+                    configuration.box(store),
+                    object,
+                    mode,
+                    tx,
+                  );
                 }
-                InternalBoxAccess.relPut(configuration.otherBox(store),
-                    relInfo.id, relInfo.objectId, id);
+                InternalBoxAccess.relPut(
+                  configuration.otherBox(store),
+                  relInfo.id,
+                  relInfo.objectId,
+                  id,
+                );
               } else {
                 if (id == 0) return;
-                InternalBoxAccess.relRemove(configuration.otherBox(store),
-                    relInfo.id, relInfo.objectId, id);
+                InternalBoxAccess.relRemove(
+                  configuration.otherBox(store),
+                  relInfo.id,
+                  relInfo.objectId,
+                  id,
+                );
               }
               break;
             case RelType.toOneBacklink:
@@ -224,14 +241,26 @@ class ToMany<EntityT> extends Object with ListMixin<EntityT> {
               if (add) {
                 if (id == 0) {
                   id = InternalBoxAccess.put(
-                      configuration.box(store), object, mode, tx);
+                    configuration.box(store),
+                    object,
+                    mode,
+                    tx,
+                  );
                 }
                 InternalBoxAccess.relPut(
-                    configuration.box(store), relInfo.id, id, relInfo.objectId);
+                  configuration.box(store),
+                  relInfo.id,
+                  id,
+                  relInfo.objectId,
+                );
               } else {
                 if (id == 0) return;
                 InternalBoxAccess.relRemove(
-                    configuration.box(store), relInfo.id, id, relInfo.objectId);
+                  configuration.box(store),
+                  relInfo.id,
+                  id,
+                  relInfo.objectId,
+                );
               }
               break;
           }
@@ -259,21 +288,27 @@ class ToMany<EntityT> extends Object with ListMixin<EntityT> {
       if (storeConfiguration.storeConfiguration.id !=
           store.configuration().id) {
         throw ArgumentError.value(
-            store, 'store', 'Relation already attached to a different store');
+          store,
+          'store',
+          'Relation already attached to a different store',
+        );
       }
       return;
     }
     _storeConfiguration = _ToManyStoreConfiguration<EntityT, OwningEntityT>(
-        store.configuration(),
-        relInfo,
-        InternalStoreAccess.entityDef<EntityT>(store));
+      store.configuration(),
+      relInfo,
+      InternalStoreAccess.entityDef<EntityT>(store),
+    );
   }
 
   _ToManyStoreConfiguration<EntityT, dynamic> _getStoreConfigOrThrow() {
     final storeConfiguration = _storeConfiguration;
     if (storeConfiguration == null) {
-      throw StateError("ToMany relation field not initialized. "
-          "Don't call applyToDb() on new objects, use box.put() instead.");
+      throw StateError(
+        "ToMany relation field not initialized. "
+        "Don't call applyToDb() on new objects, use box.put() instead.",
+      );
     }
     return storeConfiguration;
   }
@@ -289,10 +324,13 @@ class ToMany<EntityT> extends Object with ListMixin<EntityT> {
       // Therefore, this can be sure there are no stored items yet.
       items = [];
     } else {
-      final store =
-          StoreInternal.attachByConfiguration(configuration.storeConfiguration);
+      final store = StoreInternal.attachByConfiguration(
+        configuration.storeConfiguration,
+      );
       items = InternalBoxAccess.getRelated(
-          configuration.box(store), configuration.relInfo);
+        configuration.box(store),
+        configuration.relInfo,
+      );
       store.close();
     }
     if (_addedBeforeLoad.isNotEmpty) {
@@ -312,8 +350,10 @@ class InternalToManyAccess {
 
   /// Set relation info.
   static void setRelInfo<OwningEntityT>(
-          ToMany toMany, Store store, RelInfo rel) =>
-      toMany._setRelInfo<OwningEntityT>(store, rel);
+    ToMany toMany,
+    Store store,
+    RelInfo rel,
+  ) => toMany._setRelInfo<OwningEntityT>(store, rel);
 }
 
 /// Internal only.

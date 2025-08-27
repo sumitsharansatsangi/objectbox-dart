@@ -100,14 +100,17 @@ class ModelProperty {
   }
 
   // used in code generator
-  ModelProperty.create(this.id, String? name, int? type,
-      {int flags = 0,
-      String? indexId,
-      this.entity,
-      String? dartFieldType,
-      this.relationTarget,
-      this.uidRequest = false})
-      : _dartFieldType = dartFieldType {
+  ModelProperty.create(
+    this.id,
+    String? name,
+    int? type, {
+    int flags = 0,
+    String? indexId,
+    this.entity,
+    String? dartFieldType,
+    this.relationTarget,
+    this.uidRequest = false,
+  }) : _dartFieldType = dartFieldType {
     this.name = name;
     this.type = type;
     this.flags = flags;
@@ -115,31 +118,32 @@ class ModelProperty {
   }
 
   // used in generated code
-  ModelProperty(
-      {required this.id,
-      required String name,
-      required int type,
-      required int flags,
-      IdUid? indexId,
-      this.relationTarget,
-      this.hnswParams,
-      this.externalName,
-      this.externalType})
-      : _name = name,
-        _type = type,
-        _flags = flags,
-        _indexId = indexId,
-        uidRequest = false;
+  ModelProperty({
+    required this.id,
+    required String name,
+    required int type,
+    required int flags,
+    IdUid? indexId,
+    this.relationTarget,
+    this.hnswParams,
+    this.externalName,
+    this.externalType,
+  }) : _name = name,
+       _type = type,
+       _flags = flags,
+       _indexId = indexId,
+       uidRequest = false;
 
   ModelProperty.fromMap(Map<String, dynamic> data, this.entity)
-      : id = IdUid.fromString(data[ModelPropertyKey.id] as String?),
-        relationTarget = data[ModelPropertyKey.relationTarget] as String?,
-        _dartFieldType = data[ModelPropertyKey.dartFieldType] as String?,
-        uidRequest = data[ModelPropertyKey.uidRequest] as bool? ?? false,
-        hnswParams = ModelHnswParams.fromMap(
-            data[ModelPropertyKey.hnswParams] as Map<String, dynamic>?),
-        externalName = data[ModelPropertyKey.externalName] as String?,
-        externalType = data[ModelPropertyKey.externalType] as int? {
+    : id = IdUid.fromString(data[ModelPropertyKey.id] as String?),
+      relationTarget = data[ModelPropertyKey.relationTarget] as String?,
+      _dartFieldType = data[ModelPropertyKey.dartFieldType] as String?,
+      uidRequest = data[ModelPropertyKey.uidRequest] as bool? ?? false,
+      hnswParams = ModelHnswParams.fromMap(
+        data[ModelPropertyKey.hnswParams] as Map<String, dynamic>?,
+      ),
+      externalName = data[ModelPropertyKey.externalName] as String?,
+      externalType = data[ModelPropertyKey.externalType] as int? {
     name = data[ModelPropertyKey.name] as String?;
     type = data[ModelPropertyKey.type] as int?;
     flags = data[ModelPropertyKey.flags] as int? ?? 0;

@@ -4,12 +4,12 @@ part of 'query.dart';
 class QueryBuilder<T> extends _QueryBuilder<T> {
   /// Start creating a query.
   QueryBuilder(Store store, EntityDefinition<T> entity, Condition<T>? qc)
-      : super(
-            store,
-            entity,
-            qc,
-            C.query_builder(
-                InternalStoreAccess.ptr(store), entity.model.id.id));
+    : super(
+        store,
+        entity,
+        qc,
+        C.query_builder(InternalStoreAccess.ptr(store), entity.model.id.id),
+      );
 
   /// Finish building a [Query]. Call [Query.close()] after you're done with it
   /// to free resources.
@@ -70,10 +70,11 @@ class QueryBuilder<T> extends _QueryBuilder<T> {
     // functionality (onListen is only called for the first subscriber,
     // also does not allow to send an event within).
     controller = StreamController<Query<T>>(
-        onListen: subscribe,
-        onResume: subscribe,
-        onPause: () => subscription.pause(),
-        onCancel: () => subscription.cancel());
+      onListen: subscribe,
+      onResume: subscribe,
+      onPause: () => subscription.pause(),
+      onCancel: () => subscription.cancel(),
+    );
     if (triggerImmediately) controller.add(query);
     return controller.stream;
   }
@@ -106,13 +107,17 @@ class _QueryBuilder<T> {
   final _innerQBs = <_QueryBuilder>[];
 
   _QueryBuilder(
-      this._store, this._entity, this._queryCondition, this._cBuilder) {
+    this._store,
+    this._entity,
+    this._queryCondition,
+    this._cBuilder,
+  ) {
     checkObxPtr(_cBuilder, 'failed to create QueryBuilder');
   }
 
   _QueryBuilder._link(_QueryBuilder srcQB, this._queryCondition, this._cBuilder)
-      : _store = srcQB._store,
-        _entity = InternalStoreAccess.entityDef<T>(srcQB._store) {
+    : _store = srcQB._store,
+      _entity = InternalStoreAccess.entityDef<T>(srcQB._store) {
     checkObxPtr(_cBuilder, 'failed to create QueryBuilder');
     _applyCondition();
     srcQB._innerQBs.add(this);
@@ -136,9 +141,11 @@ class _QueryBuilder<T> {
   void _throwExceptionIfNecessary() {
     final code = C.qb_error_code(_cBuilder);
     if (code != OBX_SUCCESS) {
-      ObjectBoxNativeError(code, dartStringFromC(C.qb_error_message(_cBuilder)),
-              'Query building failed')
-          .throwMapped();
+      ObjectBoxNativeError(
+        code,
+        dartStringFromC(C.qb_error_message(_cBuilder)),
+        'Query building failed',
+      ).throwMapped();
     }
   }
 
@@ -154,22 +161,27 @@ class _QueryBuilder<T> {
   /// final query = builder.build();
   /// ```
   _QueryBuilder<TargetEntityT> link<TargetEntityT>(
-          QueryRelationToOne<T, TargetEntityT> rel,
-          [Condition<TargetEntityT>? qc]) =>
-      _QueryBuilder<TargetEntityT>._link(
-          this, qc, C.qb_link_property(_cBuilder, rel._model.id.id));
+    QueryRelationToOne<T, TargetEntityT> rel, [
+    Condition<TargetEntityT>? qc,
+  ]) => _QueryBuilder<TargetEntityT>._link(
+    this,
+    qc,
+    C.qb_link_property(_cBuilder, rel._model.id.id),
+  );
 
   /// Like [link], but where the to-one relation is defined in the other object.
   _QueryBuilder<SourceEntityT> backlink<SourceEntityT>(
-          QueryRelationToOne<SourceEntityT, T> rel,
-          [Condition<SourceEntityT>? qc]) =>
-      _QueryBuilder<SourceEntityT>._link(
-          this,
-          qc,
-          C.qb_backlink_property(
-              _cBuilder,
-              InternalStoreAccess.entityDef<SourceEntityT>(_store).model.id.id,
-              rel._model.id.id));
+    QueryRelationToOne<SourceEntityT, T> rel, [
+    Condition<SourceEntityT>? qc,
+  ]) => _QueryBuilder<SourceEntityT>._link(
+    this,
+    qc,
+    C.qb_backlink_property(
+      _cBuilder,
+      InternalStoreAccess.entityDef<SourceEntityT>(_store).model.id.id,
+      rel._model.id.id,
+    ),
+  );
 
   /// Based on a to-many relation [rel] of this entity, creates a link to another
   /// entity, for which conditions using the returned builder can be described.
@@ -180,15 +192,21 @@ class _QueryBuilder<T> {
   /// final query = builder.build();
   /// ```
   _QueryBuilder<TargetEntityT> linkMany<TargetEntityT>(
-          QueryRelationToMany<T, TargetEntityT> rel,
-          [Condition<TargetEntityT>? qc]) =>
-      _QueryBuilder<TargetEntityT>._link(
-          this, qc, C.qb_link_standalone(_cBuilder, rel._model.id.id));
+    QueryRelationToMany<T, TargetEntityT> rel, [
+    Condition<TargetEntityT>? qc,
+  ]) => _QueryBuilder<TargetEntityT>._link(
+    this,
+    qc,
+    C.qb_link_standalone(_cBuilder, rel._model.id.id),
+  );
 
   /// Like [linkMany], but where the to-many relation is defined in the other object.
   _QueryBuilder<SourceEntityT> backlinkMany<SourceEntityT>(
-          QueryRelationToMany<SourceEntityT, T> rel,
-          [Condition<SourceEntityT>? qc]) =>
-      _QueryBuilder<SourceEntityT>._link(
-          this, qc, C.qb_backlink_standalone(_cBuilder, rel._model.id.id));
+    QueryRelationToMany<SourceEntityT, T> rel, [
+    Condition<SourceEntityT>? qc,
+  ]) => _QueryBuilder<SourceEntityT>._link(
+    this,
+    qc,
+    C.qb_backlink_standalone(_cBuilder, rel._model.id.id),
+  );
 }

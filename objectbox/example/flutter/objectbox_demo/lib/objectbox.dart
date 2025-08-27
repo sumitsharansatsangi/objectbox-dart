@@ -36,9 +36,12 @@ class ObjectBox {
 
     // Future<Store> openStore() {...} is defined in the generated objectbox.g.dart
     final store = await openStore(
-        directory:
-            p.join((await getApplicationDocumentsDirectory()).path, "obx-demo"),
-        macosApplicationGroup: "objectbox.demo");
+      directory: p.join(
+        (await getApplicationDocumentsDirectory()).path,
+        "obx-demo",
+      ),
+      macosApplicationGroup: "objectbox.demo",
+    );
     return ObjectBox._create(store);
   }
 
@@ -46,7 +49,7 @@ class ObjectBox {
     final demoNotes = [
       Note('Quickly add a note by writing text and pressing Enter'),
       Note('Delete notes by tapping on one'),
-      Note('Write a demo app for ObjectBox')
+      Note('Write a demo app for ObjectBox'),
     ];
     _noteBox.putManyAsync(demoNotes);
   }

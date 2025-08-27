@@ -74,15 +74,17 @@ class EntityResolver extends Builder {
   List<String> extractConstructorParams(ClassElement2 classElement) {
     final ctor = classElement.unnamedConstructor2;
     if (ctor == null) return [];
-    return ctor.formalParameters.map((param) {
-      var info = StringBuffer(param.displayName);
-      if (param.isRequiredPositional) info.write(' positional');
-      if (param.isOptionalPositional) info.write(' optional');
-      if (param.isRequiredNamed) info.write(' required-named');
-      if (param.isOptionalNamed) info.write(' optional-named');
-      info.writeAll([' ', param.type]);
-      return info.toString();
-    }).toList(growable: false);
+    return ctor.formalParameters
+        .map((param) {
+          var info = StringBuffer(param.displayName);
+          if (param.isRequiredPositional) info.write(' positional');
+          if (param.isOptionalPositional) info.write(' optional');
+          if (param.isRequiredNamed) info.write(' required-named');
+          if (param.isOptionalNamed) info.write(' optional-named');
+          info.writeAll([' ', param.type]);
+          return info.toString();
+        })
+        .toList(growable: false);
   }
 
   ModelEntity generateForAnnotatedElement(
@@ -232,8 +234,9 @@ class EntityResolver extends Builder {
           );
           continue;
         }
-        final backlinkField =
-            backlinkAnnotations.first.getField('to')!.toStringValue()!;
+        final backlinkField = backlinkAnnotations.first
+            .getField('to')!
+            .toStringValue()!;
         final backlink = ModelBacklink(
           name: f.displayName,
           srcEntity: relTargetName!,
@@ -644,8 +647,9 @@ class EntityResolver extends Builder {
   }
 
   DartType? listItemType(DartType listType) {
-    final typeArgs =
-        listType is ParameterizedType ? listType.typeArguments : [];
+    final typeArgs = listType is ParameterizedType
+        ? listType.typeArguments
+        : [];
     return typeArgs.length == 1 ? typeArgs[0] : null;
   }
 
@@ -674,14 +678,17 @@ class EntityResolver extends Builder {
     final hnswRestored = HnswIndex(
       dimensions: annotation.getField('dimensions')!.toIntValue()!,
       neighborsPerNode: annotation.getField('neighborsPerNode')!.toIntValue(),
-      indexingSearchCount:
-          annotation.getField('indexingSearchCount')!.toIntValue(),
+      indexingSearchCount: annotation
+          .getField('indexingSearchCount')!
+          .toIntValue(),
       flags: _HnswFlagsState.fromState(annotation.getField('flags')!),
       distanceType: distanceType,
-      reparationBacklinkProbability:
-          annotation.getField('reparationBacklinkProbability')!.toDoubleValue(),
-      vectorCacheHintSizeKB:
-          annotation.getField('vectorCacheHintSizeKB')!.toIntValue(),
+      reparationBacklinkProbability: annotation
+          .getField('reparationBacklinkProbability')!
+          .toDoubleValue(),
+      vectorCacheHintSizeKB: annotation
+          .getField('vectorCacheHintSizeKB')!
+          .toIntValue(),
     );
     property.hnswParams = ModelHnswParams.fromAnnotation(hnswRestored);
   }
@@ -691,8 +698,9 @@ class EntityResolver extends Builder {
       annotation.getField('type')!,
       "ExternalType.type",
     );
-    final type =
-        typeIndex != null ? ExternalPropertyType.values[typeIndex] : null;
+    final type = typeIndex != null
+        ? ExternalPropertyType.values[typeIndex]
+        : null;
     if (type == null) {
       throw InvalidGenerationSourceError(
         "'type' attribute not specified in @ExternalType annotation",

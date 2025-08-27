@@ -171,7 +171,7 @@ enum PropertyType {
   /// the same value.
   ///
   /// For more efficiency use `Float32List` instead.
-  floatVector
+  floatVector,
 
   // dart type=List<String>
   // no need to specify explicitly, just use [List<String>]
@@ -382,7 +382,7 @@ enum VectorDistanceType {
   ///
   /// Value range: 0 km - 6371 * π km (approx. 20015.09 km; half the Earth's
   /// circumference)
-  geo
+  geo,
 }
 
 /// Flags as a part of the [HnswIndex] configuration.
@@ -407,11 +407,12 @@ class HnswFlags {
   final bool reparationLimitCandidates;
 
   /// Create flags for the [HnswIndex] annotation.
-  const HnswFlags(
-      {this.debugLogs = false,
-      this.debugLogsDetailed = false,
-      this.vectorCacheSimdPaddingOff = false,
-      this.reparationLimitCandidates = false});
+  const HnswFlags({
+    this.debugLogs = false,
+    this.debugLogsDetailed = false,
+    this.vectorCacheSimdPaddingOff = false,
+    this.reparationLimitCandidates = false,
+  });
 }
 
 /// An annotation to create an HSNW index for a field of an [Entity] class. See
@@ -490,14 +491,15 @@ class HnswIndex {
   ///
   /// Changing these values causes re-indexing, which can take a while due to
   /// the complex nature of HNSW.
-  const HnswIndex(
-      {required this.dimensions,
-      this.neighborsPerNode,
-      this.indexingSearchCount,
-      this.flags,
-      this.distanceType,
-      this.reparationBacklinkProbability,
-      this.vectorCacheHintSizeKB});
+  const HnswIndex({
+    required this.dimensions,
+    this.neighborsPerNode,
+    this.indexingSearchCount,
+    this.flags,
+    this.distanceType,
+    this.reparationBacklinkProbability,
+    this.vectorCacheHintSizeKB,
+  });
 }
 
 /// A property type of an external system (e.g. another database) that has no
@@ -637,7 +639,7 @@ enum ExternalPropertyType {
   /// index 1: options)
   ///
   /// Encoding: 1:1 string representation
-  mongoRegex
+  mongoRegex,
 }
 
 /// An annotation to specify the type of a field in an [Entity] class in an
