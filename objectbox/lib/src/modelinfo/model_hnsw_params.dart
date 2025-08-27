@@ -39,9 +39,9 @@ class ModelHnswParams {
   /// using the given [argument], [name] and [message].
   static void checkArgument(
     Object argument,
-    bool expression,
     String name,
     String message,
+    {bool expression = true}
   ) {
     if (!expression) {
       throw ArgumentError.value(argument, name, message);
@@ -56,26 +56,26 @@ class ModelHnswParams {
     // See allowed ranges in objectbox-c/src/model.cpp
     checkArgument(
       hnsw.dimensions,
-      hnsw.dimensions > 0,
       "dimensions",
       "must be 1 or greater",
+      expression: hnsw.dimensions > 0,
     );
     final neighborsPerNode = hnsw.neighborsPerNode;
     if (neighborsPerNode != null) {
       checkArgument(
         neighborsPerNode,
-        neighborsPerNode > 0,
         "neighborsPerNode",
         "must be 1 or greater",
+        expression: neighborsPerNode > 0,
       );
     }
     final indexingSearchCount = hnsw.indexingSearchCount;
     if (indexingSearchCount != null) {
       checkArgument(
         indexingSearchCount,
-        indexingSearchCount > 0,
         "indexingSearchCount",
         "must be 1 or greater",
+        expression: indexingSearchCount > 0,
       );
     }
     final reparationBacklinkProbability = hnsw.reparationBacklinkProbability;
@@ -84,19 +84,19 @@ class ModelHnswParams {
       // above 0.999 is just mapped to "always": so restrict to max 1.0.
       checkArgument(
         reparationBacklinkProbability,
-        reparationBacklinkProbability >= 0.0 &&
-            reparationBacklinkProbability <= 1.0,
         "reparationBacklinkProbability",
         "must be between 0.0 or 1.0",
+        expression: reparationBacklinkProbability >= 0.0 &&
+            reparationBacklinkProbability <= 1.0,
       );
     }
     final vectorCacheHintSizeKB = hnsw.vectorCacheHintSizeKB;
     if (vectorCacheHintSizeKB != null) {
       checkArgument(
         vectorCacheHintSizeKB,
-        vectorCacheHintSizeKB > 0,
         "vectorCacheHintSizeKB",
         "must be 1 or greater",
+        expression: vectorCacheHintSizeKB > 0,
       );
     }
     return ModelHnswParams(
